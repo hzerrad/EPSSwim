@@ -1,4 +1,4 @@
-package com.example.epsswim.ui.theme
+package com.example.epsswim.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
