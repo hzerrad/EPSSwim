@@ -1,6 +1,7 @@
 package com.example.epsswim.presentation.ui.common.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -52,13 +54,14 @@ import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.common.componants.MyOutlinedTextField
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
+import com.example.epsswim.presentation.ui.theme.MyRed
 
 @Preview
 @Composable
 fun LoginScreen() {
     Surface (modifier = Modifier.fillMaxSize()) {
         Column (
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 50.dp),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp,top = 50.dp, bottom = 25.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ){
             Image(
@@ -137,7 +140,9 @@ fun LoginScreen() {
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,imeAction = ImeAction.Done),
             )
             Button(
-                modifier = Modifier.height(56.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .height(56.dp)
+                    .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = { /*TODO*/ }
             ) {
@@ -146,6 +151,35 @@ fun LoginScreen() {
                     fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
                     fontSize = 16.sp,
                     color = MyBackground
+                )
+            }
+            Box(modifier = Modifier.fillMaxSize()){
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = Color.LightGray
+                        )) {
+                            append("By ")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = MyRed
+                        )) {
+                            append("MTC Company. ")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = Color.LightGray
+                        )) {
+                            append("All rights reserved.")
+                        }
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
                 )
             }
         }
