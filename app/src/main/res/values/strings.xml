@@ -8,4 +8,6 @@
     <string name="the_parent">الولي</string>
     <string name="beginners">مبتدئين</string>
     <string name="professionals">محترفين</string>
+    <string name="profile_img">profile img</string>
+    <string name="the_trainer">"المدرب : "</string>
 </resources>
