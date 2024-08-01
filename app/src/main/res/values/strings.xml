@@ -16,4 +16,5 @@
     <string name="trainer_name">"اسم المدرب : "</string>
     <string name="abscence_number">"عدد الغيابات : "</string>
     <string name="trainer_phone">"هاتف المدرب : "</string>
+    <string name="competition">مسابقات</string>
 </resources>
