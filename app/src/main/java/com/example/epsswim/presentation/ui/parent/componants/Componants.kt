@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -91,9 +93,11 @@ fun TabItem(text: String, isSelected :Boolean, modifier: Modifier, onClick: () -
         animationSpec = tween(easing = LinearOutSlowInEasing),
         label = "Tab bg color"
     )
+    val interactionSource = remember { MutableInteractionSource() }
+
     Box(
         modifier = modifier
-            .clickable { onClick() }
+            .clickable(interactionSource = interactionSource,indication = null) { onClick() }
             .background(tabBgColor, RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -108,17 +112,16 @@ fun TabItem(text: String, isSelected :Boolean, modifier: Modifier, onClick: () -
 }
 
 
-@Preview(showBackground = true)
 @Composable
-fun SwimmerCard(){
+fun SwimmerCard(modifier: Modifier){
     ElevatedCard(
         onClick = { /*TODO*/ },
-        modifier = Modifier.height(100.dp),
+        modifier = modifier.height(100.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.elevatedCardColors(
             containerColor = Color.White
         ),
-        elevation = CardDefaults.cardElevation(10.dp)
+        elevation = CardDefaults.cardElevation(5.dp)
     ) {
         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl){
             Row (

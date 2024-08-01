@@ -3,6 +3,7 @@ package com.example.epsswim.presentation.ui.parent.screens
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -13,9 +14,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
+import com.example.epsswim.presentation.ui.parent.componants.SwimmerCard
 
 @Preview
 @Composable
@@ -28,15 +31,25 @@ fun HomeScreen () {
                 .padding(it)
                 .fillMaxSize()
         ) {
-            Column {
+            Column (
+                modifier = Modifier.fillMaxSize().padding(vertical = 25.dp)
+            ) {
                 var selectedIndex by remember {
                     mutableIntStateOf(1)
                 }
                 val tabsList = listOf(stringResource(R.string.professionals), stringResource(R.string.beginners))
+                var itemCount by remember {
+                    mutableIntStateOf(5)
+                }
 
                 MyTabRow(selectedIndex,tabsList){
                     selectedIndex = it
-
+                    itemCount = 5 + it
+                }
+                LazyColumn(modifier = Modifier.padding(top = 20.dp)) {
+                    items(itemCount){
+                        SwimmerCard(Modifier.padding(start = 15.dp,end = 15.dp, bottom = 20.dp))
+                    }
                 }
             }
         }
