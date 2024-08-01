@@ -10,4 +10,10 @@
     <string name="professionals">محترفين</string>
     <string name="profile_img">profile img</string>
     <string name="the_trainer">"المدرب : "</string>
+    <string name="profile">الملف الشخصي</string>
+    <string name="personal_info">معلومات شخصية</string>
+    <string name="level">"المستوى : "</string>
+    <string name="trainer_name">"اسم المدرب : "</string>
+    <string name="abscence_number">"عدد الغيابات : "</string>
+    <string name="trainer_phone">"هاتف المدرب : "</string>
 </resources>
