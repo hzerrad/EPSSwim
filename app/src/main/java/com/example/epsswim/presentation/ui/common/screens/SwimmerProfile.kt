@@ -36,6 +36,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
@@ -44,7 +45,7 @@ import com.example.epsswim.presentation.ui.theme.MyBackground
 @Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SwimmerProfile(){
+fun SwimmerProfile(navController: NavHostController) {
     Column (
         modifier = Modifier
             .background(MyBackground)

@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
@@ -27,7 +28,7 @@ import com.example.epsswim.presentation.ui.theme.MyBackground
 
 @Preview
 @Composable
-fun HomeScreen () {
+fun HomeScreen(navController: NavHostController) {
     Scaffold (
         topBar = {
             MyAppBar(

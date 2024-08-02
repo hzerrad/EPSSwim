@@ -20,12 +20,13 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.theme.MyRed
 
 @Preview
 @Composable
-fun SplashScreen(){
+fun SplashScreen(navController: NavHostController) {
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.splash_bg) ,
