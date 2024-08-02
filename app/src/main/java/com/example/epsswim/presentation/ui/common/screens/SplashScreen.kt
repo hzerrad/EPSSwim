@@ -31,8 +31,8 @@ import kotlinx.coroutines.delay
 fun SplashScreen(navController: NavHostController) {
     LaunchedEffect(key1 = true) {
         delay(600)
-        navController.navigate(Screen.Login)
         navController.popBackStack()
+        navController.navigate(Screen.Login)
     }
     Box(modifier = Modifier.fillMaxSize()){
         Image(

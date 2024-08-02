@@ -136,8 +136,8 @@ fun LoginScreen(navController: NavHostController) {
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
-                    navController.navigate(Screen.ParentHome)
                     navController.popBackStack()
+                    navController.navigate(Screen.ParentHome)
                 }
             ) {
                 Text(

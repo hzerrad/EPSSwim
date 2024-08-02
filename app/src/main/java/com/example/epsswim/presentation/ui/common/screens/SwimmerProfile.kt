@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -52,61 +54,68 @@ fun SwimmerProfile(navController: NavHostController) {
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
     ){
-        Box {
+        Box (
+            modifier = Modifier
+                .clip(RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp ))
+        ) {
 
             Image(
                 painter = painterResource(id = R.drawable.profile_bg),
                 contentDescription ="profile background" ,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth()
-            )
-            CenterAlignedTopAppBar(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.TopCenter),
-                title = {
-                    Text(
-                        text = stringResource(R.string.profile),
-                        fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
-                        fontSize = 24.sp,
-                    )
-                },
-                navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack()}){
-                        Icon(
-                            painter = painterResource(id = R.drawable.chevron_left),
-                            contentDescription = "back button"
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = androidx.compose.ui.graphics.Color.Transparent,
-                    titleContentColor = MyBackground,
-                    navigationIconContentColor = MyBackground
-                )
+                    .height(350.dp)
             )
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .padding(bottom = 25.dp)
-                    .align(Alignment.BottomCenter)
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.img),
-                    contentDescription ="profile pic" ,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .size(120.dp)
-                )
-                Spacer(modifier = Modifier.height(5.dp))
-                Text(
-                    text = "محمد عليم",
-                    fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
-                    color = MyBackground,
-                    fontSize = 24.sp,
-                )
-            }
+           Column {
+               CenterAlignedTopAppBar(
+                   modifier = Modifier
+                       .fillMaxWidth(),
+//                       .align(Alignment.TopCenter),
+                   title = {
+                       Text(
+                           text = stringResource(R.string.profile),
+                           fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
+                           fontSize = 24.sp,
+                       )
+                   },
+                   navigationIcon = {
+                       IconButton(onClick = { navController.popBackStack()}){
+                           Icon(
+                               painter = painterResource(id = R.drawable.chevron_left),
+                               contentDescription = "back button"
+                           )
+                       }
+                   },
+                   colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                       containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                       titleContentColor = MyBackground,
+                       navigationIconContentColor = MyBackground
+                   )
+               )
+               Column (
+                   horizontalAlignment = Alignment.CenterHorizontally,
+                   modifier = Modifier
+                       .fillMaxWidth()
+                       .padding(top = 10.dp)
+//                       .align(Alignment.BottomCenter)
+               ) {
+                   Image(
+                       painter = painterResource(id = R.drawable.img),
+                       contentDescription ="profile pic" ,
+                       contentScale = ContentScale.Crop,
+                       modifier = Modifier
+                           .clip(CircleShape)
+                           .size(120.dp)
+                   )
+                   Spacer(modifier = Modifier.height(5.dp))
+                   Text(
+                       text = "محمد عليم",
+                       fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
+                       color = MyBackground,
+                       fontSize = 24.sp,
+                   )
+               }
+           }
         }
         ProfileCard(
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
