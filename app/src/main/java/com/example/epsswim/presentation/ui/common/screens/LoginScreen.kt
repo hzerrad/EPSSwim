@@ -42,12 +42,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyOutlinedTextField
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
 
-@Preview
 @Composable
 fun LoginScreen(navController: NavHostController) {
     Surface (modifier = Modifier.fillMaxSize()) {
@@ -135,7 +135,10 @@ fun LoginScreen(navController: NavHostController) {
                     .height(56.dp)
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
-                onClick = { /*TODO*/ }
+                onClick = {
+                    navController.navigate(Screen.ParentHome)
+                    navController.popBackStack()
+                }
             ) {
                 Text(
                     text = stringResource(R.string.login),

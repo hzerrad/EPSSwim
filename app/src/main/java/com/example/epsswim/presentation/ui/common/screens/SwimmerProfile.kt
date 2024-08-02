@@ -38,11 +38,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
 import com.example.epsswim.presentation.ui.theme.MyBackground
 
-@Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SwimmerProfile(navController: NavHostController) {
@@ -72,7 +72,7 @@ fun SwimmerProfile(navController: NavHostController) {
                     )
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }){
+                    IconButton(onClick = { navController.popBackStack()}){
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_left),
                             contentDescription = "back button"
@@ -267,7 +267,7 @@ fun SwimmerProfile(navController: NavHostController) {
                 name="المسابقة الولائية",
                 date = "12/08/2023"
             ){
-
+                navController.navigate(Screen.ParticipationDetails)
             }
             CompetitionCard(
                 modifier=Modifier,

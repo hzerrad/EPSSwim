@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import com.example.epsswim.presentation.navigation.AppNavigation
 import com.example.epsswim.presentation.ui.common.screens.LoginScreen
 import com.example.epsswim.presentation.ui.theme.EPSSwimTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -21,13 +22,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EPSSwimTheme {
-//                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-//                    Greeting(
-//                        name = "Android",
-//                        modifier = Modifier.padding(innerPadding)
-//                    )
-//                }
-                LoginScreen(navController)
+                AppNavigation()
             }
         }
     }

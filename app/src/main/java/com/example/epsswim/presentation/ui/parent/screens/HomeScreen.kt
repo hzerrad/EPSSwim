@@ -21,12 +21,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
 import com.example.epsswim.presentation.ui.parent.componants.SwimmerCard
 import com.example.epsswim.presentation.ui.theme.MyBackground
 
-@Preview
 @Composable
 fun HomeScreen(navController: NavHostController) {
     Scaffold (
@@ -69,7 +69,9 @@ fun HomeScreen(navController: NavHostController) {
                 }
                 LazyColumn(modifier = Modifier.padding(top = 20.dp)) {
                     items(itemCount){
-                        SwimmerCard(Modifier.padding(start = 15.dp,end = 15.dp, bottom = 20.dp))
+                        SwimmerCard(Modifier.padding(start = 15.dp,end = 15.dp, bottom = 20.dp)){
+                            navController.navigate(Screen.SwimmerProfile)
+                        }
                     }
                 }
             }

@@ -42,7 +42,7 @@ import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 
-@Preview
+
 @Composable
 fun ParticipationDetailsScreen(navController: NavHostController) {
     Scaffold (
@@ -50,7 +50,7 @@ fun ParticipationDetailsScreen(navController: NavHostController) {
             MyAppBar(
                 title = stringResource(R.string.participation_details),
                 navigationIcon = {
-                    IconButton(onClick = { /*TODO*/ }){
+                    IconButton(onClick = { navController.popBackStack() }){
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_left),
                             contentDescription = "back button"

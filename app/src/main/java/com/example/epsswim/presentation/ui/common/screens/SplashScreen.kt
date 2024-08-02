@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,11 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.theme.MyRed
+import kotlinx.coroutines.delay
 
-@Preview
 @Composable
 fun SplashScreen(navController: NavHostController) {
+    LaunchedEffect(key1 = true) {
+        delay(600)
+        navController.navigate(Screen.Login)
+        navController.popBackStack()
+    }
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(id = R.drawable.splash_bg) ,

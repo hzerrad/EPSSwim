@@ -113,9 +113,9 @@ fun TabItem(text: String, isSelected :Boolean, modifier: Modifier, onClick: () -
 
 
 @Composable
-fun SwimmerCard(modifier: Modifier){
+fun SwimmerCard(modifier: Modifier,onClick: () -> Unit){
     ElevatedCard(
-        onClick = { /*TODO*/ },
+        onClick = { onClick.invoke() },
         modifier = modifier.height(100.dp),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.elevatedCardColors(
