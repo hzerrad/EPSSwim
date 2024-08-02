@@ -20,4 +20,5 @@
     <string name="participation_details">تفاصيل المشاركة</string>
     <string name="the_participator">المشارك</string>
     <string name="the_competition">المسابقة</string>
+    <string name="logout">logout</string>
 </resources>
