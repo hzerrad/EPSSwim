@@ -21,4 +21,6 @@
     <string name="the_participator">المشارك</string>
     <string name="the_competition">المسابقة</string>
     <string name="logout">logout</string>
+    <string name="absences">الغيابات</string>
+    <string name="levels">المستويات</string>
 </resources>
