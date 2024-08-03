@@ -1,6 +1,7 @@
 package com.example.epsswim.presentation.ui.trainer.componants
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
@@ -15,6 +16,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +39,8 @@ import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
 import com.example.epsswim.presentation.ui.theme.MySecondary
+import com.example.epsswim.presentation.utils.getArabicDate
+import com.example.epsswim.presentation.utils.getArabicWeekDay
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.WeekDay
@@ -84,6 +88,9 @@ fun MyWeekCalendar(){
             firstVisibleWeekDate = currentDate,
             firstDayOfWeek = firstDayOfWeek
         )
+        val selectedDate = remember {
+            mutableStateOf(currentDate)
+        }
         val configuration = LocalConfiguration.current
         val screenWidth = configuration.screenWidthDp.dp *0.95f
         val itemDp = screenWidth/7
@@ -94,7 +101,7 @@ fun MyWeekCalendar(){
            ){
                Text(
                    modifier = Modifier.padding(bottom = 25.dp),
-                   text = currentDate.toString(),
+                   text = getArabicDate(selectedDate.value),
                    fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
                    fontSize = 18.sp,
                    color = MyBackground
@@ -105,9 +112,11 @@ fun MyWeekCalendar(){
                    dayContent = {
                        Day(
                            day = it,
-                           selected = it.date == currentDate,
+                           selected = it.date == selectedDate.value,
                            dp = itemDp
-                       )
+                       ){
+                           selectedDate.value = it.date
+                       }
                    }
                )
            }
@@ -117,10 +126,11 @@ fun MyWeekCalendar(){
 
 }
 @Composable
-fun Day(day: WeekDay, selected: Boolean = false, dp: Dp) {
+fun Day(day: WeekDay, selected: Boolean = false, dp: Dp,onClick: () -> Unit) {
     Box(
         modifier =
         Modifier
+            .clickable { onClick() }
             .width(dp)
             .padding(end = 5.dp)
             .background(if (!selected) MyPrimaryDark else MyBackground, RoundedCornerShape(12.dp)),
@@ -133,7 +143,7 @@ fun Day(day: WeekDay, selected: Boolean = false, dp: Dp) {
         ) {
             val colorText = if (!selected) MyBackground else MyPrimaryDark
             Text(
-                text = day.date.dayOfWeek.name.removeRange(3,day.date.dayOfWeek.name.length),
+                text = getArabicWeekDay(day.date.dayOfWeek.name),
                 color = colorText,
                 fontWeight = FontWeight.Medium,
                 fontSize = 18.sp,
@@ -147,7 +157,7 @@ fun Day(day: WeekDay, selected: Boolean = false, dp: Dp) {
                 fontWeight = FontWeight.Bold,
                 fontSize = 24.sp,
             )
-//            Text(text = day.date.dayOfWeek.name)
+//
         }
     }
 }
