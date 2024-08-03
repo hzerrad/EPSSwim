@@ -34,6 +34,8 @@ android {
         }
     }
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true
+
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -55,6 +57,7 @@ android {
 
 dependencies {
 
+    coreLibraryDesugaring ("com.android.tools:desugar_jdk_libs:2.0.4")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -90,4 +93,6 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     //Coil
     implementation(libs.coil.compose)
+    // The compose calendar library for Android
+    implementation("com.kizitonwose.calendar:compose:2.4.1")
 }
