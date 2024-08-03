@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
@@ -50,7 +51,9 @@ fun LevelScreen (
                 .padding(it)
                 .fillMaxSize()
         ){
-            MyWeekCalendar()
+            Column {
+                MyWeekCalendar()
+            }
         }
     }
 }
