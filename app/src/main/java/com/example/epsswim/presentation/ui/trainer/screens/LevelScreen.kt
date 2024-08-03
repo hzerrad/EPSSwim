@@ -11,9 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.trainer.componants.MyWeekCalendar
 
+@Preview
 @Composable
 fun LevelScreen (
 
@@ -47,7 +50,7 @@ fun LevelScreen (
                 .padding(it)
                 .fillMaxSize()
         ){
-
+            MyWeekCalendar()
         }
     }
 }
