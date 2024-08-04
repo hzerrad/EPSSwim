@@ -23,4 +23,8 @@
     <string name="logout">logout</string>
     <string name="absences">الغيابات</string>
     <string name="levels">المستويات</string>
+    <string name="number_of_presence">"عدد الحضور في الحصة: "</string>
+    <string name="age">"العمر : "</string>
+    <string name="absent">غائب</string>
+    <string name="add_note">إضافة ملاحظة</string>
 </resources>
