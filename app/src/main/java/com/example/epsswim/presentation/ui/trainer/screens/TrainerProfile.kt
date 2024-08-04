@@ -231,14 +231,88 @@ fun TrainerProfile(
             title = stringResource(R.string.absences),
             icon = R.drawable.calendar_ic,
         ){
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
 
+                        append(" الغياب 1 :")
+                    }
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
+                        append("12/12/2023")
+                    }
+                },
+                color = Color.Black,
+                fontSize = 16.sp,
+            )
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
+
+                        append(" الغياب 2 :")
+                    }
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
+                        append("12/12/2023")
+                    }
+                },
+                color = Color.Black,
+                fontSize = 16.sp,
+            )
         }
         ProfileCard(
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
             title = stringResource(R.string.levels),
             icon = R.drawable.levels_ic,
         ){
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
 
+                        append(" المستوى 1 :")
+                    }
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
+                        append("المبتدئين")
+                    }
+                },
+                color = Color.Black,
+                fontSize = 16.sp,
+            )
+            Text(
+                text = buildAnnotatedString {
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
+
+                        append(" المستوى 2 :")
+                    }
+                    withStyle(style = SpanStyle(
+                        fontWeight = FontWeight.Bold
+                    )
+                    ) {
+                        append("المحترفين")
+                    }
+                },
+                color = Color.Black,
+                fontSize = 16.sp,
+            )
         }
         LogoutCard(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp)) {
             
