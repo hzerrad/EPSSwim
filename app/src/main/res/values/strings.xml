@@ -20,11 +20,13 @@
     <string name="participation_details">تفاصيل المشاركة</string>
     <string name="the_participator">المشارك</string>
     <string name="the_competition">المسابقة</string>
-    <string name="logout">logout</string>
+    <string name="logout">تسجيل الخروج</string>
     <string name="absences">الغيابات</string>
     <string name="levels">المستويات</string>
     <string name="number_of_presence">"عدد الحضور في الحصة: "</string>
     <string name="age">"العمر : "</string>
     <string name="absent">غائب</string>
     <string name="add_note">إضافة ملاحظة</string>
+    <string name="blood_type">"فصيلة الدم : "</string>
+    <string name="phone_number">"رقم الهاتف : "</string>
 </resources>
