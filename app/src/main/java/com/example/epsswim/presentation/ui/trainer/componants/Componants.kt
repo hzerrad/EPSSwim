@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -14,13 +15,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -203,4 +212,35 @@ fun LogoutCard(modifier: Modifier,onClick: () -> Unit){
             )
         }
     }
+}
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+fun MySearchBar(
+    text : MutableState<String> = mutableStateOf(""),
+    onSearchClicked: (String) -> Unit = {},
+    onTextChange: (String) -> Unit = {},
+) {
+    SearchBar(
+        modifier = Modifier
+            .fillMaxWidth(),
+        query = text.value,
+        onQueryChange = { onTextChange(it) },
+        onSearch = {
+            onSearchClicked(it)
+        },
+        active = false,
+        onActiveChange = {},
+        placeholder = { Text(text = stringResource(R.string.search)) },
+        leadingIcon = { Icon(imageVector = Icons.Default.Search, contentDescription = stringResource(id = R.string.search)) },
+        trailingIcon = {
+            IconButton(onClick = { text.value = ""}) {
+                Icon(imageVector = Icons.Default.Clear, contentDescription = "clear")
+            }
+        },
+        shadowElevation = 10.dp,
+        shape = SearchBarDefaults.inputFieldShape,
+        windowInsets = WindowInsets(top = 0),
+        colors = SearchBarDefaults.colors(containerColor = Color.White),
+        content = {},
+    )
 }
