@@ -33,4 +33,12 @@
     <string name="search">بحث ...</string>
     <string name="add_competition">أضف مسابقة</string>
     <string name="the_participants">المشاركين</string>
+    <string name="close">غلق</string>
+    <string name="save">حفظ</string>
+    <string name="competition_name">اسم المسابقة</string>
+    <string name="competition_place">مكان المسابقة</string>
+    <string name="competition_date">تاريخ المسابقة</string>
+    <string name="ok">اختبار</string>
+    <string name="cancel">إلغاء</string>
+    <string name="brevet">مسابقة شهادة</string>
 </resources>
