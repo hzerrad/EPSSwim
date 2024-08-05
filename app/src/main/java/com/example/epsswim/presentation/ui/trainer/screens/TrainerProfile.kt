@@ -213,7 +213,7 @@ fun TrainerProfile(
                     )
                     ) {
 
-                        append(stringResource(R.string.abscence_number))
+                        append(stringResource(R.string.absence_number))
                     }
                     withStyle(style = SpanStyle(
                         fontWeight = FontWeight.Bold

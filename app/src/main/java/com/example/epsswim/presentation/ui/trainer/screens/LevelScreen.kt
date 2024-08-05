@@ -277,7 +277,7 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(end = 40.dp, bottom = 12.dp),
-                    text = stringResource(id = R.string.abscence_number) + "3",
+                    text = stringResource(id = R.string.absence_number) + "3",
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                 )

@@ -14,7 +14,7 @@
     <string name="personal_info">معلومات شخصية</string>
     <string name="level">"المستوى : "</string>
     <string name="trainer_name">"اسم المدرب : "</string>
-    <string name="abscence_number">"عدد الغيابات : "</string>
+    <string name="absence_number">"عدد الغيابات : "</string>
     <string name="trainer_phone">"هاتف المدرب : "</string>
     <string name="competition">مسابقات</string>
     <string name="participation_details">تفاصيل المشاركة</string>
@@ -29,4 +29,7 @@
     <string name="add_note">إضافة ملاحظة</string>
     <string name="blood_type">"فصيلة الدم : "</string>
     <string name="phone_number">"رقم الهاتف : "</string>
+    <string name="the_competitions">المسابقات</string>
+    <string name="search">بحث ...</string>
+    <string name="add_competition">أضف مسابقة</string>
 </resources>
