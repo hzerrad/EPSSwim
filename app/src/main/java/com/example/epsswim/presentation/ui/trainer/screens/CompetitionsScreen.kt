@@ -2,16 +2,15 @@ package com.example.epsswim.presentation.ui.trainer.screens
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -41,6 +40,7 @@ import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.OutlinedTextField
@@ -64,8 +64,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -74,11 +72,13 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -197,7 +197,6 @@ fun CompetitionsScreen(){
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 fun FullScreenDialogContent( onDismiss: () -> Unit={}, onDone: () -> Unit={}) {
     Surface (color = MyBackground) {
@@ -356,55 +355,11 @@ fun DialogBody() {
             color = MyPrimary,
             fontFamily = FontFamily(listOf(Font(R.font.cairo_regular))),
         )
-        val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
-        var expanded by remember { mutableStateOf(true) }
-        var selectedOptionText by remember { mutableStateOf(options[0]) }
+        EditableParticipantExposedDropdownMenu(
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
 
-        ExposedDropdownMenuBox(
-            modifier = Modifier.padding(bottom = 12.dp),
-            expanded = expanded,
-            onExpandedChange = {
-                expanded = it
-            }
-        ) {
-            OutlinedTextField(
-                modifier = Modifier.fillMaxWidth(),
-                readOnly = true,
-                value = selectedOptionText,
-                onValueChange = { },
-                label = { Text(stringResource(id = R.string.the_participator)) },
-                trailingIcon = {
-                    ExposedDropdownMenuDefaults.TrailingIcon(
-                        expanded = expanded
-                    )
-                },
-                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                    focusedBorderColor = MyPrimary,
-                    focusedContainerColor = MyBackground ,
-                    unfocusedContainerColor = MyBackground ,
-                    focusedLabelColor = MyPrimary
-                )
-            )
-            ExposedDropdownMenu(
-                expanded = expanded,
-                onDismissRequest = {
-                    expanded = false
-                }
-            ) {
-                options.forEach { selectionOption ->
-                    DropdownMenuItem(
-                        modifier = Modifier.fillMaxWidth(),
-                        onClick = {
-                            selectedOptionText = selectionOption
-                            expanded = false
-                        },
-                        text = {
-                            Text(text = selectionOption)
-                        }
-                    )
-                }
-            }
-        }
+
     }
 }
 
@@ -636,3 +591,66 @@ fun CustomDatePicker (
         readOnly = true
     )
 }
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+    fun EditableParticipantExposedDropdownMenu(modifier: Modifier) {
+        val options = listOf("Cupcake", "Donut", "Eclair", "Froyo", "Gingerbread")
+        var text by remember { mutableStateOf(TextFieldValue()) }
+        val filteredOptions = options.filter{
+            it.contains(text.text, ignoreCase = true)
+        }
+        val (allowExpanded, setExpanded) = remember { mutableStateOf(false) }
+        val expanded = allowExpanded && filteredOptions.isNotEmpty()
+
+        ExposedDropdownMenuBox(
+            modifier = modifier,
+            expanded = expanded,
+            onExpandedChange = setExpanded,
+        ) {
+            OutlinedTextField(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor(),
+                value = text,
+                onValueChange = { text = it },
+                singleLine = true,
+                label = { Text(stringResource(id = R.string.the_participator)) },
+                trailingIcon = {
+                    ExposedDropdownMenuDefaults.TrailingIcon(
+                        expanded = expanded,
+                    )
+                },
+                colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MyPrimary,
+                    focusedContainerColor = MyBackground ,
+                    unfocusedContainerColor = MyBackground ,
+                    focusedLabelColor = MyPrimary
+                ),
+            )
+            ExposedDropdownMenu(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MyBackground),
+                expanded = expanded,
+                onDismissRequest = { setExpanded(false) },
+            ) {
+                filteredOptions.forEach { option ->
+                    DropdownMenuItem(
+                        text = { Text(option, style = MaterialTheme.typography.bodyLarge) },
+                        onClick = {
+                            text =
+                                TextFieldValue(
+                                    text = option,
+                                    selection = TextRange(option.length),
+                                )
+                            setExpanded(false)
+                        },
+                        contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
+                        colors = MenuDefaults.itemColors(
+                        )
+                    )
+                }
+            }
+        }
+    }
