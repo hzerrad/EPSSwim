@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.common.componants
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -114,14 +116,14 @@ fun MyAppBar(
         )
     )
 }
-
-@Preview(showBackground = true)
 @Composable
-fun MyBottomBar() {
-    val navController: NavHostController = rememberNavController()
+fun MyBottomBar(
+    navController: NavHostController
+) {
     Surface (
         modifier = Modifier
-            .padding(start = 20.dp, bottom = 25.dp, end = 20.dp) ,
+
+            .padding(start = 20.dp, bottom = 50.dp, end = 20.dp) ,
         shape = RoundedCornerShape(60.dp),
         color = MyBackground,
         contentColor = MyBackground,
@@ -130,7 +132,9 @@ fun MyBottomBar() {
     ){
         BottomAppBar(
             containerColor = MyBackground,
-            contentColor = Color(0xff9DB2CE)
+            contentColor = Color(0xff9DB2CE),
+            windowInsets = WindowInsets(0,0,0,0)
+
         ){
             val items = listOf(
                 BottomBarItem.Competitions,
@@ -140,7 +144,7 @@ fun MyBottomBar() {
             val destination = navController.currentBackStackEntryAsState().value?.destination
             Row(
                 modifier = Modifier
-                    .padding( horizontal = 20.dp)
+                    .padding(horizontal = 20.dp)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
@@ -148,6 +152,7 @@ fun MyBottomBar() {
                 items.forEach {  item ->
 //                    val selected = item.route== destination?.route?.split("?")?.first()
                     IconButton(onClick = {
+                        Log.d("TAG", "MyBottomBar: ${destination?.route?.split("?")?.first()} ")
 //                        navController.navigate(item.route) {
 //                            popUpTo(navController.graph.findStartDestination().id)
 //                            launchSingleTop = true
@@ -163,8 +168,8 @@ fun MyBottomBar() {
                 }
             }
         }
-
     }
+
 }
 @Composable
 fun CompetitionCard(modifier: Modifier,name: String, date: String, onClick: () -> Unit) {
@@ -264,7 +269,9 @@ fun ProfileCard(modifier: Modifier, title: String, icon: Int, content: @Composab
             )
         AnimatedVisibility(visible = isClicked) {
             Column (
-                modifier = Modifier.padding(horizontal = 16.dp, vertical = 20.dp).fillMaxWidth(),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp, vertical = 20.dp)
+                    .fillMaxWidth(),
                 horizontalAlignment = Alignment.End
             ) {
                 CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl){

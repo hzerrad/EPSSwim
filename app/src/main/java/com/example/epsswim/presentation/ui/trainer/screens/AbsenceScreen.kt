@@ -16,15 +16,14 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.trainer.componants.LevelCard
 
 @Preview
 @Composable
-fun AbsenceScreen (
-
-) {
+fun AbsenceScreen(navController: NavHostController) {
     Scaffold (
         topBar = { MyAppBar(title = stringResource(R.string.the_parent)) }
     ) {

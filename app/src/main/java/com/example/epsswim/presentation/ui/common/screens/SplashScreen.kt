@@ -29,6 +29,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavHostController) {
+
     LaunchedEffect(key1 = true) {
         delay(600)
         navController.popBackStack()

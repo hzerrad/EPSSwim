@@ -18,4 +18,16 @@ sealed class Screen {
 
     @Serializable
     data object ParticipationDetails : Screen()
+
+    @Serializable
+    data object AbsenceScreen : Screen()
+
+    @Serializable
+    data object CompetitionScreen : Screen()
+
+    @Serializable
+    data object LevelScreen : Screen()
+
+    @Serializable
+    data object TrainerProfile : Screen()
 }
