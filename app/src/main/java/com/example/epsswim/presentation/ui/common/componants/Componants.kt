@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -150,19 +151,17 @@ fun MyBottomBar(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 items.forEach {  item ->
-//                    val selected = item.route== destination?.route?.split("?")?.first()
+                    val selected = item.route== destination?.route?.split("?")?.first()
                     IconButton(onClick = {
-                        Log.d("TAG", "MyBottomBar: ${destination?.route?.split("?")?.first()} ")
-//                        navController.navigate(item.route) {
-//                            popUpTo(navController.graph.findStartDestination().id)
-//                            launchSingleTop = true
-//                        }
+                        navController.navigate(item.route) {
+                            popUpTo(navController.graph.findStartDestination().id)
+                            launchSingleTop = true
+                        }
                     }) {
                         Icon(
-                            painter = painterResource(id = item.icon),
+                            painter = painterResource(id = if (selected) item.iconFilled else item.icon),
                             contentDescription = "icon",
                             tint = MyPrimary,
-//                            tint = if (selected) PrimaryColor else onPrimaryColor,
                         )
                     }
                 }
