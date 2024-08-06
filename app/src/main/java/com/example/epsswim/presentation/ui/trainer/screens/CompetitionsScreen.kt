@@ -9,11 +9,14 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -55,6 +58,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -196,6 +200,7 @@ fun CompetitionsScreen(){
         }
     }
 }
+@Preview(showBackground = true)
 
 @Composable
 fun FullScreenDialogContent( onDismiss: () -> Unit={}, onDone: () -> Unit={}) {
@@ -356,10 +361,79 @@ fun DialogBody() {
             fontFamily = FontFamily(listOf(Font(R.font.cairo_regular))),
         )
         EditableParticipantExposedDropdownMenu(
-            modifier = Modifier.padding(bottom = 12.dp)
+            modifier = Modifier
+                .onFocusChanged { isCardSelected = false }
+                .padding(bottom = 12.dp)
         )
+        val participants = remember {
+            mutableListOf(" أحمد شمشون","محمود عبدالرحمن","سعيد معمر")
+        }
+        ParticipantsContainer(
+            participants = participants,
+            modifier = Modifier
+                .onFocusChanged { isCardSelected = false }
+                .padding(bottom = 12.dp)
+        )
+    }
+}
 
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun ParticipantsContainer(
+    participants: MutableList<String>
+    ,modifier: Modifier
+) {
 
+    OutlinedCard(
+        modifier = modifier
+            .padding(bottom = 16.dp)
+            .fillMaxWidth()
+            .heightIn(min = 56.dp),
+        shape = RoundedCornerShape(4.dp),
+        border = if (participants.isNotEmpty()) BorderStroke(2.dp, MyPrimary) else BorderStroke(1.dp, Color.DarkGray),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MyBackground
+        ),
+    ){
+        FlowRow (
+            modifier = Modifier
+                .padding(0.dp)
+                .fillMaxWidth()
+        ){
+            participants.forEach{ participant ->
+                Tag(
+                    modifier=Modifier.padding(8.dp),
+                    text = participant
+                ){
+                    participants.add(participant)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun Tag(modifier: Modifier,text: String,onClick: () -> Unit) {
+    Box(
+        modifier = modifier
+            .clickable { onClick.invoke() }
+            .background(MyPrimary, RoundedCornerShape(8.dp))
+            .clip(RoundedCornerShape(8.dp))
+    ){
+        Row (modifier=Modifier.padding(8.dp)){
+            Text(
+                modifier = Modifier.padding(end = 8.dp),
+                text = text,
+                fontSize = 16.sp,
+                color = MyBackground,
+            )
+            Icon(
+                imageVector =  Icons.Default.Close ,
+                contentDescription = stringResource(id = R.string.close),
+                tint = MyBackground,
+                modifier = Modifier.size(16.dp)
+            )
+        }
     }
 }
 
