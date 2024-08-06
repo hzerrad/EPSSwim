@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
@@ -60,7 +61,6 @@ import com.example.epsswim.presentation.ui.trainer.componants.MyWeekCalendar
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun LevelScreen(navController: NavHostController) {
     Scaffold (
@@ -68,7 +68,9 @@ fun LevelScreen(navController: NavHostController) {
             MyAppBar(
                 title = "المستوى 1",
                 navigationIcon = {
-                    IconButton( onClick = {}){
+                    IconButton( onClick = {
+                        navController.popBackStack()
+                    }){
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_left),
                             contentDescription = "back button"
@@ -76,7 +78,9 @@ fun LevelScreen(navController: NavHostController) {
                     }
                 },
                 actions = {
-                    IconButton( onClick = {}){
+                    IconButton( onClick = {
+                        navController.popBackStack()
+                    }){
                         Icon(
                             painter = painterResource(id = R.drawable.done_ic),
                             contentDescription = "done button"
@@ -144,6 +148,8 @@ fun LevelScreen(navController: NavHostController) {
                             .padding(horizontal = 56.dp)
                             .align(Alignment.Center)
                     ){
+                        navController.popBackStack()
+                        navController.navigate(Screen.SwimmerProfile)
                     }
                 }
                 Button(
@@ -229,7 +235,11 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
         mutableStateOf(false)
     }
 
-    Box(modifier = modifier.fillMaxWidth()){
+    Box(
+        modifier = modifier
+            .clickable { onClick() }
+            .fillMaxWidth()
+    ){
         Surface(
             modifier = Modifier
                 .padding(top = 65.dp)
@@ -238,7 +248,6 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
             tonalElevation = 10.dp,
             shadowElevation = 10.dp,
             color = MySecondary,
-            onClick = onClick
         ) {
             Column (
                 Modifier

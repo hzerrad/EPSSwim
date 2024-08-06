@@ -45,7 +45,8 @@ class MainActivity : ComponentActivity() {
                     AppNavigation(
                         modifier = Modifier.padding(
                             bottom = if (it.calculateBottomPadding() >= 50.dp) it.calculateBottomPadding() - 50.dp else 0.dp),
-                        navController=navController
+                        navController=navController,
+                        isTrainer = isTrainer
                     )
                 }
 

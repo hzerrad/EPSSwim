@@ -153,7 +153,7 @@ fun MyBottomBar(
                 items.forEach {  item ->
                     val selected = item.route== destination?.route?.split("?")?.first()
                     IconButton(onClick = {
-                        navController.navigate(item.route) {
+                        navController.navigate(item.screen) {
                             popUpTo(navController.graph.findStartDestination().id)
                             launchSingleTop = true
                         }

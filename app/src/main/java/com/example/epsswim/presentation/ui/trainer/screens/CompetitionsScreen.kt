@@ -36,6 +36,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.theme.MyBackground
@@ -46,7 +47,6 @@ import com.example.epsswim.presentation.ui.trainer.componants.MySearchBar
 import com.example.epsswim.presentation.ui.trainer.componants.ParticipantCard
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
 fun CompetitionsScreen(navController: NavHostController) {
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -117,10 +117,10 @@ fun CompetitionsScreen(navController: NavHostController) {
                                     fontSize = 20.sp,
                                 )
                                 ParticipantCard(Modifier.padding(bottom = 12.dp)){
-
+                                    navController.navigate(Screen.SwimmerProfile)
                                 }
                                 ParticipantCard(Modifier.padding(bottom = 12.dp)){
-
+                                    navController.navigate(Screen.SwimmerProfile)
                                 }
                             }
                         }

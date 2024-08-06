@@ -1,16 +1,10 @@
 package com.example.epsswim.presentation.navigation
 
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
-import com.example.epsswim.presentation.ui.common.componants.MyBottomBar
 import com.example.epsswim.presentation.ui.common.screens.LoginScreen
 import com.example.epsswim.presentation.ui.common.screens.ParticipationDetailsScreen
 import com.example.epsswim.presentation.ui.common.screens.SplashScreen
@@ -20,9 +14,13 @@ import com.example.epsswim.presentation.ui.trainer.screens.AbsenceScreen
 import com.example.epsswim.presentation.ui.trainer.screens.CompetitionsScreen
 import com.example.epsswim.presentation.ui.trainer.screens.LevelScreen
 import com.example.epsswim.presentation.ui.trainer.screens.TrainerProfile
-import com.example.epsswim.presentation.utils.Constants
+
 @Composable
-fun AppNavigation(navController: NavHostController, modifier: Modifier) {
+fun AppNavigation(
+    navController: NavHostController,
+    modifier: Modifier,
+    isTrainer :Boolean
+) {
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -36,6 +34,7 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier) {
         composable<Screen.Login>{
             LoginScreen(
                 navController = navController,
+                isTrainer = isTrainer
             )
         }
         composable<Screen.ParentHome>{
@@ -51,24 +50,25 @@ fun AppNavigation(navController: NavHostController, modifier: Modifier) {
         composable<Screen.ParticipationDetails>{
             ParticipationDetailsScreen(
                 navController = navController,
+                isTrainer = isTrainer
             )
         }
-        composable<Screen.ParticipationDetails>{
+        composable<Screen.AbsenceScreen>{
             AbsenceScreen(
                 navController = navController,
             )
         }
-        composable<Screen.ParticipationDetails>{
+        composable<Screen.CompetitionScreen>{
             CompetitionsScreen(
                 navController = navController,
             )
         }
-        composable<Screen.ParticipationDetails>{
+        composable<Screen.LevelScreen>{
             LevelScreen(
                 navController = navController,
             )
         }
-        composable<Screen.ParticipationDetails>{
+        composable<Screen.TrainerProfile>{
             TrainerProfile(
                 navController = navController,
             )

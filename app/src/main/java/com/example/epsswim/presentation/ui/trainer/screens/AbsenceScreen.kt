@@ -18,10 +18,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.trainer.componants.LevelCard
 
-@Preview
 @Composable
 fun AbsenceScreen(navController: NavHostController) {
     Scaffold (
@@ -48,7 +48,8 @@ fun AbsenceScreen(navController: NavHostController) {
                     modifier=Modifier.padding(bottom = 30.dp),
                     title = "المستوى 1 : مبتدئ"
                 ){
-
+                    navController.popBackStack()
+                    navController.navigate(Screen.LevelScreen)
                 }
                 LevelCard(
                     modifier=Modifier.padding(bottom = 30.dp),
