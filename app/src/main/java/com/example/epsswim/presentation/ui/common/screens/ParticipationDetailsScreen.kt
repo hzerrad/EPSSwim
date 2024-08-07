@@ -62,9 +62,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.presentation.navigation.Screen
+import com.example.epsswim.presentation.ui.common.componants.CompetitionParticipationCard
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
+import com.example.epsswim.presentation.ui.trainer.componants.ExposedDropdownMenuParticipationType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -361,64 +363,4 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
     }
 }
 
-@Composable
-fun CompetitionParticipationCard(modifier: Modifier,content: @Composable () -> Unit) {
-    OutlinedCard(
-        modifier = modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = Color.White
-        ),
-        border = BorderStroke(1.dp, MyPrimary)
-    ){
-        content()
-    }
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun ExposedDropdownMenuParticipationType(
-    modifier: Modifier
-){
-    val options = listOf("سباحة حرة -100متر-","سباحة حرة -100متر-","سباحة حرة -100متر-")
-    var expanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(options[0]) }
-    ExposedDropdownMenuBox(
-        modifier = modifier,
-        expanded = expanded,
-        onExpandedChange = { expanded = it }
-    ) {
-        OutlinedTextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
-            value = text,
-            onValueChange = {},
-            readOnly = true,
-            singleLine = true,
-            label = { Text(stringResource(id = R.string.the_participation)) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            colors = ExposedDropdownMenuDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MyPrimary,
-                focusedContainerColor = MyBackground ,
-                unfocusedContainerColor = MyBackground ,
-                focusedLabelColor = MyPrimary
-            ),
-        )
-        ExposedDropdownMenu(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MyBackground),
-            expanded = expanded,
-            onDismissRequest = { expanded = false },
-        ) {
-            options.forEach { option ->
-                DropdownMenuItem(
-                    text = { Text(option, style = MaterialTheme.typography.bodyLarge) },
-                    onClick = {
-                        text = option
-                        expanded = false
-                    },
-                    contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
-                )
-            }
-        }
-    }
-}
+

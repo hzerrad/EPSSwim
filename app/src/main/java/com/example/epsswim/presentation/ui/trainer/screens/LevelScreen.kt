@@ -60,6 +60,7 @@ import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
 import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.theme.MySecondary
+import com.example.epsswim.presentation.ui.trainer.componants.AbsenceSwimmerCard
 import com.example.epsswim.presentation.ui.trainer.componants.MyWeekCalendar
 import kotlinx.coroutines.launch
 
@@ -239,97 +240,5 @@ fun LevelScreen(navController: NavHostController) {
                 }
             }
         }
-    }
-}
-@Composable
-fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
-    var selected by remember {
-        mutableStateOf(false)
-    }
-
-    Box(
-        modifier = modifier
-            .clickable { onClick() }
-            .fillMaxWidth()
-    ){
-        Surface(
-            modifier = Modifier
-                .padding(top = 65.dp)
-                .align(Alignment.TopCenter),
-            shape = RoundedCornerShape(12.dp),
-            tonalElevation = 10.dp,
-            shadowElevation = 10.dp,
-            color = MySecondary,
-        ) {
-            Column (
-                Modifier
-                    .padding(top = 65.dp)
-                    .fillMaxWidth()) {
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(bottom = 12.dp),
-                    text = "محمد عليم",
-                    fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
-                    fontSize = 20.sp,
-                    color = Color.Black
-                )
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 40.dp, bottom = 12.dp),
-                    text =   stringResource(id = R.string.level) + "1",
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 40.dp, bottom = 12.dp),
-                    text = stringResource(R.string.age) + "11",
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 40.dp, bottom = 12.dp),
-                    text = stringResource(id = R.string.absence_number) + "3",
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-                val buttonColor = if (!selected) MyRed else MyBackground
-                val buttonContainerColor = if (selected) MyRed else Color.White
-                OutlinedButton(
-                    modifier = Modifier
-                        .padding(start = 40.dp, bottom = 40.dp)
-                        .align(Alignment.Start),
-                    onClick = { selected = !selected },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        contentColor = buttonColor,
-                        containerColor = buttonContainerColor
-                    ),
-                    border = BorderStroke(1.dp, buttonColor)
-                ) {
-                    Text(
-                        text = stringResource(R.string.absent),
-                        fontWeight = FontWeight.Normal,
-                        fontSize = 18.sp,
-                    )
-                }
-            }
-        }
-        Image(
-            modifier = Modifier
-                .background(MySecondary, RoundedCornerShape(12.dp))
-                .align(Alignment.TopCenter)
-                .size(125.dp),
-            painter = painterResource(id = R.drawable.img),
-            contentDescription = "swimmer image",
-            contentScale = ContentScale.Crop
-        )
     }
 }

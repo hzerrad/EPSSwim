@@ -275,3 +275,16 @@ fun ProfileCard(modifier: Modifier, title: String, icon: Int, content: @Composab
         }
     }
 }
+@Composable
+fun CompetitionParticipationCard(modifier: Modifier,content: @Composable () -> Unit) {
+    OutlinedCard(
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = Color.White
+        ),
+        border = BorderStroke(1.dp, MyPrimary)
+    ){
+        content()
+    }
+}
