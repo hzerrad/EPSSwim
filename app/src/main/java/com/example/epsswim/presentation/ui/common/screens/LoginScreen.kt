@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
@@ -134,6 +135,10 @@ fun LoginScreen(navController: NavHostController, isTrainer: Boolean) {
                     .height(56.dp)
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MyPrimary,
+                    contentColor = MyBackground
+                ),
                 onClick = {
                     navController.popBackStack()
                     if (!isTrainer)

@@ -94,7 +94,11 @@ fun CompetitionsScreen(navController: NavHostController) {
                     )
                     LazyColumn (modifier = Modifier.padding(top = 40.dp)) {
                         items(3){
-                            CompetitionCard(modifier = Modifier.padding(bottom = 20.dp), name = "المسابقة الولائية", date = "10/12/2024") {
+                            CompetitionCard(
+                                modifier = Modifier.padding(bottom = 20.dp),
+                                name = "المسابقة الولائية",
+                                date = "10/12/2024"
+                            ) {
                                 showBottomSheet= true
                             }
                         }

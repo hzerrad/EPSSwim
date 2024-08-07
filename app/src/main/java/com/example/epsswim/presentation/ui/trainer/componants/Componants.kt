@@ -334,7 +334,10 @@ fun Tag(modifier: Modifier,text: String,onClick: () -> Unit) {
             .background(MyPrimary, RoundedCornerShape(8.dp))
             .clip(RoundedCornerShape(8.dp))
     ){
-        Row (modifier=Modifier.padding(8.dp)){
+        Row (
+            modifier=Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ){
             Text(
                 modifier = Modifier.padding(end = 8.dp),
                 text = text,
