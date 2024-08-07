@@ -123,17 +123,12 @@ fun MyBottomBar(
 ) {
     Surface (
         modifier = Modifier
-
-            .padding(start = 20.dp, bottom = 50.dp, end = 20.dp) ,
+            .padding(start = 10.dp, bottom = 60.dp, end = 10.dp) ,
         shape = RoundedCornerShape(60.dp),
-        color = MyBackground,
-        contentColor = MyBackground,
-        tonalElevation = 10.dp,
-        shadowElevation = 10.dp
+        shadowElevation = 8.dp
     ){
         BottomAppBar(
-            containerColor = MyBackground,
-            contentColor = Color(0xff9DB2CE),
+            containerColor = Color.White,
             windowInsets = WindowInsets(0,0,0,0)
 
         ){
@@ -161,7 +156,7 @@ fun MyBottomBar(
                         Icon(
                             painter = painterResource(id = if (selected) item.iconFilled else item.icon),
                             contentDescription = "icon",
-                            tint = MyPrimary,
+                            tint = if (selected) MyPrimary else Color(0xff9DB2CE),
                         )
                     }
                 }

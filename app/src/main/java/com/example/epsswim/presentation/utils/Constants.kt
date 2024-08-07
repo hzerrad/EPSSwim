@@ -1,5 +1,7 @@
 package com.example.epsswim.presentation.utils
 
 object Constants {
-    val packageName= "com.example.epsswim.presentation.navigation.Screen."
+    const val PACKAGE_NAME= "com.example.epsswim.presentation.navigation.Screen."
+    val concernedRoutes = listOf(PACKAGE_NAME+"AbsenceScreen", PACKAGE_NAME +"CompetitionScreen",
+        PACKAGE_NAME +"TrainerProfile")
 }

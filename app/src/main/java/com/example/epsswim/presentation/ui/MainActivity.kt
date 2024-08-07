@@ -31,10 +31,10 @@ class MainActivity : ComponentActivity() {
             EPSSwimTheme {
                 val navController = rememberNavController()
                 val isTrainer = true
-                val notConcernedRoutes = listOf(Constants.packageName+"Splash", Constants.packageName+"Login")
+                val concernedRoutes = Constants.concernedRoutes
                 Scaffold (
                     bottomBar = {
-                        if (isTrainer && (navController.currentBackStackEntryAsState().value?.destination?.route !in notConcernedRoutes) ){
+                        if (isTrainer && (navController.currentBackStackEntryAsState().value?.destination?.route in concernedRoutes) ){
                             MyBottomBar(
                                 navController
                             )

@@ -6,13 +6,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -88,7 +91,9 @@ fun LevelScreen(navController: NavHostController) {
                     }
                 }
             )
-        }
+        },
+        contentWindowInsets = WindowInsets(0,0,0,)
+
 
     ){
         val sheetState = rememberModalBottomSheetState()
@@ -102,73 +107,80 @@ fun LevelScreen(navController: NavHostController) {
                 .padding(it)
                 .fillMaxSize()
         ){
-            Column (horizontalAlignment = Alignment.End){
+            Column {
                 MyWeekCalendar()
-                Text(
-                    modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp),
-                    text = stringResource(R.string.number_of_presence) +"23/23",
-                    fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
-                    fontSize = 20.sp,
-                )
-                Box (modifier = Modifier.fillMaxWidth()){
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterStart)
-                            .clickable { }
-                            .width(28.dp)
-                            .height(180.dp)
-                    ) {
-                       Icon(
-                           modifier = Modifier
-                               .align(Alignment.CenterStart)
-                               .padding(start = 10.dp),
-                           painter = painterResource(id = R.drawable.chevron_left) ,
-                           contentDescription ="back",
-                           tint = MyPrimaryDark
-                       )
-                    }
-                    Box(
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                            .clickable { }
-                            .width(28.dp)
-                            .height(80.dp)
-                    ) {
-                        Icon(
-                            modifier = Modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(end = 10.dp),
-                            painter = painterResource(id = R.drawable.chevron_right) ,
-                            contentDescription ="next",
-                            tint = MyPrimaryDark
-                        )
-                    }
-                    AbsenceSwimmerCard(
-                        modifier = Modifier
-                            .padding(horizontal = 56.dp)
-                            .align(Alignment.Center)
-                    ){
-                        navController.popBackStack()
-                        navController.navigate(Screen.SwimmerProfile)
-                    }
-                }
-                Button(
-                    onClick = {
-                        showBottomSheet = true
-                    },
+                Column (
+                    horizontalAlignment = Alignment.End,
                     modifier = Modifier
-                        .padding(vertical = 30.dp, horizontal = 56.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = MyPrimaryDark, contentColor = MyBackground),
-                    elevation = ButtonDefaults.buttonElevation(10.dp),
+                        .padding(bottom = 30.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
                     Text(
-                        text = stringResource(R.string.add_note),
-                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp),
+                        text = stringResource(R.string.number_of_presence) +"23/23",
+                        fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
                         fontSize = 20.sp,
-                        color = MyBackground
                     )
+                    Box (modifier = Modifier.fillMaxWidth()){
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterStart)
+                                .clickable { }
+                                .width(28.dp)
+                                .height(180.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .align(Alignment.CenterStart)
+                                    .padding(start = 10.dp),
+                                painter = painterResource(id = R.drawable.chevron_left) ,
+                                contentDescription ="back",
+                                tint = MyPrimaryDark
+                            )
+                        }
+                        Box(
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                                .clickable { }
+                                .width(28.dp)
+                                .height(180.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .padding(end = 10.dp),
+                                painter = painterResource(id = R.drawable.chevron_right) ,
+                                contentDescription ="next",
+                                tint = MyPrimaryDark
+                            )
+                        }
+                        AbsenceSwimmerCard(
+                            modifier = Modifier
+                                .padding(horizontal = 36.dp)
+                                .align(Alignment.Center)
+                        ){
+                            navController.popBackStack()
+                            navController.navigate(Screen.SwimmerProfile)
+                        }
+                    }
+                    Button(
+                        onClick = {
+                            showBottomSheet = true
+                        },
+                        modifier = Modifier
+                            .padding(vertical = 30.dp, horizontal = 36.dp)
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = MyPrimaryDark, contentColor = MyBackground),
+                        elevation = ButtonDefaults.buttonElevation(10.dp),
+                    ) {
+                        Text(
+                            text = stringResource(R.string.add_note),
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 20.sp,
+                            color = MyBackground
+                        )
+                    }
                 }
 
                 if (showBottomSheet) {
@@ -260,6 +272,7 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                     text = "محمد عليم",
                     fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
                     fontSize = 20.sp,
+                    color = Color.Black
                 )
                 Text(
                     modifier = Modifier
@@ -268,6 +281,7 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                     text =   stringResource(id = R.string.level) + "1",
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
+                    color = Color.Black
                 )
                 Text(
                     modifier = Modifier
@@ -276,6 +290,7 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                     text = stringResource(R.string.age) + "11",
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
+                    color = Color.Black
                 )
                 Text(
                     modifier = Modifier
@@ -284,9 +299,10 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                     text = stringResource(id = R.string.absence_number) + "3",
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
+                    color = Color.Black
                 )
                 val buttonColor = if (!selected) MyRed else MyBackground
-                val buttonContainerColor = if (selected) MyRed else MyBackground
+                val buttonContainerColor = if (selected) MyRed else Color.White
                 OutlinedButton(
                     modifier = Modifier
                         .padding(start = 40.dp, bottom = 40.dp)

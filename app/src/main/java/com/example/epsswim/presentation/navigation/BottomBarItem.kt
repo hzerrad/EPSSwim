@@ -12,19 +12,19 @@ sealed class BottomBarItem(
     object  Competitions : BottomBarItem(
         icon = R.drawable.competition_ic,
         iconFilled = R.drawable.competition_filled_ic,
-        route = Constants.packageName + "CompetitionScreen",
+        route = Constants.PACKAGE_NAME + "CompetitionScreen",
         screen = Screen.CompetitionScreen
     )
     object  Absences : BottomBarItem(
         R.drawable.abscence_ic,
         iconFilled = R.drawable.abscence_filled_ic,
-        route = Constants.packageName + "AbsenceScreen",
+        route = Constants.PACKAGE_NAME + "AbsenceScreen",
         screen = Screen.AbsenceScreen
     )
     object  Profile : BottomBarItem(
         R.drawable.profile_ic,
         iconFilled = R.drawable.profile_filled_ic,
-        route = Constants.packageName + "TrainerProfile",
+        route = Constants.PACKAGE_NAME + "TrainerProfile",
         screen = Screen.TrainerProfile
     )
 }

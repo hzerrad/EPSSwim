@@ -48,7 +48,6 @@ fun AbsenceScreen(navController: NavHostController) {
                     modifier=Modifier.padding(bottom = 30.dp),
                     title = "المستوى 1 : مبتدئ"
                 ){
-                    navController.popBackStack()
                     navController.navigate(Screen.LevelScreen)
                 }
                 LevelCard(

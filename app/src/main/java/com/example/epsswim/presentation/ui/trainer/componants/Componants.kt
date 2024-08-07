@@ -401,7 +401,7 @@ fun ParticipantCard(modifier: Modifier,onClick: () -> Unit) {
                     .padding(end = 16.dp)
                     .size(65.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .border(0.2.dp, Color.Black),
+                    .border(0.2.dp, Black),
                 painter = painterResource(id = R.drawable.img),
                 contentDescription = stringResource(R.string.profile_img),
                 contentScale = ContentScale.Crop
@@ -411,7 +411,7 @@ fun ParticipantCard(modifier: Modifier,onClick: () -> Unit) {
                     text = "محمد عليم",
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
-                    color = Color.Black
+                    color = Black
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
@@ -435,7 +435,7 @@ fun CompetitionDetailsCard(modifier: Modifier) {
         Column {
             Text(
                 text = "المسابقة الولائية",
-                color = Color.Black,
+                color = Black,
                 fontWeight = FontWeight.Medium,
                 fontSize = 22.sp,
             )
@@ -652,7 +652,8 @@ fun LevelCard(modifier: Modifier, title: String, onClick: () -> Unit) {
             text = title,
             fontWeight = FontWeight.Medium,
             fontSize = 20.sp,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            color = Black
         )
     }
 }

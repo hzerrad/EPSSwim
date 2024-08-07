@@ -136,7 +136,7 @@ fun LoginScreen(navController: NavHostController, isTrainer: Boolean) {
                 shape = RoundedCornerShape(8.dp),
                 onClick = {
                     navController.popBackStack()
-                    if (isTrainer)
+                    if (!isTrainer)
                         navController.navigate(Screen.ParentHome)
                     else
                         navController.navigate(Screen.AbsenceScreen)

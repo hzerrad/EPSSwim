@@ -43,15 +43,14 @@ import com.example.epsswim.presentation.ui.common.componants.ProfileCard
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.trainer.componants.LogoutCard
 
-@Preview(showBackground = true)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TrainerProfile(navController: NavHostController) {
     Column (
         modifier = Modifier
             .background(MyBackground)
+            .padding(bottom = 50.dp)
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
     ) {
         Box(
             modifier = Modifier
@@ -78,7 +77,7 @@ fun TrainerProfile(navController: NavHostController) {
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { }) {
+                        IconButton(onClick = { navController.popBackStack() }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.chevron_left),
                                 contentDescription = "back button"
@@ -86,7 +85,7 @@ fun TrainerProfile(navController: NavHostController) {
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = androidx.compose.ui.graphics.Color.Transparent,
+                        containerColor = Color.Transparent,
                         titleContentColor = MyBackground,
                         navigationIconContentColor = MyBackground
                     )
@@ -116,205 +115,213 @@ fun TrainerProfile(navController: NavHostController) {
                 }
             }
         }
-        ProfileCard(
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
-            title = stringResource(R.string.personal_info),
-            icon = R.drawable.personal_info_ic
-        ){
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
 
-                        append("الجنس : ")
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("ذكر")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 14.dp)
+        Column (
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .fillMaxWidth()
+        ) {
+            ProfileCard(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                title = stringResource(R.string.personal_info),
+                icon = R.drawable.personal_info_ic
+            ){
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
+                            append("الجنس : ")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("ذكر")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                        append("تاريخ الميلاد : ")
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("12/12/1990")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 14.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
+                            append("تاريخ الميلاد : ")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("12/12/1990")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                        append(stringResource(R.string.blood_type))
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("A+")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 14.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
+                            append(stringResource(R.string.blood_type))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("A+")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                        append(stringResource(R.string.phone_number))
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("055454545454")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(bottom = 14.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
+                            append(stringResource(R.string.phone_number))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("055454545454")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                        append(stringResource(R.string.absence_number))
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append('3')
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-            )
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+
+                            append(stringResource(R.string.absence_number))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append('3')
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+            }
+            ProfileCard(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                title = stringResource(R.string.absences),
+                icon = R.drawable.calendar_ic,
+            ){
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+
+                            append(" الغياب 1 :")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("12/12/2023")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+
+                            append(" الغياب 2 :")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("12/12/2023")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+            }
+            ProfileCard(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                title = stringResource(R.string.levels),
+                icon = R.drawable.levels_ic,
+            ){
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+
+                            append(" المستوى 1 :")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("المبتدئين")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+
+                            append(" المستوى 2 :")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append("المحترفين")
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+            }
+            LogoutCard(modifier = Modifier.padding(20.dp)) {
+
+            }
         }
-        ProfileCard(
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
-            title = stringResource(R.string.absences),
-            icon = R.drawable.calendar_ic,
-        ){
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
 
-                        append(" الغياب 1 :")
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("12/12/2023")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-
-                        append(" الغياب 2 :")
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("12/12/2023")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-            )
-        }
-        ProfileCard(
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
-            title = stringResource(R.string.levels),
-            icon = R.drawable.levels_ic,
-        ){
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-
-                        append(" المستوى 1 :")
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("المبتدئين")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-            )
-            Text(
-                text = buildAnnotatedString {
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-
-                        append(" المستوى 2 :")
-                    }
-                    withStyle(style = SpanStyle(
-                        fontWeight = FontWeight.Bold
-                    )
-                    ) {
-                        append("المحترفين")
-                    }
-                },
-                color = Color.Black,
-                fontSize = 16.sp,
-            )
-        }
-        LogoutCard(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp)) {
-            
-        }
     }
 }
