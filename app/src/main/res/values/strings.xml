@@ -47,4 +47,8 @@
     <string name="the_results">النتائج</string>
     <string name="first_stop">وقت المرور 50</string>
     <string name="second_stop">وقت المرور 100</string>
+    <string name="start">إنطلق</string>
+    <string name="stop">توقف</string>
+    <string name="reset">إعادة</string>
+    <string name="stop_watch">ساعة التوقيف</string>
 </resources>

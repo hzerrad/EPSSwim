@@ -38,6 +38,7 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -61,6 +62,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.model.StopWatch
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionParticipationCard
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
@@ -269,9 +271,7 @@ fun ParticipationDetailsScreen(
                             sheetState = sheetState,
                             containerColor = MyBackground
                         ) {
-                            ParticipationSheetContent(
-
-                            ){
+                            ParticipationSheetContent{
                                 scope.launch { sheetState.hide() }.invokeOnCompletion {
                                     showBottomSheet= false
                                 }
@@ -286,6 +286,20 @@ fun ParticipationDetailsScreen(
 
 @Composable
 fun ParticipationSheetContent(onClick : () -> Unit) {
+    var firstStop by rememberSaveable { mutableStateOf("") }
+    var secondStop by rememberSaveable { mutableStateOf("") }
+
+    val stopWatch = remember {
+        StopWatch()
+    }
+    var stopsNum by remember {
+        mutableIntStateOf(0)
+    }
+    var stopWatchTime by remember {
+        mutableStateOf("00.00.000")
+    }
+    stopWatchTime = stopWatch.formattedTime
+
     Column (modifier = Modifier.padding(horizontal = 24.dp)) {
         TextButton(
             onClick = onClick,
@@ -318,10 +332,11 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             color = Color.Black
         )
         Row(
-            modifier = Modifier.padding(bottom = 150.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(bottom = 12.dp)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ){
-            var firstStop by rememberSaveable { mutableStateOf("") }
             OutlinedTextField(
                 value = firstStop,
                 onValueChange = {
@@ -340,7 +355,6 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                     focusedLabelColor = MyPrimary
                 )
             )
-            var secondStop by rememberSaveable { mutableStateOf("") }
             OutlinedTextField(
                 value = secondStop,
                 onValueChange = {
@@ -359,6 +373,86 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                     focusedLabelColor = MyPrimary
                 )
             )
+        }
+        Text(
+            text = stringResource(id = R.string.stop_watch),
+            fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
+            modifier = Modifier.padding(bottom = 12.dp),
+            fontSize = 20.sp,
+            color = Color.Black
+        )
+        Text(
+            text = stopWatchTime,
+            fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(bottom = 12.dp),
+            fontSize = 32.sp,
+            color = Color.Black
+        )
+        Row (
+            modifier = Modifier
+                .padding(bottom = 150.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Button(
+                onClick = {
+                    stopWatch.start()
+                },
+                modifier = Modifier,
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
+                elevation = ButtonDefaults.buttonElevation(3.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.start),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
+                )
+            }
+            Button(
+                onClick = {
+                    stopWatch.pause()
+                    stopsNum++
+                    when(stopsNum) {
+                        1 -> firstStop = stopWatchTime
+                        2 -> secondStop = stopWatchTime
+//                        3 -> thirdStop = stopWatch
+//                        4 -> fourthStop = stopWatch
+                        else -> {
+                            stopWatch.reset()
+                            stopsNum = 0
+                        }
+                    }
+                 },
+                modifier = Modifier,
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
+                elevation = ButtonDefaults.buttonElevation(3.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.stop),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
+                )
+            }
+            Button(
+                onClick = {
+                    stopWatch.reset()
+                    stopsNum = 0
+                },
+                modifier = Modifier,
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
+                elevation = ButtonDefaults.buttonElevation(3.dp),
+            ) {
+                Text(
+                    text = stringResource(R.string.reset),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 20.sp,
+                )
+            }
         }
     }
 }
