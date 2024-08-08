@@ -384,11 +384,11 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
         )
         Text(
             text = stopWatchTime,
-            fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
+            fontFamily = FontFamily(listOf(Font(R.font.cairo_regular))),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
-                .padding(bottom = 12.dp),
-            fontSize = 48.sp,
+                .padding(bottom = 24.dp),
+            fontSize = 72.sp,
             color = MyRed
         )
         Row (
@@ -433,7 +433,7 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                 elevation = ButtonDefaults.buttonElevation(3.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.stop),
+                    text = stringResource(R.string.lap),
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp,
                 )
