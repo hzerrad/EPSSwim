@@ -121,10 +121,10 @@ fun CompetitionsScreen(navController: NavHostController) {
                                     fontSize = 20.sp,
                                 )
                                 ParticipantCard(Modifier.padding(bottom = 12.dp)){
-                                    navController.navigate(Screen.SwimmerProfile)
+                                    navController.navigate(Screen.ParticipationDetails)
                                 }
                                 ParticipantCard(Modifier.padding(bottom = 12.dp)){
-                                    navController.navigate(Screen.SwimmerProfile)
+                                    navController.navigate(Screen.ParticipationDetails)
                                 }
                             }
                         }

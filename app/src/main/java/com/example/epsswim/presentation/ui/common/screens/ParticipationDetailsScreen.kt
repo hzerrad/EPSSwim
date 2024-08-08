@@ -68,6 +68,7 @@ import com.example.epsswim.presentation.ui.common.componants.CompetitionParticip
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
+import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.trainer.componants.ExposedDropdownMenuParticipationType
 import kotlinx.coroutines.launch
 
@@ -387,8 +388,8 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(bottom = 12.dp),
-            fontSize = 32.sp,
-            color = Color.Black
+            fontSize = 48.sp,
+            color = MyRed
         )
         Row (
             modifier = Modifier
@@ -413,7 +414,7 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             }
             Button(
                 onClick = {
-                    stopWatch.pause()
+//                    stopWatch.pause()
                     stopsNum++
                     when(stopsNum) {
                         1 -> firstStop = stopWatchTime
