@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.common.screens
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -74,6 +75,9 @@ import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.trainer.componants.ExposedDropdownMenuParticipationType
+import com.example.epsswim.presentation.utils.Constants
+import com.example.epsswim.presentation.utils.getDistance
+import com.example.epsswim.presentation.utils.getSwimmingType
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -294,7 +298,15 @@ fun ParticipationDetailsScreen(
 fun ParticipationSheetContent(onClick : () -> Unit) {
     var firstStop by rememberSaveable { mutableStateOf("") }
     var secondStop by rememberSaveable { mutableStateOf("") }
-
+    val stops = rememberSaveable {
+        mutableListOf<String>()
+    }
+    var swimType by remember {
+        mutableStateOf("")
+    }
+    var distance by remember {
+        mutableIntStateOf(50)
+    }
     val stopWatch = remember {
         StopWatch()
     }
@@ -332,8 +344,12 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             color = Color.Black
         )
         ExposedDropdownMenuParticipationType(
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
+            modifier = Modifier.padding(bottom = 12.dp),
+            options = Constants.participationTypes,
+        ){
+            swimType = it.getSwimmingType()
+            distance =  it.getDistance()
+        }
         Text(
             text = stringResource(id = R.string.the_results),
             fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
@@ -341,6 +357,7 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             fontSize = 20.sp,
             color = Color.Black
         )
+        val maxIndex = (distance/50) - 1
         FlowRow(
             modifier = Modifier
                 .padding(bottom = 12.dp)
@@ -348,24 +365,29 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             maxItemsInEachRow = 2
         ){
-            OutlinedTextField(
-                value = firstStop,
-                onValueChange = {
-                    firstStop = it
-                },
-                readOnly = true,
-                label = { Text(stringResource(R.string.first_stop)) },
-                modifier = Modifier
-                    .padding(bottom = 12.dp)
-                    .fillMaxWidth(0.485f),
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = MyPrimary,
-                    focusedContainerColor = MyBackground ,
-                    unfocusedContainerColor = MyBackground ,
-                    focusedLabelColor = MyPrimary
+
+            for (index in 0..maxIndex ){
+                val stopDistance = (index+1) * 50
+                stops.add("")
+                OutlinedTextField(
+                    value = stops[index],
+                    onValueChange = {
+                        stops[index] = it
+                    },
+                    readOnly = true,
+                    label = { Text("وقت المرور $stopDistance") },
+                    modifier = Modifier
+                        .padding(bottom = 12.dp)
+                        .fillMaxWidth(0.485f),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = MyPrimary,
+                        focusedContainerColor = MyBackground ,
+                        unfocusedContainerColor = MyBackground ,
+                        focusedLabelColor = MyPrimary
+                    )
                 )
-            )
+            }
             OutlinedTextField(
                 value = secondStop,
                 onValueChange = {
@@ -445,16 +467,14 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             Button(
                 onClick = {
 //                    stopWatch.pause()
-                    stopsNum++
-                    when(stopsNum) {
-                        1 -> firstStop = stopWatchTime
-                        2 -> secondStop = stopWatchTime
-//                        3 -> thirdStop = stopWatch
-//                        4 -> fourthStop = stopWatch
-                        else -> {
-                            stopWatch.reset()
-                            stopsNum = 0
-                        }
+                    if (stopsNum <= maxIndex){
+                        stops[0] = stopWatchTime
+                        stopsNum++
+                         stops[0] = stopWatchTime
+                        secondStop = stopWatchTime
+                    }else  {
+                        stopWatch.reset()
+                        stopsNum = 0
                     }
                  },
                 modifier = Modifier,

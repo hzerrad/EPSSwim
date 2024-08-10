@@ -24,7 +24,7 @@ fun AppNavigation(
     NavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screen.Splash
+        startDestination = Screen.ParticipationDetails
     ){
         composable<Screen.Splash>{
             SplashScreen(

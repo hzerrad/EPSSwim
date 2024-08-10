@@ -39,5 +39,5 @@ fun getArabicWeekDay(weekDay: String):String{
         else -> "الأحد"
     }
 }
- fun getDistance(swimmingType : String) : Int = swimmingType.split('-')[2].toInt()
- fun getSwimmingType(swimmingType : String) : Int = swimmingType.split('-')[1].toInt()
+ fun String.getDistance () : Int = this.split('-')[1].toInt()
+ fun String.getSwimmingType() : String = this.split('-')[0]

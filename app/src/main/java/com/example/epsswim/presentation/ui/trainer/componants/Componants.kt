@@ -912,9 +912,10 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExposedDropdownMenuParticipationType(
-    modifier: Modifier
+    modifier: Modifier,
+    options : List<String>,
+    onSelectItem : (String) -> Unit
 ){
-    val options = listOf("سباحة حرة -100متر-","سباحة حرة -100متر-","سباحة حرة -100متر-")
     var expanded by remember { mutableStateOf(false) }
     var text by remember { mutableStateOf(options[0]) }
     ExposedDropdownMenuBox(
@@ -950,6 +951,7 @@ fun ExposedDropdownMenuParticipationType(
                     onClick = {
                         text = option
                         expanded = false
+                        onSelectItem(option)
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                 )
