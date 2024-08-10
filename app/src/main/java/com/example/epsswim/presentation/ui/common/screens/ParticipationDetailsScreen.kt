@@ -7,6 +7,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +16,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CardDefaults
@@ -285,6 +289,7 @@ fun ParticipationDetailsScreen(
     }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ParticipationSheetContent(onClick : () -> Unit) {
     var firstStop by rememberSaveable { mutableStateOf("") }
@@ -301,7 +306,11 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
     }
     stopWatchTime = stopWatch.formattedTime
 
-    Column (modifier = Modifier.padding(horizontal = 24.dp)) {
+    Column (
+        modifier = Modifier
+            .padding(horizontal = 24.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
         TextButton(
             onClick = onClick,
             modifier = Modifier
@@ -332,22 +341,23 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
             fontSize = 20.sp,
             color = Color.Black
         )
-        Row(
+        FlowRow(
             modifier = Modifier
                 .padding(bottom = 12.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+            horizontalArrangement = Arrangement.SpaceBetween,
+            maxItemsInEachRow = 2
         ){
             OutlinedTextField(
                 value = firstStop,
                 onValueChange = {
                     firstStop = it
                 },
+                readOnly = true,
                 label = { Text(stringResource(R.string.first_stop)) },
                 modifier = Modifier
-                    .weight(1f)
                     .padding(bottom = 12.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth(0.485f),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = MyPrimary,
@@ -361,11 +371,11 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                 onValueChange = {
                     secondStop = it
                 },
+                readOnly = true,
                 label = { Text(stringResource(R.string.second_stop)) },
                 modifier = Modifier
-                    .weight(1f)
                     .padding(bottom = 12.dp)
-                    .fillMaxWidth(),
+                    .fillMaxWidth(0.485f),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = MyPrimary,
@@ -374,6 +384,26 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                     focusedLabelColor = MyPrimary
                 )
             )
+//            for (i in 1..14){
+//                OutlinedTextField(
+//                    value = secondStop,
+//                    onValueChange = {
+//                        secondStop = it
+//                    },
+//                    readOnly = true,
+//                    label = { Text(stringResource(R.string.second_stop)) },
+//                    modifier = Modifier
+//                        .padding(bottom = 12.dp)
+//                        .fillMaxWidth(0.485f),
+//                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
+//                    colors = TextFieldDefaults.colors(
+//                        focusedIndicatorColor = MyPrimary,
+//                        focusedContainerColor = MyBackground ,
+//                        unfocusedContainerColor = MyBackground ,
+//                        focusedLabelColor = MyPrimary
+//                    )
+//                )
+//            }
         }
         Text(
             text = stringResource(id = R.string.stop_watch),
