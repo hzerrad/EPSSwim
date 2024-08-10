@@ -1,6 +1,7 @@
 package com.example.epsswim.presentation.ui.common.screens
 
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -296,8 +297,6 @@ fun ParticipationDetailsScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ParticipationSheetContent(onClick : () -> Unit) {
-    var firstStop by rememberSaveable { mutableStateOf("") }
-    var secondStop by rememberSaveable { mutableStateOf("") }
     val stops = rememberSaveable {
         mutableListOf<String>()
     }
@@ -316,8 +315,14 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
     var stopWatchTime by remember {
         mutableStateOf("00.00.000")
     }
+    var isStopWatchActive by remember {
+        mutableStateOf(false)
+    }
+    var isTimeSetToZero by remember {
+        mutableStateOf(true)
+    }
     stopWatchTime = stopWatch.formattedTime
-
+    isStopWatchActive = stopWatch.isActive
     Column (
         modifier = Modifier
             .padding(horizontal = 24.dp)
@@ -388,44 +393,7 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                     )
                 )
             }
-//            OutlinedTextField(
-//                value = secondStop,
-//                onValueChange = {
-//                    secondStop = it
-//                },
-//                readOnly = true,
-//                label = { Text(stringResource(R.string.second_stop)) },
-//                modifier = Modifier
-//                    .padding(bottom = 12.dp)
-//                    .fillMaxWidth(0.485f),
-//                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
-//                colors = TextFieldDefaults.colors(
-//                    focusedIndicatorColor = MyPrimary,
-//                    focusedContainerColor = MyBackground ,
-//                    unfocusedContainerColor = MyBackground ,
-//                    focusedLabelColor = MyPrimary
-//                )
-//            )
-//            for (i in 1..14){
-//                OutlinedTextField(
-//                    value = secondStop,
-//                    onValueChange = {
-//                        secondStop = it
-//                    },
-//                    readOnly = true,
-//                    label = { Text(stringResource(R.string.second_stop)) },
-//                    modifier = Modifier
-//                        .padding(bottom = 12.dp)
-//                        .fillMaxWidth(0.485f),
-//                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next, keyboardType = KeyboardType.Number),
-//                    colors = TextFieldDefaults.colors(
-//                        focusedIndicatorColor = MyPrimary,
-//                        focusedContainerColor = MyBackground ,
-//                        unfocusedContainerColor = MyBackground ,
-//                        focusedLabelColor = MyPrimary
-//                    )
-//                )
-//            }
+
         }
         Text(
             text = stringResource(id = R.string.stop_watch),
@@ -449,9 +417,39 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+            AnimatedVisibility(visible = isStopWatchActive) {
+                Button(
+                    onClick = {
+                        //                    stopWatch.pause()
+                        if (stopsNum <= maxIndex){
+                            stops[stopsNum] = stopWatchTime
+                            stopsNum++
+                        }else  {
+                            stopWatch.pause()
+                            stopsNum = 0
+                        }
+                    },
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
+                    elevation = ButtonDefaults.buttonElevation(3.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.lap),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 20.sp,
+                    )
+                }
+            }
+
             Button(
                 onClick = {
-                    stopWatch.start()
+                    if (isStopWatchActive){
+                        stopWatch.pause()
+                    }else{
+                        stopWatch.start()
+                        isTimeSetToZero = false
+                    }
                 },
                 modifier = Modifier,
                 shape = RoundedCornerShape(8.dp),
@@ -459,48 +457,29 @@ fun ParticipationSheetContent(onClick : () -> Unit) {
                 elevation = ButtonDefaults.buttonElevation(3.dp),
             ) {
                 Text(
-                    text = stringResource(R.string.start),
+                    text = if (!isStopWatchActive) stringResource(R.string.start) else stringResource(R.string.stop),
                     fontWeight = FontWeight.Medium,
                     fontSize = 20.sp,
                 )
             }
-            Button(
-                onClick = {
-//                    stopWatch.pause()
-                    if (stopsNum <= maxIndex){
-                        stops[stopsNum] = stopWatchTime
-                        stopsNum++
-                    }else  {
+            AnimatedVisibility(visible = !isTimeSetToZero) {
+                Button(
+                    onClick = {
                         stopWatch.reset()
                         stopsNum = 0
-                    }
-                 },
-                modifier = Modifier,
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
-                elevation = ButtonDefaults.buttonElevation(3.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.lap),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 20.sp,
-                )
-            }
-            Button(
-                onClick = {
-                    stopWatch.reset()
-                    stopsNum = 0
-                },
-                modifier = Modifier,
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
-                elevation = ButtonDefaults.buttonElevation(3.dp),
-            ) {
-                Text(
-                    text = stringResource(R.string.reset),
-                    fontWeight = FontWeight.Medium,
-                    fontSize = 20.sp,
-                )
+                        isTimeSetToZero = true
+                    },
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(8.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
+                    elevation = ButtonDefaults.buttonElevation(3.dp),
+                ) {
+                    Text(
+                        text = stringResource(R.string.reset),
+                        fontWeight = FontWeight.Medium,
+                        fontSize = 20.sp,
+                    )
+                }
             }
         }
     }
