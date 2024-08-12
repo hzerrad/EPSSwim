@@ -5,11 +5,14 @@ plugins {
     alias(libs.plugins.googleDaggerHiltAndroid)
     id("kotlin-kapt")
     kotlin("plugin.serialization") version "1.9.0"
+    id("com.apollographql.apollo") version "4.0.0"
+
 }
 
 android {
     namespace = "com.example.epsswim"
     compileSdk = 34
+
 
     defaultConfig {
         applicationId = "com.example.epsswim"
@@ -53,7 +56,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
+
 
 dependencies {
 
@@ -95,4 +100,17 @@ dependencies {
     implementation(libs.coil.compose)
     // The compose calendar library for Android
     implementation("com.kizitonwose.calendar:compose:2.4.1")
+    //Apollo
+    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
+
+}
+apollo {
+    service("service") {
+        packageName.set("com.example.epsswim")
+        introspection {
+            endpointUrl.set("https://example.com/graphql")
+            headers.put("api-key", "1234567890abcdef")
+            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+        }
+    }
 }
