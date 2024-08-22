@@ -1,6 +1,7 @@
 package com.example.epsswim.data.di
 
 import com.apollographql.apollo.ApolloClient
+import com.example.epsswim.data.network.EpsClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,5 +17,10 @@ object AppModule {
         return ApolloClient.Builder()
             .serverUrl("https://example.com/graphql")
             .build()
+    }
+    @Provides
+    @Singleton
+    fun provideEpsClient(apolloClient: ApolloClient): EpsClient {
+        return EpsClient(apolloClient)
     }
 }
