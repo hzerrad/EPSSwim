@@ -11,11 +11,13 @@ import javax.inject.Inject
 class JwtTokenDataStore @Inject constructor(private val dataStore: DataStore<Preferences>) : JWTManager {
     companion object {
         val ACCESS_JWT_KEY = stringPreferencesKey("access_jwt")
+        val ROLE = stringPreferencesKey("role")
         val REFRESH_JWT_KEY = stringPreferencesKey("refresh_jwt")
     }
     override suspend fun saveAccessJwt(token: String) {
         dataStore.edit { preferences ->
             preferences[ACCESS_JWT_KEY] = token
+
         }
     }
 

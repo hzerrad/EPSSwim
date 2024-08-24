@@ -102,8 +102,11 @@ dependencies {
     implementation("com.kizitonwose.calendar:compose:2.4.1")
     //Apollo
     implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
-
+    //Datastore
     implementation ("androidx.datastore:datastore-preferences:1.1.1")
+    //JWTDecoder
+    implementation ("com.auth0.android:jwtdecode:2.0.2")
+
 
 
 }
