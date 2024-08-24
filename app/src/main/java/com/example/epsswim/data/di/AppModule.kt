@@ -25,6 +25,27 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+    @Singleton
+    @Provides
+    fun provideLoginApi(): LoginApiInterface = Retrofit.Builder()
+        .baseUrl(Constants.BASE_URL)
+        .addConverterFactory(GsonConverterFactory.create())
+        .build()
+        .create(LoginApiInterface::class.java)
+    @Singleton
+    @Provides
+    fun provideDataStore(@ApplicationContext context: Context) : DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create(
+            corruptionHandler = ReplaceFileCorruptionHandler(
+                produceNewData = { emptyPreferences() }
+            ),
+            produceFile = { context.preferencesDataStoreFile("jwt_token") }
+        )
+    }
+    @[Provides Singleton]
+    fun provideJwtTokenManager(dataStore: DataStore<Preferences>): JWTManager {
+        return JwtTokenDataStore(dataStore = dataStore)
+    }
 //    @Provides
 //    @Singleton
 //    fun provideApolloClient(): ApolloClient {
@@ -37,11 +58,5 @@ object AppModule {
 //    fun provideEpsClient(apolloClient: ApolloClient): EpsClient {
 //        return EpsClient(apolloClient)
 //    }
-@Singleton
-@Provides
-fun provideLoginApi(): LoginApiInterface = Retrofit.Builder()
-    .baseUrl(Constants.BASE_URL)
-    .addConverterFactory(GsonConverterFactory.create())
-    .build()
-    .create(LoginApiInterface::class.java)
+
 }

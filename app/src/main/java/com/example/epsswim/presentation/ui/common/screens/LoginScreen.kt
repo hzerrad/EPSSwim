@@ -60,6 +60,9 @@ fun LoginScreen(
     var token by rememberSaveable {
         mutableStateOf<String?>(null)
     }
+
+    Log.d("Testoo", "LoginScreen: ${authViewmodel.token.value}")
+
     Surface (modifier = Modifier.fillMaxSize()) {
         Column (
             modifier = Modifier.padding(start = 20.dp, end = 20.dp,top = 50.dp, bottom = 25.dp),
