@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.common.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,16 +41,25 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
-import com.example.epsswim.presentation.navigation.Screen
+import com.example.epsswim.data.model.auth.LoginBody
 import com.example.epsswim.presentation.ui.common.componants.MyOutlinedTextField
+import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
 
 @Composable
-fun LoginScreen(navController: NavHostController, isTrainer: Boolean) {
+fun LoginScreen(
+    authViewmodel: AuthViewmodel = hiltViewModel(),
+    navController: NavHostController,
+    isTrainer: Boolean
+) {
+    var token by rememberSaveable {
+        mutableStateOf<String?>(null)
+    }
     Surface (modifier = Modifier.fillMaxSize()) {
         Column (
             modifier = Modifier.padding(start = 20.dp, end = 20.dp,top = 50.dp, bottom = 25.dp),
@@ -140,11 +150,14 @@ fun LoginScreen(navController: NavHostController, isTrainer: Boolean) {
                     contentColor = MyBackground
                 ),
                 onClick = {
-                    navController.popBackStack()
-                    if (!isTrainer)
-                        navController.navigate(Screen.ParentHome)
-                    else
-                        navController.navigate(Screen.AbsenceScreen)
+//                    navController.popBackStack()
+//                    if (!isTrainer)
+//                        navController.navigate(Screen.ParentHome)
+//                    else
+//                        navController.navigate(Screen.AbsenceScreen)
+                    authViewmodel.login(LoginBody(username, password))
+                    token = authViewmodel.token.value
+                    Log.d("TAG", "LoginScreen: $token")
                 }
             ) {
                 Text(

@@ -40,7 +40,7 @@ object AppModule {
 @Singleton
 @Provides
 fun provideLoginApi(): LoginApiInterface = Retrofit.Builder()
-    .baseUrl(Constants.LOGIN_URL)
+    .baseUrl(Constants.BASE_URL)
     .addConverterFactory(GsonConverterFactory.create())
     .build()
     .create(LoginApiInterface::class.java)

@@ -1,4 +1,4 @@
-package com.example.epsswim.data.model
+package com.example.epsswim.data.model.auth
 
 data class User(
     val userid: String,
