@@ -103,14 +103,17 @@ dependencies {
     //Apollo
     implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
 
+    implementation ("androidx.datastore:datastore-preferences:1.1.1")
+
+
 }
-apollo {
-    service("service") {
-        packageName.set("com.example.epsswim")
-        introspection {
-            endpointUrl.set("https://example.com/graphql")
-            headers.put("api-key", "1234567890abcdef")
-            schemaFile.set(file("src/main/graphql/schema.graphqls"))
-        }
-    }
-}
+//apollo {
+//    service("service") {
+//        packageName.set("com.example.epsswim")
+//        introspection {
+//            endpointUrl.set("https://example.com/graphql")
+//            headers.put("api-key", "1234567890abcdef")
+//            schemaFile.set(file("src/main/graphql/schema.graphqls"))
+//        }
+//    }
+//}

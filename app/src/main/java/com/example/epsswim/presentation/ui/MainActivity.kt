@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             EPSSwimTheme {
                 val navController = rememberNavController()
-                val isTrainer = true
+                val isTrainer = false
                 val concernedRoutes = Constants.concernedRoutes
                 Scaffold (
                     bottomBar = {

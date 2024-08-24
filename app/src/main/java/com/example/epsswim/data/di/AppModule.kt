@@ -11,16 +11,16 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    @Provides
-    @Singleton
-    fun provideApolloClient(): ApolloClient {
-        return ApolloClient.Builder()
-            .serverUrl("https://example.com/graphql")
-            .build()
-    }
-    @Provides
-    @Singleton
-    fun provideEpsClient(apolloClient: ApolloClient): EpsClient {
-        return EpsClient(apolloClient)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideApolloClient(): ApolloClient {
+//        return ApolloClient.Builder()
+//            .serverUrl("https://example.com/graphql")
+//            .build()
+//    }
+//    @Provides
+//    @Singleton
+//    fun provideEpsClient(apolloClient: ApolloClient): EpsClient {
+//        return EpsClient(apolloClient)
+//    }
 }
