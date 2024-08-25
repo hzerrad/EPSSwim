@@ -1,15 +1,18 @@
 package com.example.epsswim.presentation.ui.common.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.auth0.android.jwt.JWT
 import com.example.epsswim.data.model.auth.LoginBody
 import com.example.epsswim.data.model.auth.LoginResponse
 import com.example.epsswim.data.repositories.AuthRepository
 import com.example.epsswim.data.repositories.tokenRepository.JwtTokenDataStore
 import com.example.epsswim.data.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -29,11 +32,15 @@ class AuthViewmodel  @Inject constructor(
     private val _role = MutableStateFlow<String?>(null)
     val role: StateFlow<String?> = _role
 
-//    init {
-//        viewModelScope.launch {
-//            token.value = jwtTokenDataStore.getAccessJwt()
-//        }
-//    }
+    private val _isLoggedIn = MutableStateFlow<Boolean?>(null)
+    val isLoggedIn: StateFlow<Boolean?> = _isLoggedIn
+
+    init {
+        viewModelScope.launch {
+            _token.value = jwtTokenDataStore.getAccessJwt()
+            checkIfUserLoggedIn()
+        }
+    }
 
     fun login(loginBody: LoginBody) {
         authRepo.login(loginBody).enqueue(object : Callback<LoginResponse> {
@@ -55,7 +62,10 @@ class AuthViewmodel  @Inject constructor(
             }
         })
     }
-    fun getRole(){
+    private fun checkIfUserLoggedIn(){
+        _isLoggedIn.value = ! JWT(token.value!!).isExpired(10)
+    }
+     fun getRole(){
         viewModelScope.launch {
             _role.value = jwtTokenDataStore.getRole()
         }

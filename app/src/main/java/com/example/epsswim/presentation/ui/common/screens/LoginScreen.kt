@@ -55,7 +55,6 @@ import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
-import com.example.epsswim.presentation.ui.viewmodels.MainViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -64,7 +63,7 @@ import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LoginScreen(
-    authViewmodel: AuthViewmodel = hiltViewModel(),
+    authViewmodel: AuthViewmodel ,
     navController: NavHostController,
     isTrainer: MutableState<Boolean?>
 ) {

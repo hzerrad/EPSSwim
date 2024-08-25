@@ -3,6 +3,7 @@ package com.example.epsswim.presentation.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -10,6 +11,7 @@ import com.example.epsswim.presentation.ui.common.screens.LoginScreen
 import com.example.epsswim.presentation.ui.common.screens.ParticipationDetailsScreen
 import com.example.epsswim.presentation.ui.common.screens.SplashScreen
 import com.example.epsswim.presentation.ui.common.screens.SwimmerProfile
+import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.parent.screens.HomeScreen
 import com.example.epsswim.presentation.ui.trainer.screens.AbsenceScreen
 import com.example.epsswim.presentation.ui.trainer.screens.CompetitionsScreen
@@ -22,18 +24,22 @@ fun AppNavigation(
     modifier: Modifier,
     isTrainer: MutableState<Boolean?>
 ) {
+    val authViewModel : AuthViewmodel = hiltViewModel()
     NavHost(
         modifier = modifier,
         navController = navController,
         startDestination = Screen.Splash
     ){
+
         composable<Screen.Splash>{
             SplashScreen(
+                authViewmodel = authViewModel,
                 navController = navController
             )
         }
         composable<Screen.Login>{
             LoginScreen(
+                authViewmodel = authViewModel,
                 navController = navController,
                 isTrainer = isTrainer
             )

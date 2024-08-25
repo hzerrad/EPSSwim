@@ -25,7 +25,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.epsswim.presentation.navigation.AppNavigation
 import com.example.epsswim.presentation.ui.common.componants.MyBottomBar
 import com.example.epsswim.presentation.ui.theme.EPSSwimTheme
-import com.example.epsswim.presentation.ui.viewmodels.MainViewModel
 import com.example.epsswim.presentation.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
 
