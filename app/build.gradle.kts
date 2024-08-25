@@ -6,6 +6,7 @@ plugins {
     id("kotlin-kapt")
     kotlin("plugin.serialization") version "1.9.0"
     id("com.apollographql.apollo") version "4.0.0"
+    id("com.google.gms.google-services")
 
 }
 
@@ -106,6 +107,11 @@ dependencies {
     implementation ("androidx.datastore:datastore-preferences:1.1.1")
     //JWTDecoder
     implementation ("com.auth0.android:jwtdecode:2.0.2")
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-storage")
+
 
 
 

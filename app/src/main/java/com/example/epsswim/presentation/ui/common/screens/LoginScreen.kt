@@ -74,7 +74,7 @@ fun LoginScreen(
     LaunchedEffect(key1 = token, key2 = role) {
         Log.d("ROLE", "Login: $role ")
         if ((token != null) && (role != null)){
-            isTrainer.value = if (role!=null) role=="coach" else null
+            isTrainer.value =  role=="coach"
             navController.popBackStack()
             when (isTrainer.value) {
                 true -> navController.navigate(Screen.AbsenceScreen)
