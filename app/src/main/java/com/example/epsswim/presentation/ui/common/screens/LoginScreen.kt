@@ -45,23 +45,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.data.model.auth.LoginBody
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyOutlinedTextField
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
+import kotlin.math.log
 
 @Composable
 fun LoginScreen(
     authViewmodel: AuthViewmodel = hiltViewModel(),
     navController: NavHostController,
-    isTrainer: Boolean
+    isTrainer: Boolean?
 ) {
     var token by rememberSaveable {
         mutableStateOf<String?>(null)
     }
-
-    Log.d("Testoo", "LoginScreen: ${authViewmodel.token.value}")
 
     Surface (modifier = Modifier.fillMaxSize()) {
         Column (
@@ -153,14 +153,13 @@ fun LoginScreen(
                     contentColor = MyBackground
                 ),
                 onClick = {
-//                    navController.popBackStack()
-//                    if (!isTrainer)
-//                        navController.navigate(Screen.ParentHome)
-//                    else
-//                        navController.navigate(Screen.AbsenceScreen)
                     authViewmodel.login(LoginBody(username, password))
                     token = authViewmodel.token.value
-                    Log.d("TAG", "LoginScreen: $token")
+                    navController.popBackStack()
+                    if (isTrainer != null)
+                        if (isTrainer) navController.navigate(Screen.AbsenceScreen) else navController.navigate(Screen.ParentHome)
+                    else
+                        Log.e("login", "LoginScreen: role is null" )
                 }
             ) {
                 Text(

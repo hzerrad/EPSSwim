@@ -6,4 +6,5 @@ interface JWTManager {
     suspend fun getAccessJwt(): String?
     suspend fun getRefreshJwt(): String?
     suspend fun clearAllTokens()
+    suspend fun getRole(): String?
 }

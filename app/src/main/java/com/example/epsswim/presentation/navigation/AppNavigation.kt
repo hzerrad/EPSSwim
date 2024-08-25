@@ -19,7 +19,7 @@ import com.example.epsswim.presentation.ui.trainer.screens.TrainerProfile
 fun AppNavigation(
     navController: NavHostController,
     modifier: Modifier,
-    isTrainer :Boolean
+    isTrainer :Boolean?
 ) {
     NavHost(
         modifier = modifier,
@@ -50,7 +50,7 @@ fun AppNavigation(
         composable<Screen.ParticipationDetails>{
             ParticipationDetailsScreen(
                 navController = navController,
-                isTrainer = isTrainer
+                isTrainer = isTrainer!!
             )
         }
         composable<Screen.AbsenceScreen>{
