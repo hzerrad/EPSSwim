@@ -19,8 +19,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,18 +55,34 @@ import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
-import kotlin.math.log
+import com.example.epsswim.presentation.ui.viewmodels.MainViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 @Composable
 fun LoginScreen(
     authViewmodel: AuthViewmodel = hiltViewModel(),
     navController: NavHostController,
-    isTrainer: Boolean?
+    isTrainer: MutableState<Boolean?>
 ) {
-    var token by rememberSaveable {
-        mutableStateOf<String?>(null)
-    }
+    val role by authViewmodel.role.collectAsState()
+    val token by authViewmodel.token.collectAsState()
 
+    LaunchedEffect(key1 = token, key2 = role) {
+        Log.d("ROLE", "Login: $role ")
+        if ((token != null) && (role != null)){
+            isTrainer.value = if (role!=null) role=="coach" else null
+            navController.popBackStack()
+            when (isTrainer.value) {
+                true -> navController.navigate(Screen.AbsenceScreen)
+                false -> navController.navigate(Screen.ParentHome)
+                else -> Log.e("login", "LoginScreen: role is null")
+            }
+    }
+    }
     Surface (modifier = Modifier.fillMaxSize()) {
         Column (
             modifier = Modifier.padding(start = 20.dp, end = 20.dp,top = 50.dp, bottom = 25.dp),
@@ -143,6 +163,7 @@ fun LoginScreen(
                     .padding(bottom = 18.dp),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password,imeAction = ImeAction.Done),
             )
+
             Button(
                 modifier = Modifier
                     .height(56.dp)
@@ -154,12 +175,6 @@ fun LoginScreen(
                 ),
                 onClick = {
                     authViewmodel.login(LoginBody(username, password))
-                    token = authViewmodel.token.value
-                    navController.popBackStack()
-                    if (isTrainer != null)
-                        if (isTrainer) navController.navigate(Screen.AbsenceScreen) else navController.navigate(Screen.ParentHome)
-                    else
-                        Log.e("login", "LoginScreen: role is null" )
                 }
             ) {
                 Text(

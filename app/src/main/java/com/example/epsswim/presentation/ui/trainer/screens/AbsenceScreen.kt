@@ -25,7 +25,7 @@ import com.example.epsswim.presentation.ui.trainer.componants.LevelCard
 @Composable
 fun AbsenceScreen(navController: NavHostController) {
     Scaffold (
-        topBar = { MyAppBar(title = stringResource(R.string.the_parent)) }
+        topBar = { MyAppBar(title = stringResource(R.string.absences)) }
     ) {
         Surface(
             modifier = Modifier

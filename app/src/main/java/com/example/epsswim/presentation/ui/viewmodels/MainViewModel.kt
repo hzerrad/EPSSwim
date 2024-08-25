@@ -10,10 +10,5 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(private val jwtTokenDataStore: JwtTokenDataStore): ViewModel() {
-    val role = mutableStateOf<String?>(null)
-    init {
-        viewModelScope.launch {
-            role.value = jwtTokenDataStore.getRole()
-        }
-    }
+
 }

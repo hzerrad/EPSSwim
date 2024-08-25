@@ -8,7 +8,10 @@ import com.example.epsswim.data.model.auth.LoginBody
 import com.example.epsswim.data.model.auth.LoginResponse
 import com.example.epsswim.data.repositories.AuthRepository
 import com.example.epsswim.data.repositories.tokenRepository.JwtTokenDataStore
+import com.example.epsswim.data.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,19 +23,24 @@ class AuthViewmodel  @Inject constructor(
     private val authRepo: AuthRepository,
     private val jwtTokenDataStore: JwtTokenDataStore
 ) : ViewModel()  {
-    val token = mutableStateOf<String?>(null)
+    private val _token = MutableStateFlow<String?>(null)
+    val token: StateFlow<String?> = _token
 
-    init {
-        viewModelScope.launch {
-            token.value = jwtTokenDataStore.getAccessJwt()
-        }
-    }
+    private val _role = MutableStateFlow<String?>(null)
+    val role: StateFlow<String?> = _role
+
+//    init {
+//        viewModelScope.launch {
+//            token.value = jwtTokenDataStore.getAccessJwt()
+//        }
+//    }
 
     fun login(loginBody: LoginBody) {
         authRepo.login(loginBody).enqueue(object : Callback<LoginResponse> {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
-                    token.value = response.body()?.token
+                    _token.value = response.body()?.token
+                    _role.value = Utils.getRoleFromToken(token.value!!)
                     viewModelScope.launch {
                         jwtTokenDataStore.saveAccessJwt(token.value!!)
                     }
@@ -46,5 +54,10 @@ class AuthViewmodel  @Inject constructor(
                 Log.d("AuthApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
             }
         })
+    }
+    fun getRole(){
+        viewModelScope.launch {
+            _role.value = jwtTokenDataStore.getRole()
+        }
     }
 }

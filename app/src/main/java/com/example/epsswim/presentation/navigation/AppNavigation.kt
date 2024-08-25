@@ -1,6 +1,7 @@
 package com.example.epsswim.presentation.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -19,7 +20,7 @@ import com.example.epsswim.presentation.ui.trainer.screens.TrainerProfile
 fun AppNavigation(
     navController: NavHostController,
     modifier: Modifier,
-    isTrainer :Boolean?
+    isTrainer: MutableState<Boolean?>
 ) {
     NavHost(
         modifier = modifier,
@@ -50,7 +51,7 @@ fun AppNavigation(
         composable<Screen.ParticipationDetails>{
             ParticipationDetailsScreen(
                 navController = navController,
-                isTrainer = isTrainer!!
+                isTrainer = isTrainer
             )
         }
         composable<Screen.AbsenceScreen>{

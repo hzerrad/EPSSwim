@@ -22,7 +22,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.epsswim.data.utils.Utils
 import com.example.epsswim.presentation.navigation.AppNavigation
 import com.example.epsswim.presentation.ui.common.componants.MyBottomBar
 import com.example.epsswim.presentation.ui.theme.EPSSwimTheme
@@ -38,25 +37,15 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EPSSwimTheme {
-                val viewmodel: MainViewModel = hiltViewModel()
                 val navController = rememberNavController()
-                var role by remember {
-                    mutableStateOf<String?>(null)
-                }
-                role = viewmodel.role.value
-                var isTrainer by remember {
+                val isTrainer = remember {
                     mutableStateOf<Boolean?>(null)
                 }
-                LaunchedEffect(key1 = role.isNullOrEmpty()) {
-                    isTrainer = if (role!=null) role=="coach" else null
-                }
-
                 val concernedRoutes = Constants.concernedRoutes
-                Log.d("ROLE", "onCreate: $role ")
                 Scaffold (
                     bottomBar = {
                         if (
-                            isTrainer == true &&
+                            isTrainer.value == true &&
                             (navController.currentBackStackEntryAsState().value?.destination?.route in concernedRoutes)
                             ){
 
@@ -68,7 +57,7 @@ class MainActivity : ComponentActivity() {
                     AppNavigation(
                         modifier = Modifier.padding(
                             bottom = if (it.calculateBottomPadding() >= 50.dp) it.calculateBottomPadding() - 50.dp else 0.dp),
-                        navController=navController,
+                        navController =navController,
                         isTrainer = isTrainer
                     )
                 }
