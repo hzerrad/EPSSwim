@@ -17,24 +17,31 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
 import com.example.epsswim.presentation.ui.parent.componants.SwimmerCard
 import com.example.epsswim.presentation.ui.theme.MyBackground
 
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(navController: NavHostController, authViewModel: AuthViewmodel) {
     Scaffold (
         topBar = {
             MyAppBar(
                 title = stringResource(R.string.the_parent),
                 actions = {
-                    IconButton(onClick = { /*TODO*/ }) {
+                    IconButton(onClick = {
+                        authViewModel.logout()
+                        navController.navigate(Screen.Login) {
+                            popUpTo(navController.graph.startDestinationId) {
+                                inclusive = false
+                            }
+                        }
+                    }) {
                         Icon(
                             modifier = Modifier.size(25.dp),
                             painter = painterResource(id = R.drawable.logout_ic),

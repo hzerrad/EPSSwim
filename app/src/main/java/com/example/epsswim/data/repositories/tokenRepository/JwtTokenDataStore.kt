@@ -43,7 +43,10 @@ class JwtTokenDataStore @Inject constructor(private val dataStore: DataStore<Pre
     }
 
     override suspend fun clearAllTokens() {
-        TODO("Not yet implemented")
+        dataStore.edit { preferences ->
+            preferences.remove(ACCESS_JWT_KEY)
+            preferences.remove(ROLE)
+        }
     }
 
 }

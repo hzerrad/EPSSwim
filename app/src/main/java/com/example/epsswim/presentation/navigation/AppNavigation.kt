@@ -46,6 +46,7 @@ fun AppNavigation(
         }
         composable<Screen.ParentHome>{
             HomeScreen(
+                authViewModel = authViewModel,
                 navController = navController,
             )
         }
@@ -77,6 +78,7 @@ fun AppNavigation(
         }
         composable<Screen.TrainerProfile>{
             TrainerProfile(
+                authViewModel=authViewModel,
                 navController = navController,
             )
         }

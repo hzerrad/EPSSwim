@@ -62,8 +62,16 @@ class AuthViewmodel  @Inject constructor(
             }
         })
     }
+    fun logout(){
+        viewModelScope.launch {
+            jwtTokenDataStore.clearAllTokens()
+        }
+    }
     private fun checkIfUserLoggedIn(){
-        _isLoggedIn.value = ! JWT(token.value!!).isExpired(10)
+        if (token.value != null)
+            _isLoggedIn.value = ! JWT(token.value!!).isExpired(10)
+        else
+            _isLoggedIn.value = false
     }
      fun getRole(){
         viewModelScope.launch {

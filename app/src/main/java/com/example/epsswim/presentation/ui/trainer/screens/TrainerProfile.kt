@@ -34,18 +34,19 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
+import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.trainer.componants.LogoutCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrainerProfile(navController: NavHostController) {
+fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmodel) {
     Column (
         modifier = Modifier
             .background(MyBackground)
@@ -319,6 +320,12 @@ fun TrainerProfile(navController: NavHostController) {
                 )
             }
             LogoutCard(modifier = Modifier.padding(20.dp)) {
+                authViewModel.logout()
+                navController.navigate(Screen.Login) {
+                    popUpTo(navController.graph.startDestinationId) {
+                        inclusive = false
+                    }
+                }
 
             }
         }
