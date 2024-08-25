@@ -10,6 +10,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import com.apollographql.apollo.ApolloClient
 import com.example.epsswim.data.network.EpsClient
 import com.example.epsswim.data.network.LoginApiInterface
+import com.example.epsswim.data.network.TokenInterceptor
 import com.example.epsswim.data.repositories.tokenRepository.JWTManager
 import com.example.epsswim.data.repositories.tokenRepository.JwtTokenDataStore
 import com.example.epsswim.data.utils.Constants
@@ -18,6 +19,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -25,13 +27,29 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
     @Singleton
     @Provides
-    fun provideLoginApi(): LoginApiInterface = Retrofit.Builder()
+    fun provideTokenInterceptor(jwtTokenDataStore: JwtTokenDataStore) : TokenInterceptor =
+        TokenInterceptor(jwtTokenDataStore)
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(tokenInterceptor: TokenInterceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(tokenInterceptor)
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideLoginApi(okHttpClient: OkHttpClient): LoginApiInterface = Retrofit.Builder()
         .baseUrl(Constants.BASE_URL)
+        .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
         .create(LoginApiInterface::class.java)
+
     @Singleton
     @Provides
     fun provideDataStore(@ApplicationContext context: Context) : DataStore<Preferences> {
