@@ -36,16 +36,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
+import com.example.epsswim.presentation.ui.common.viewmodels.SharedViewModel
+import com.example.epsswim.presentation.ui.parent.viewmodels.ParentViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SwimmerProfile(navController: NavHostController) {
+fun SwimmerProfile(
+    navController: NavHostController,
+    swimmerId: String,
+    sharedViewModel: SharedViewModel
+) {
     Column (
         modifier = Modifier
             .background(MyBackground)

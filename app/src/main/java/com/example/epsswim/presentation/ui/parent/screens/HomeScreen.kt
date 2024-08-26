@@ -110,7 +110,7 @@ fun HomeScreen(
                                 swimmer = it,
                                 modifier = Modifier.padding(start = 15.dp,end = 15.dp, bottom = 20.dp)
                             ){
-                                navController.navigate(Screen.SwimmerProfile)
+                                navController.navigate(Screen.SwimmerProfile(it.swimmerid))
                             }
                         }
                     }

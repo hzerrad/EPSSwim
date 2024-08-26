@@ -14,7 +14,7 @@ sealed class Screen {
     data object Login : Screen()
 
     @Serializable
-    data object SwimmerProfile : Screen()
+    data class SwimmerProfile(val id: String="") : Screen()
 
     @Serializable
     data object ParticipationDetails : Screen()

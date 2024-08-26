@@ -7,11 +7,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.example.epsswim.presentation.ui.common.screens.LoginScreen
 import com.example.epsswim.presentation.ui.common.screens.ParticipationDetailsScreen
 import com.example.epsswim.presentation.ui.common.screens.SplashScreen
 import com.example.epsswim.presentation.ui.common.screens.SwimmerProfile
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
+import com.example.epsswim.presentation.ui.common.viewmodels.SharedViewModel
 import com.example.epsswim.presentation.ui.parent.screens.HomeScreen
 import com.example.epsswim.presentation.ui.trainer.screens.AbsenceScreen
 import com.example.epsswim.presentation.ui.trainer.screens.CompetitionsScreen
@@ -25,6 +27,7 @@ fun AppNavigation(
     isTrainer: MutableState<Boolean?>
 ) {
     val authViewModel : AuthViewmodel = hiltViewModel()
+    val sharedViewModel : SharedViewModel = hiltViewModel()
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -51,8 +54,12 @@ fun AppNavigation(
             )
         }
         composable<Screen.SwimmerProfile>{
+            val detail = it.toRoute<Screen.SwimmerProfile>()
+
             SwimmerProfile(
                 navController = navController,
+                swimmerId = detail.id,
+                sharedViewModel = sharedViewModel
             )
         }
         composable<Screen.ParticipationDetails>{

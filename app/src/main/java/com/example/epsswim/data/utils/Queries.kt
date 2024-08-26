@@ -24,4 +24,31 @@ object Queries {
             "    }\n" +
             "  }\n" +
             "}\n"
-}
+
+    const val GET_SWIMMER_BY_ID = """
+    query GetSwimmerById(${'$'}swimmerid: uuid!) {
+      swimmers(where: {swimmerid: {_eq: ${'$'}swimmerid}}) {
+        swimmerid
+        firstname
+        lastname
+        sex
+        birthday
+        pfpUrl
+        ispro
+        level {
+          levelid
+          levelname
+        }
+        trainer {
+          firstname
+          lastname
+          phonenumber
+        }
+        swimmerAbsences_aggregate {
+          aggregate {
+            count(columns: entityid)
+          }
+        }
+      }
+    }
+"""}
