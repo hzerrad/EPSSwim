@@ -8,7 +8,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import com.apollographql.apollo.ApolloClient
-import com.example.epsswim.data.network.EpsClient
+import com.example.epsswim.data.network.EpsClientInterface
 import com.example.epsswim.data.network.LoginApiInterface
 import com.example.epsswim.data.network.TokenInterceptor
 import com.example.epsswim.data.repositories.tokenRepository.JWTManager
@@ -44,7 +44,7 @@ object AppModule {
     @Singleton
     @Provides
     fun provideLoginApi(okHttpClient: OkHttpClient): LoginApiInterface = Retrofit.Builder()
-        .baseUrl(Constants.BASE_URL)
+        .baseUrl(Constants.AUTH_BASE_URL)
         .client(okHttpClient)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
@@ -71,10 +71,13 @@ object AppModule {
 //            .serverUrl("https://example.com/graphql")
 //            .build()
 //    }
-//    @Provides
-//    @Singleton
-//    fun provideEpsClient(apolloClient: ApolloClient): EpsClient {
-//        return EpsClient(apolloClient)
-//    }
+    @Provides
+    @Singleton
+    fun provideEpsClient(okHttpClient: OkHttpClient): EpsClientInterface = Retrofit.Builder()
+    .baseUrl(Constants.BASE_URL)
+    .client(okHttpClient)
+    .addConverterFactory(GsonConverterFactory.create())
+    .build()
+    .create(EpsClientInterface::class.java)
 
 }

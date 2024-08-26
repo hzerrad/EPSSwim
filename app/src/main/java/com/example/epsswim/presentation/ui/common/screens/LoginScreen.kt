@@ -74,7 +74,6 @@ fun LoginScreen(
         Log.d("ROLE", "Login: $role ")
         if ((token != null) && (role != null)){
             isTrainer.value =  role=="coach"
-            navController.popBackStack()
             when (isTrainer.value) {
                 true -> navController.navigate(Screen.AbsenceScreen)
                 false -> navController.navigate(Screen.ParentHome)
