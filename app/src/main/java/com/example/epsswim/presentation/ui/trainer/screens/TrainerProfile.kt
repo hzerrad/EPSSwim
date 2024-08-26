@@ -78,7 +78,9 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                         )
                     },
                     navigationIcon = {
-                        IconButton(onClick = { navController.popBackStack() }) {
+                        IconButton(onClick = {
+                            navController.popBackStack()
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.chevron_left),
                                 contentDescription = "back button"
@@ -322,8 +324,8 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
             LogoutCard(modifier = Modifier.padding(20.dp)) {
                 authViewModel.logout()
                 navController.navigate(Screen.Login) {
-                    popUpTo(navController.graph.startDestinationId) {
-                        inclusive = false
+                    popUpTo(Screen.Splash) {
+                        inclusive = true
                     }
                 }
 

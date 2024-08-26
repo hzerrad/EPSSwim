@@ -51,6 +51,8 @@ fun AppNavigation(
             HomeScreen(
                 authViewModel = authViewModel,
                 navController = navController,
+                sharedViewModel = sharedViewModel
+
             )
         }
         composable<Screen.SwimmerProfile>{

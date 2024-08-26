@@ -67,13 +67,13 @@ fun LoginScreen(
     navController: NavHostController,
     isTrainer: MutableState<Boolean?>
 ) {
-    val role by authViewmodel.role.collectAsState()
-    val token by authViewmodel.token.collectAsState()
+    val role = authViewmodel.role.collectAsState()
+    val token = authViewmodel.token.collectAsState()
 
-    LaunchedEffect(key1 = token, key2 = role) {
+    LaunchedEffect(key1 = token.value, key2 = role.value) {
         Log.d("ROLE", "Login: $role ")
-        if ((token != null) && (role != null)){
-            isTrainer.value =  role=="coach"
+        if ((token.value != null) && (role.value != null)){
+            isTrainer.value =  role.value=="coach"
             when (isTrainer.value) {
                 true -> navController.navigate(Screen.AbsenceScreen)
                 false -> navController.navigate(Screen.ParentHome)

@@ -47,7 +47,7 @@ class AuthViewmodel  @Inject constructor(
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
                     _token.value = response.body()?.token
-                    _role.value = Utils.getRoleFromToken(token.value!!)
+                    _role.value = Utils.getRoleFromToken(response.body()?.token!!)
                     viewModelScope.launch {
                         jwtTokenDataStore.saveAccessJwt(token.value!!)
                     }
@@ -64,6 +64,9 @@ class AuthViewmodel  @Inject constructor(
     }
     fun logout(){
         viewModelScope.launch {
+            _token.value = null
+            _role.value = null
+            _isLoggedIn.value = false
             jwtTokenDataStore.clearAllTokens()
         }
     }

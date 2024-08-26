@@ -18,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,27 +28,34 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.Children
+import com.example.epsswim.data.model.app.Data
+import com.example.epsswim.data.model.app.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
+import com.example.epsswim.presentation.ui.common.viewmodels.SharedViewModel
 import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
 import com.example.epsswim.presentation.ui.parent.componants.SwimmerCard
 import com.example.epsswim.presentation.ui.parent.viewmodels.ParentViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     authViewModel: AuthViewmodel,
-    parentViewModel: ParentViewModel = hiltViewModel()
+    parentViewModel: ParentViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel
 ) {
+    val scope = rememberCoroutineScope()
     val swimmerListState = parentViewModel.swimmerList.collectAsState()
     var swimmerList by remember {
-        mutableStateOf<Children?>(null)
+        mutableStateOf<List<Swimmer>>(emptyList())
     }
     LaunchedEffect(key1 = swimmerListState.value == null) {
         if (swimmerListState.value != null){
-            swimmerList = swimmerListState.value!!
+            swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
             Log.d("TAG", "HomeScreen: $swimmerList")
         }
     }
@@ -59,11 +67,7 @@ fun HomeScreen(
                 actions = {
                     IconButton(onClick = {
                         authViewModel.logout()
-                        navController.navigate(Screen.Login) {
-                            popUpTo(navController.graph.startDestinationId) {
-                                inclusive = false
-                            }
-                        }
+                        navController.navigate(Screen.Login)
                     }) {
                         Icon(
                             modifier = Modifier.size(25.dp),
@@ -94,10 +98,10 @@ fun HomeScreen(
                 MyTabRow(selectedIndex,tabsList){ index->
                     selectedIndex = index
                 }
-                if (swimmerList != null)
+                if (swimmerListState.value != null)
                     LazyColumn(modifier = Modifier.padding(top = 20.dp)) {
                         items(
-                            items = swimmerList!!.data.swimmers.filter {
+                            items = swimmerList.filter {
                                 if (selectedIndex==1){
                                     !it.ispro
                                 }

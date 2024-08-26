@@ -41,11 +41,9 @@ fun SplashScreen(navController: NavHostController, authViewmodel: AuthViewmodel)
                 authViewmodel.getRole()
                 when(role){
                     "coach" ->{
-                        navController.popBackStack()
                         navController.navigate(Screen.AbsenceScreen)
                     }
                     "parent" ->{
-                        navController.popBackStack()
                         navController.navigate(Screen.ParentHome)
                     }
                     else -> {}
