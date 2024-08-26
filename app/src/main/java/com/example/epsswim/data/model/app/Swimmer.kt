@@ -9,6 +9,7 @@ data class Swimmer(
     val pfpUrl: String,
     val swimmerid: String,
     val trainer: Trainer,
-    val swimmerAbsences_aggregate: SwimmerAbsencesAggregate
+    val swimmerAbsences_aggregate: SwimmerAbsencesAggregate,
+    val sex: String
 
 )
