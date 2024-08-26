@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +30,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -42,14 +42,17 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.Swimmer
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
+import com.example.epsswim.presentation.utils.calculateAge
+import com.example.epsswim.presentation.utils.getFullName
 
 @Composable
 fun MyTabRow(selectedIndex: Int, tabsList : List<String>,onClick: (Int) -> Unit) {
@@ -97,7 +100,7 @@ fun TabItem(text: String, isSelected :Boolean, modifier: Modifier, onClick: () -
 
     Box(
         modifier = modifier
-            .clickable(interactionSource = interactionSource,indication = null) { onClick() }
+            .clickable(interactionSource = interactionSource, indication = null) { onClick() }
             .background(tabBgColor, RoundedCornerShape(8.dp)),
         contentAlignment = Alignment.Center
     ) {
@@ -113,7 +116,7 @@ fun TabItem(text: String, isSelected :Boolean, modifier: Modifier, onClick: () -
 
 
 @Composable
-fun SwimmerCard(modifier: Modifier,onClick: () -> Unit){
+fun SwimmerCard(modifier: Modifier, swimmer: Swimmer, onClick: () -> Unit){
     ElevatedCard(
         onClick = { onClick.invoke() },
         modifier = modifier.height(100.dp),
@@ -130,9 +133,11 @@ fun SwimmerCard(modifier: Modifier,onClick: () -> Unit){
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    modifier = Modifier.size(80.dp),
-                    painter = painterResource(id = R.drawable.img),
+                AsyncImage(
+                    model = swimmer.pfpUrl,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .size(80.dp),
                     contentDescription = stringResource(R.string.profile_img),
                     contentScale = ContentScale.Crop
                 )
@@ -142,14 +147,14 @@ fun SwimmerCard(modifier: Modifier,onClick: () -> Unit){
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "محمد عليم",
+                        text = getFullName(swimmer.firstname , swimmer.lastname),
                         fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
                         color = MyPrimaryDark,
                         fontSize = 20.sp,
                     )
                     Row (verticalAlignment = Alignment.CenterVertically){
                         Text(
-                            text = "9 سنوات",
+                            text = calculateAge(swimmer.birthday).toString() +" سنوات" ,
                             color = Color.LightGray,
                             fontSize = 12.sp,
                         )
@@ -160,7 +165,7 @@ fun SwimmerCard(modifier: Modifier,onClick: () -> Unit){
                                 .background(Color.LightGray, CircleShape)
                         )
                         Text(
-                            text = "مستوى 1",
+                            text = swimmer.level.levelname,
                             color = Color.LightGray,
                             fontSize = 12.sp,
                         )
@@ -171,7 +176,7 @@ fun SwimmerCard(modifier: Modifier,onClick: () -> Unit){
                                 .background(Color.LightGray, CircleShape)
                         )
                         Text(
-                            text = "5 غيابات",
+                            text = swimmer.swimmerAbsences_aggregate.aggregate.count.toString() + " غيابات",
                             color = Color.LightGray,
                             fontSize = 12.sp,
                         )
@@ -188,7 +193,7 @@ fun SwimmerCard(modifier: Modifier,onClick: () -> Unit){
                                 fontWeight = FontWeight.Bold
                             )
                             ) {
-                                append("العميرات علي")
+                                append(getFullName(swimmer.trainer.lastname , swimmer.trainer.firstname))
                             }
                         },
                         color = MyPrimary,

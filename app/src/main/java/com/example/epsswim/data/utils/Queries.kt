@@ -17,6 +17,11 @@ object Queries {
             "      firstname\n" +
             "      lastname\n" +
             "    }\n" +
+            "   swimmerAbsences_aggregate {\n" +
+            "      aggregate {\n" +
+            "        count(columns: entityid)\n" +
+            "      }\n" +
+            "    }\n" +
             "  }\n" +
             "}\n"
 }
