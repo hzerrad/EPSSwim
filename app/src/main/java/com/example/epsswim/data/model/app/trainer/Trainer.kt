@@ -7,7 +7,7 @@ data class Trainer(
     val bloodtype: String,
     val firstname: String,
     val lastname: String,
-    val level: Level,
+    val levels: List<Level>,
     val phonenumber: String,
     val trainerAbsences: List<TrainerAbsence>,
     val trainerAbsences_aggregate: TrainerAbsencesAggregate,

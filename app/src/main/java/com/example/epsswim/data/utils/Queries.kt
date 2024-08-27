@@ -70,7 +70,7 @@ object Queries {
         birthday
         phonenumber
         pfpUrl
-        level {
+        levels {
           levelid
           levelname
         }

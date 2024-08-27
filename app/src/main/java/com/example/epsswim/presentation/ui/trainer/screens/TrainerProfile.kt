@@ -1,8 +1,14 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -89,6 +95,13 @@ fun TrainerProfile(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainContent(navController: NavHostController, authViewModel: AuthViewmodel, trainer: Trainer?) {
+    var selectedImage by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> selectedImage = uri}
+    )
     Column (
         modifier = Modifier
             .background(MyBackground)
@@ -148,16 +161,21 @@ fun MainContent(navController: NavHostController, authViewModel: AuthViewmodel, 
 //                       .align(Alignment.BottomCenter)
                 ) {
                     AsyncImage(
-                        model = trainer!!.pfpUrl,
+                        model = selectedImage,
                         contentDescription = "profile pic",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .clip(CircleShape)
                             .size(120.dp)
+                            .clickable {
+                                singlePhotoPickerLauncher.launch(
+                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                )
+                            }
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
-                        text = getFullName(trainer.firstname,trainer.lastname),
+                        text = getFullName(trainer!!.firstname,trainer!!.lastname),
                         fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
                         color = MyBackground,
                         fontSize = 24.sp,
@@ -287,7 +305,7 @@ fun MainContent(navController: NavHostController, authViewModel: AuthViewmodel, 
                 title = stringResource(R.string.levels),
                 icon = R.drawable.levels_ic,
             ){
-                listOf(trainer!!.level).forEachIndexed { index, level ->
+                trainer!!.levels.forEachIndexed { index, level ->
                     Text(
                         text = buildAnnotatedString {
                             withStyle(style = SpanStyle(
