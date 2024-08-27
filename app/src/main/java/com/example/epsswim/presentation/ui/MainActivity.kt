@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +25,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.epsswim.presentation.navigation.AppNavigation
 import com.example.epsswim.presentation.ui.common.componants.MyBottomBar
+import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.theme.EPSSwimTheme
 import com.example.epsswim.presentation.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,10 +38,12 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             EPSSwimTheme {
+                val authViewModel : AuthViewmodel = hiltViewModel()
                 val navController = rememberNavController()
                 val isTrainer = remember {
                     mutableStateOf<Boolean?>(null)
                 }
+                isTrainer.value = authViewModel.role.collectAsState().value == "coach"
                 val concernedRoutes = Constants.concernedRoutes
                 Scaffold (
                     bottomBar = {
@@ -57,6 +61,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(
                             bottom = if (it.calculateBottomPadding() >= 50.dp) it.calculateBottomPadding() - 50.dp else 0.dp),
                         navController =navController,
+                        authViewModel = authViewModel,
                         isTrainer = isTrainer
                     )
                 }

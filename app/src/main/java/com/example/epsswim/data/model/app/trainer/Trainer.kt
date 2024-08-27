@@ -11,5 +11,6 @@ data class Trainer(
     val phonenumber: String,
     val trainerAbsences: List<TrainerAbsence>,
     val trainerAbsences_aggregate: TrainerAbsencesAggregate,
-    val trainerid: String
+    val trainerid: String,
+    val pfpUrl : String
 )

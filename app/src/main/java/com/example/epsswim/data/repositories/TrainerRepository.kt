@@ -6,4 +6,5 @@ import javax.inject.Inject
 
 class TrainerRepository @Inject constructor(private val epsClientInterface: EpsClientInterface) {
     fun getTrainerLevels(query: Query) = epsClientInterface.getLevels(query = query)
+    fun getTrainerInfo(query: Query) = epsClientInterface.getTrainerInfo(query = query)
 }

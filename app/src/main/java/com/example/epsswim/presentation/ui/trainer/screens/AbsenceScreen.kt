@@ -38,7 +38,7 @@ import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
 @Composable
 fun AbsenceScreen(
     navController: NavHostController,
-    trainerViewModel: TrainerViewModel = hiltViewModel()
+    trainerViewModel: TrainerViewModel
 ) {
     val levelsListState = trainerViewModel.levelList.collectAsState()
     var levelsList by remember {

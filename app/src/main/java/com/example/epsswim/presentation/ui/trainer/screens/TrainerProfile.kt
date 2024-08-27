@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,17 +11,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,16 +48,47 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.swimmer.Level
+import com.example.epsswim.data.model.app.trainer.Trainer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.trainer.componants.LogoutCard
+import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
+import com.example.epsswim.presentation.utils.getFullName
+
+@Composable
+fun TrainerProfile(
+    navController: NavHostController,
+    authViewModel: AuthViewmodel,
+    trainerViewModel: TrainerViewModel
+) {
+    val trainerState = trainerViewModel.trainerInfo.collectAsState()
+    var trainer by remember {
+        mutableStateOf<Trainer?>(null)
+    }
+    LaunchedEffect(key1 = trainerState.value == null) {
+        if (trainerState.value != null){
+            trainer = trainerState.value?.data?.trainers?.first()
+            Log.d("TAG", "TrainerProfile: $trainer")
+        }
+    }
+    if (trainer != null)
+        MainContent(
+            navController,
+            authViewModel,
+            trainer
+        )
+    else
+        CircularProgressIndicator()
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmodel) {
+fun MainContent(navController: NavHostController, authViewModel: AuthViewmodel, trainer: Trainer?) {
     Column (
         modifier = Modifier
             .background(MyBackground)
@@ -77,13 +119,18 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                             fontSize = 24.sp,
                         )
                     },
-                    navigationIcon = {
+                    actions = {
                         IconButton(onClick = {
-                            navController.popBackStack()
+                            authViewModel.logout()
+                            navController.navigate(Screen.Login) {
+                                popUpTo(Screen.Splash) {
+                                    inclusive = true
+                                }
+                            }
                         }) {
                             Icon(
-                                painter = painterResource(id = R.drawable.chevron_left),
-                                contentDescription = "back button"
+                                painter = painterResource(id = R.drawable.logout_ic),
+                                contentDescription = stringResource(id = R.string.logout)
                             )
                         }
                     },
@@ -100,8 +147,8 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                         .padding(top = 10.dp)
 //                       .align(Alignment.BottomCenter)
                 ) {
-                    Image(
-                        painter = painterResource(id = R.drawable.img),
+                    AsyncImage(
+                        model = trainer!!.pfpUrl,
                         contentDescription = "profile pic",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
@@ -110,7 +157,7 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                     Text(
-                        text = "محمد عليم",
+                        text = getFullName(trainer.firstname,trainer.lastname),
                         fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
                         color = MyBackground,
                         fontSize = 24.sp,
@@ -136,34 +183,13 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                         )
                         ) {
 
-                            append("الجنس : ")
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append("ذكر")
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 14.dp)
-
-                )
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-
                             append("تاريخ الميلاد : ")
                         }
                         withStyle(style = SpanStyle(
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-                            append("12/12/1990")
+                            append(trainer!!.birthday)
                         }
                     },
                     color = Color.Black,
@@ -177,20 +203,18 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-
                             append(stringResource(R.string.blood_type))
                         }
                         withStyle(style = SpanStyle(
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-                            append("A+")
+                            append(trainer!!.bloodtype)
                         }
                     },
                     color = Color.Black,
                     fontSize = 16.sp,
                     modifier = Modifier.padding(bottom = 14.dp)
-
                 )
                 Text(
                     text = buildAnnotatedString {
@@ -198,14 +222,13 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-
                             append(stringResource(R.string.phone_number))
                         }
                         withStyle(style = SpanStyle(
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-                            append("055454545454")
+                            append(trainer!!.phonenumber)
                         }
                     },
                     color = Color.Black,
@@ -219,14 +242,13 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-
                             append(stringResource(R.string.absence_number))
                         }
                         withStyle(style = SpanStyle(
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-                            append('3')
+                            append(trainer!!.trainerAbsences_aggregate.aggregate.count.toString())
                         }
                     },
                     color = Color.Black,
@@ -238,98 +260,57 @@ fun TrainerProfile(navController: NavHostController, authViewModel: AuthViewmode
                 title = stringResource(R.string.absences),
                 icon = R.drawable.calendar_ic,
             ){
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
+                trainer!!.trainerAbsences.forEachIndexed { index, trainerAbsence ->
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
 
-                            append(" الغياب 1 :")
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append("12/12/2023")
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                )
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-
-                            append(" الغياب 2 :")
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append("12/12/2023")
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                )
+                                append(" الغياب ${index + 1} :")
+                            }
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(trainerAbsence.absencedate)
+                            }
+                        },
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                    )
+                }
             }
             ProfileCard(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                modifier = Modifier.padding(20.dp),
                 title = stringResource(R.string.levels),
                 icon = R.drawable.levels_ic,
             ){
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
+                listOf(trainer!!.level).forEachIndexed { index, level ->
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
 
-                            append(" المستوى 1 :")
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append("المبتدئين")
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                )
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-
-                            append(" المستوى 2 :")
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append("المحترفين")
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                )
-            }
-            LogoutCard(modifier = Modifier.padding(20.dp)) {
-                authViewModel.logout()
-                navController.navigate(Screen.Login) {
-                    popUpTo(Screen.Splash) {
-                        inclusive = true
-                    }
+                                append(" المستوى ${index.plus(1)} :")
+                            }
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(level.levelname)
+                            }
+                        },
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                    )
                 }
 
             }
+
         }
 
     }
