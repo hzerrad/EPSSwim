@@ -130,14 +130,14 @@ fun MainContent(navController: NavHostController, authViewModel: AuthViewmodel, 
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.logout_ic),
-                                contentDescription = stringResource(id = R.string.logout)
+                                contentDescription = stringResource(id = R.string.logout),
                             )
                         }
                     },
                     colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                         containerColor = Color.Transparent,
                         titleContentColor = MyBackground,
-                        navigationIconContentColor = MyBackground
+                        actionIconContentColor = MyBackground
                     )
                 )
                 Column(

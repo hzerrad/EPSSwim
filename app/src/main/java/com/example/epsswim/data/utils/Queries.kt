@@ -69,6 +69,7 @@ object Queries {
         bloodtype
         birthday
         phonenumber
+        pfpUrl
         level {
           levelid
           levelname
