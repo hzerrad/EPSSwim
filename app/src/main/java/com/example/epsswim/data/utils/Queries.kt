@@ -51,4 +51,13 @@ object Queries {
         }
       }
     }
-"""}
+"""
+    const val GET_LEVELS = """
+    query GetTrainerLevel {
+      levels {
+        levelid
+        levelname
+      }
+    }
+"""
+}

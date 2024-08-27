@@ -1,14 +1,11 @@
 package com.example.epsswim.presentation.ui.common.viewmodels
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.epsswim.data.model.app.Children
+import com.example.epsswim.data.model.app.swimmer.Children
 import com.example.epsswim.data.model.requestBody.Query
 import com.example.epsswim.data.model.requestBody.SwimmerVariables
-import com.example.epsswim.data.repositories.ParentRepository
 import com.example.epsswim.data.repositories.SharedRepository
 import com.example.epsswim.data.utils.Queries
 import dagger.hilt.android.lifecycle.HiltViewModel

@@ -3,7 +3,7 @@ package com.example.epsswim.presentation.ui.parent.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.epsswim.data.model.app.Children
+import com.example.epsswim.data.model.app.swimmer.Children
 import com.example.epsswim.data.model.requestBody.Query
 import com.example.epsswim.data.repositories.ParentRepository
 import com.example.epsswim.data.utils.Queries

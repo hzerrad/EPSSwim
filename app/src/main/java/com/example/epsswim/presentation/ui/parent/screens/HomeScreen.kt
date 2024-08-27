@@ -27,9 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
-import com.example.epsswim.data.model.app.Children
-import com.example.epsswim.data.model.app.Data
-import com.example.epsswim.data.model.app.Swimmer
+import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
@@ -38,17 +36,13 @@ import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
 import com.example.epsswim.presentation.ui.parent.componants.SwimmerCard
 import com.example.epsswim.presentation.ui.parent.viewmodels.ParentViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     authViewModel: AuthViewmodel,
     parentViewModel: ParentViewModel = hiltViewModel(),
-    sharedViewModel: SharedViewModel
 ) {
-    val scope = rememberCoroutineScope()
     val swimmerListState = parentViewModel.swimmerList.collectAsState()
     var swimmerList by remember {
         mutableStateOf<List<Swimmer>>(emptyList())
