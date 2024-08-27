@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +34,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -65,6 +67,7 @@ import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
 import com.example.epsswim.presentation.ui.theme.MySecondary
 import com.example.epsswim.presentation.ui.trainer.componants.AbsenceSwimmerCard
 import com.example.epsswim.presentation.ui.trainer.componants.MyWeekCalendar
+import com.example.epsswim.presentation.utils.rememberImeState
 import com.mohamedrejeb.richeditor.model.RichTextState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
@@ -113,6 +116,14 @@ fun LevelScreen(navController: NavHostController) {
         }
         val state = rememberRichTextState()
         val titleSize = MaterialTheme.typography.displaySmall.fontSize
+        val imeState = rememberImeState()
+        val scrollState = rememberScrollState()
+
+        LaunchedEffect(key1 = imeState.value) {
+            if (imeState.value){
+                scrollState.animateScrollTo(scrollState.maxValue, tween(300))
+            }
+        }
 
 
         Surface(
@@ -205,7 +216,7 @@ fun LevelScreen(navController: NavHostController) {
                         containerColor = MyBackground
                     ) {
                         CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                            Column {
+                            Column (modifier = Modifier.verticalScroll(scrollState)) {
                                 TextButton(
                                     onClick = {
                                         scope.launch {
@@ -228,7 +239,6 @@ fun LevelScreen(navController: NavHostController) {
                                 }
 
                                 MarkDownController(
-                                    modifier = Modifier.weight(1f),
                                     onBoldClick = {
                                         state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
                                     },
@@ -291,7 +301,7 @@ fun MarkDownController(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(all = 16.dp),
+            .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ){
