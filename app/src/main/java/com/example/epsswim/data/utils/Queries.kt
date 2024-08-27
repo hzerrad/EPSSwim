@@ -60,4 +60,29 @@ object Queries {
       }
     }
 """
+    const val GET_TRAINER_BY_ID = """
+    query GetTrainerInfo {
+      trainers {
+        trainerid
+        firstname
+        lastname
+        bloodtype
+        birthday
+        phonenumber
+        level {
+          levelid
+          levelname
+        }
+        trainerAbsences {
+          absenceid
+          absencedate
+        }
+        trainerAbsences_aggregate {
+          aggregate {
+            count(columns: entityid)
+          }
+        }
+      }
+    }
+"""
 }
