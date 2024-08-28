@@ -193,7 +193,7 @@ fun MainContent(
 //                       .align(Alignment.BottomCenter)
                 ) {
                     AsyncImage(
-                        model = selectedImage,
+                        model = trainer!!.pfpUrl,
                         contentDescription = "profile pic",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier

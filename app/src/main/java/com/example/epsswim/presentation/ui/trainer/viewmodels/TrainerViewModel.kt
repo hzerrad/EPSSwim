@@ -84,7 +84,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
             ).enqueue(object : Callback<PfpResponse> {
                 override fun onResponse(call: Call<PfpResponse>, response: Response<PfpResponse>) {
                     if (response.isSuccessful) {
-                        Log.d("UpdatePicApi", "onResponse: success fetch data ${response.body()?.data?.update_trainers_by_pk?.pfpUrl}")
+                        Log.d("UpdatePicApi", "onResponse: success fetch data ${response.body()}")
                         getTrainerInfo()
                     } else {
                         Log.d("UpdatePicApi", "onResponse: failed fetch data ${response.code()}")
