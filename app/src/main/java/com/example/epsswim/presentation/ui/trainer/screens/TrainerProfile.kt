@@ -134,183 +134,99 @@ fun MainContent(
     }
     if (isLoading)
         Loading()
-    Column (
-        modifier = Modifier
-            .background(MyBackground)
-            .padding(bottom = 50.dp)
-            .fillMaxSize()
-    ) {
-        Box(
-            modifier = Modifier
-                .clip(RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp))
-        ) {
-
-            Image(
-                painter = painterResource(id = R.drawable.profile_bg),
-                contentDescription = "profile background",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(350.dp)
-            )
-            Column {
-                CenterAlignedTopAppBar(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-//                       .align(Alignment.TopCenter),
-                    title = {
-                        Text(
-                            text = stringResource(R.string.profile),
-                            fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
-                            fontSize = 24.sp,
-                        )
-                    },
-                    actions = {
-                        IconButton(onClick = {
-                            authViewModel.logout()
-                            navController.navigate(Screen.Login) {
-                                popUpTo(Screen.Splash) {
-                                    inclusive = true
-                                }
-                            }
-                        }) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.logout_ic),
-                                contentDescription = stringResource(id = R.string.logout),
-                            )
-                        }
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = Color.Transparent,
-                        titleContentColor = MyBackground,
-                        actionIconContentColor = MyBackground
-                    )
-                )
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 10.dp)
-//                       .align(Alignment.BottomCenter)
-                ) {
-                    AsyncImage(
-                        model = trainer!!.pfpUrl,
-                        contentDescription = "profile pic",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .clip(CircleShape)
-                            .size(120.dp)
-                            .clickable {
-                                singlePhotoPickerLauncher.launch(
-                                    PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                )
-                            }
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = getFullName(trainer!!.firstname,trainer!!.lastname),
-                        fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
-                        color = MyBackground,
-                        fontSize = 24.sp,
-                    )
-                }
-            }
-        }
-
+    else {
         Column (
             modifier = Modifier
-                .verticalScroll(rememberScrollState())
-                .fillMaxWidth()
+                .background(MyBackground)
+                .padding(bottom = 50.dp)
+                .fillMaxSize()
         ) {
-            ProfileCard(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
-                title = stringResource(R.string.personal_info),
-                icon = R.drawable.personal_info_ic
-            ){
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(bottomEnd = 20.dp, bottomStart = 20.dp))
+            ) {
 
-                            append("تاريخ الميلاد : ")
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append(trainer!!.birthday)
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 14.dp)
-
+                Image(
+                    painter = painterResource(id = R.drawable.profile_bg),
+                    contentDescription = "profile background",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .height(350.dp)
                 )
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
+                Column {
+                    CenterAlignedTopAppBar(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+//                       .align(Alignment.TopCenter),
+                        title = {
+                            Text(
+                                text = stringResource(R.string.profile),
+                                fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
+                                fontSize = 24.sp,
+                            )
+                        },
+                        actions = {
+                            IconButton(onClick = {
+                                authViewModel.logout()
+                                navController.navigate(Screen.Login) {
+                                    popUpTo(Screen.Splash) {
+                                        inclusive = true
+                                    }
+                                }
+                            }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.logout_ic),
+                                    contentDescription = stringResource(id = R.string.logout),
+                                )
+                            }
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = Color.Transparent,
+                            titleContentColor = MyBackground,
+                            actionIconContentColor = MyBackground
                         )
-                        ) {
-                            append(stringResource(R.string.blood_type))
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
+                    )
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp)
+//                       .align(Alignment.BottomCenter)
+                    ) {
+                        AsyncImage(
+                            model = trainer!!.pfpUrl,
+                            contentDescription = "profile pic",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .size(120.dp)
+                                .clickable {
+                                    singlePhotoPickerLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                }
                         )
-                        ) {
-                            append(trainer!!.bloodtype)
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 14.dp)
-                )
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text(
+                            text = getFullName(trainer!!.firstname,trainer!!.lastname),
+                            fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
+                            color = MyBackground,
+                            fontSize = 24.sp,
                         )
-                        ) {
-                            append(stringResource(R.string.phone_number))
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append(trainer!!.phonenumber)
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 14.dp)
-
-                )
-                Text(
-                    text = buildAnnotatedString {
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append(stringResource(R.string.absence_number))
-                        }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold
-                        )
-                        ) {
-                            append(trainer!!.trainerAbsences_aggregate.aggregate.count.toString())
-                        }
-                    },
-                    color = Color.Black,
-                    fontSize = 16.sp,
-                )
+                    }
+                }
             }
-            ProfileCard(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
-                title = stringResource(R.string.absences),
-                icon = R.drawable.calendar_ic,
-            ){
-                trainer!!.trainerAbsences.forEachIndexed { index, trainerAbsence ->
+
+            Column (
+                modifier = Modifier
+                    .verticalScroll(rememberScrollState())
+                    .fillMaxWidth()
+            ) {
+                ProfileCard(
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                    title = stringResource(R.string.personal_info),
+                    icon = R.drawable.personal_info_ic
+                ){
                     Text(
                         text = buildAnnotatedString {
                             withStyle(style = SpanStyle(
@@ -318,51 +234,137 @@ fun MainContent(
                             )
                             ) {
 
-                                append(" الغياب ${index + 1} :")
+                                append("تاريخ الميلاد : ")
                             }
                             withStyle(style = SpanStyle(
                                 fontWeight = FontWeight.Bold
                             )
                             ) {
-                                append(trainerAbsence.absencedate)
+                                append(trainer!!.birthday)
+                            }
+                        },
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(bottom = 14.dp)
+
+                    )
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(stringResource(R.string.blood_type))
+                            }
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(trainer!!.bloodtype)
+                            }
+                        },
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(bottom = 14.dp)
+                    )
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(stringResource(R.string.phone_number))
+                            }
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(trainer!!.phonenumber)
+                            }
+                        },
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        modifier = Modifier.padding(bottom = 14.dp)
+
+                    )
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(stringResource(R.string.absence_number))
+                            }
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(trainer!!.trainerAbsences_aggregate.aggregate.count.toString())
                             }
                         },
                         color = Color.Black,
                         fontSize = 16.sp,
                     )
                 }
-            }
-            ProfileCard(
-                modifier = Modifier.padding(20.dp),
-                title = stringResource(R.string.levels),
-                icon = R.drawable.levels_ic,
-            ){
-                trainer!!.levels.forEachIndexed { index, level ->
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+                ProfileCard(
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                    title = stringResource(R.string.absences),
+                    icon = R.drawable.calendar_ic,
+                ){
+                    trainer!!.trainerAbsences.forEachIndexed { index, trainerAbsence ->
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
 
-                                append(" المستوى ${index.plus(1)} :")
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(level.levelname)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                    )
+                                    append(" الغياب ${index + 1} :")
+                                }
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(trainerAbsence.absencedate)
+                                }
+                            },
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                        )
+                    }
+                }
+                ProfileCard(
+                    modifier = Modifier.padding(20.dp),
+                    title = stringResource(R.string.levels),
+                    icon = R.drawable.levels_ic,
+                ){
+                    trainer!!.levels.forEachIndexed { index, level ->
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+
+                                    append(" المستوى ${index.plus(1)} :")
+                                }
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(level.levelname)
+                                }
+                            },
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                        )
+                    }
+
                 }
 
             }
 
         }
-
     }
 }
 
