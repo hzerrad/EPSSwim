@@ -86,4 +86,11 @@ object Queries {
       }
     }
 """
+    const val UPLOAD_TRAINER_PHOTO_PROFILE = """
+    mutation UpdateTrainerPfp(${'$'}trainerid: uuid = "", ${'$'}pfpUrl: String = "") {
+      update_trainers_by_pk(pk_columns: {trainerid: ${'$'}trainerid}, _set: {pfpUrl: ${'$'}pfpUrl}) {
+         pfpUrl
+      }  
+    }
+"""
 }

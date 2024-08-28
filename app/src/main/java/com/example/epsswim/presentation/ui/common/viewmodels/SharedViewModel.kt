@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.swimmer.Children
-import com.example.epsswim.data.model.requestBody.Query
-import com.example.epsswim.data.model.requestBody.SwimmerVariables
+import com.example.epsswim.data.model.requestBody.swimmer.Query
+import com.example.epsswim.data.model.requestBody.swimmer.SwimmerVariables
 import com.example.epsswim.data.repositories.SharedRepository
 import com.example.epsswim.data.utils.Queries
 import dagger.hilt.android.lifecycle.HiltViewModel

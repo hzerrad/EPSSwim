@@ -86,6 +86,7 @@ fun TrainerProfile(
             navController,
             authViewModel,
             userViewModel,
+            trainerViewModel,
             trainer
         )
     else
@@ -98,6 +99,7 @@ fun MainContent(
     navController: NavHostController,
     authViewModel: AuthViewmodel,
     userViewModel: UserViewModel,
+    trainerViewModel : TrainerViewModel,
     trainer: Trainer?
 ) {
     val context = LocalContext.current
@@ -109,20 +111,29 @@ fun MainContent(
         onResult = { uri -> selectedImage = uri}
     )
     val uploadState by userViewModel.uploadResult.observeAsState()
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
     LaunchedEffect (key1 = selectedImage != null) {
         selectedImage?.let {
+            isLoading= true
             userViewModel.uploadProfilePicture(it)
         }
     }
     LaunchedEffect(key1 = uploadState) {
         uploadState?.let { result ->
             if (result.isSuccess){
+                trainerViewModel.updateTrainerPfp(trainer!!.trainerid,result.getOrDefault(""))
+                isLoading= false
                 Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
             } else {
+                isLoading= false
                 Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
             }
         }
     }
+    if (isLoading)
+        Loading()
     Column (
         modifier = Modifier
             .background(MyBackground)
@@ -352,5 +363,14 @@ fun MainContent(
 
         }
 
+    }
+}
+
+@Composable
+fun Loading() {
+    Box(modifier = Modifier
+        .background(color = MyBackground.copy(0.1f))
+        .fillMaxSize()){
+        CircularProgressIndicator()
     }
 }

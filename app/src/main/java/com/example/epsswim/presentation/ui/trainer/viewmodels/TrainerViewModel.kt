@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.levels.LevelsResponse
-import com.example.epsswim.data.model.app.swimmer.Children
+import com.example.epsswim.data.model.app.pfp.PfpResponse
 import com.example.epsswim.data.model.app.trainer.TrainerResponse
-import com.example.epsswim.data.model.requestBody.Query
+import com.example.epsswim.data.model.requestBody.pfp.trainer.TrainerPfpVariables
+import com.example.epsswim.data.model.requestBody.swimmer.Query
 import com.example.epsswim.data.repositories.TrainerRepository
 import com.example.epsswim.data.utils.Queries
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +27,8 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
 
     private val _trainerInfo = MutableStateFlow<TrainerResponse?>(null)
     val trainerInfo: StateFlow<TrainerResponse?> = _trainerInfo
+
+    val isLoading = MutableStateFlow(false)
 
     init {
         getTrainerLevels()
@@ -67,6 +70,33 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
             })
 
         }
+    }
+    fun updateTrainerPfp(trainerid: String, pfpUrl: String){
+        viewModelScope.launch {
+            trainerRepository.updateTrainerPfp(
+                com.example.epsswim.data.model.requestBody.pfp.trainer.Query(
+                    query = Queries.UPLOAD_TRAINER_PHOTO_PROFILE,
+                    variables = TrainerPfpVariables(
+                        trainerid = trainerid,
+                        pfpUrl = pfpUrl
+                    )
+                )
+            ).enqueue(object : Callback<PfpResponse> {
+                override fun onResponse(call: Call<PfpResponse>, response: Response<PfpResponse>) {
+                    if (response.isSuccessful) {
+                        Log.d("UpdatePicApi", "onResponse: success fetch data ${response.body()?.data?.update_trainers_by_pk?.pfpUrl}")
+                        getTrainerInfo()
+                    } else {
+                        Log.d("UpdatePicApi", "onResponse: failed fetch data ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<PfpResponse>, t: Throwable) {
+                    Log.d("UpdatePicApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
+                }
+            })
+        }
+
     }
 
 }
