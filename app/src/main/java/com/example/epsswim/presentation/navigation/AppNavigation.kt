@@ -14,6 +14,7 @@ import com.example.epsswim.presentation.ui.common.screens.SplashScreen
 import com.example.epsswim.presentation.ui.common.screens.SwimmerProfile
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.common.viewmodels.SharedViewModel
+import com.example.epsswim.presentation.ui.common.viewmodels.UserViewModel
 import com.example.epsswim.presentation.ui.parent.screens.HomeScreen
 import com.example.epsswim.presentation.ui.trainer.screens.AbsenceScreen
 import com.example.epsswim.presentation.ui.trainer.screens.CompetitionsScreen
@@ -30,6 +31,7 @@ fun AppNavigation(
 ) {
     val sharedViewModel : SharedViewModel = hiltViewModel()
     val trainerViewmodel : TrainerViewModel = hiltViewModel()
+    val userViewModel : UserViewModel = hiltViewModel()
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -62,7 +64,8 @@ fun AppNavigation(
             SwimmerProfile(
                 navController = navController,
                 swimmerId = detail.id,
-                sharedViewModel = sharedViewModel
+                sharedViewModel = sharedViewModel,
+                userViewModel = userViewModel
             )
         }
         composable<Screen.ParticipationDetails>{
@@ -91,7 +94,8 @@ fun AppNavigation(
             TrainerProfile(
                 authViewModel=authViewModel,
                 navController = navController,
-                trainerViewModel = trainerViewmodel
+                trainerViewModel = trainerViewmodel,
+                userViewModel = userViewModel
 
             )
         }

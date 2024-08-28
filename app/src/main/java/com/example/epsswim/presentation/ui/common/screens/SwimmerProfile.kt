@@ -52,6 +52,7 @@ import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
 import com.example.epsswim.presentation.ui.common.viewmodels.SharedViewModel
+import com.example.epsswim.presentation.ui.common.viewmodels.UserViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.getFullName
@@ -61,7 +62,8 @@ import com.example.epsswim.presentation.utils.getFullName
 fun SwimmerProfile(
     navController: NavHostController,
     swimmerId: String,
-    sharedViewModel: SharedViewModel
+    sharedViewModel: SharedViewModel,
+    userViewModel: UserViewModel
 ) {
     LaunchedEffect(key1 = swimmerId) {
         sharedViewModel.getSwimmer(swimmerId)

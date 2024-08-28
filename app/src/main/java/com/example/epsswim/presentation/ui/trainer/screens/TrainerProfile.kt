@@ -2,13 +2,13 @@ package com.example.epsswim.presentation.ui.trainer.screens
 
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,9 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -56,13 +55,12 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.epsswim.R
-import com.example.epsswim.data.model.app.swimmer.Level
 import com.example.epsswim.data.model.app.trainer.Trainer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
+import com.example.epsswim.presentation.ui.common.viewmodels.UserViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
-import com.example.epsswim.presentation.ui.trainer.componants.LogoutCard
 import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
 import com.example.epsswim.presentation.utils.getFullName
 
@@ -70,7 +68,8 @@ import com.example.epsswim.presentation.utils.getFullName
 fun TrainerProfile(
     navController: NavHostController,
     authViewModel: AuthViewmodel,
-    trainerViewModel: TrainerViewModel
+    trainerViewModel: TrainerViewModel,
+    userViewModel: UserViewModel
 ) {
     val trainerState = trainerViewModel.trainerInfo.collectAsState()
     var trainer by remember {
@@ -86,6 +85,7 @@ fun TrainerProfile(
         MainContent(
             navController,
             authViewModel,
+            userViewModel,
             trainer
         )
     else
@@ -94,7 +94,13 @@ fun TrainerProfile(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainContent(navController: NavHostController, authViewModel: AuthViewmodel, trainer: Trainer?) {
+fun MainContent(
+    navController: NavHostController,
+    authViewModel: AuthViewmodel,
+    userViewModel: UserViewModel,
+    trainer: Trainer?
+) {
+    val context = LocalContext.current
     var selectedImage by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -102,6 +108,21 @@ fun MainContent(navController: NavHostController, authViewModel: AuthViewmodel, 
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImage = uri}
     )
+    val uploadState by userViewModel.uploadResult.observeAsState()
+    LaunchedEffect (key1 = selectedImage != null) {
+        selectedImage?.let {
+            userViewModel.uploadProfilePicture(it)
+        }
+    }
+    LaunchedEffect(key1 = uploadState) {
+        uploadState?.let { result ->
+            if (result.isSuccess){
+                Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
+            } else {
+                Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
     Column (
         modifier = Modifier
             .background(MyBackground)
