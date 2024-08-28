@@ -37,4 +37,9 @@ interface EpsClientInterface {
     fun updateTrainerPfp(
         @Body query: com.example.epsswim.data.model.requestBody.pfp.trainer.Query
     ): Call<PfpResponse>
+
+    @POST("graphql/")
+    fun updateSwimmerPfp(
+        @Body query: com.example.epsswim.data.model.requestBody.pfp.swimmer.Query
+    ): Call<PfpResponse>
 }

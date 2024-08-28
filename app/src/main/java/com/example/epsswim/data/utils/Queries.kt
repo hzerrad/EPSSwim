@@ -93,4 +93,11 @@ object Queries {
       }  
     }
 """
+    const val UPLOAD_SWIMMER_PHOTO_PROFILE = """
+    mutation UpdateSwimmerPfp(${'$'}swimmerid: uuid = "", ${'$'}pfpUrl: String = "") {
+      update_swimmers_by_pk(pk_columns: {swimmerid: ${'$'}swimmerid}, _set: {pfpUrl: ${'$'}pfpUrl}) {
+         pfpUrl
+      }  
+    }
+"""
 }

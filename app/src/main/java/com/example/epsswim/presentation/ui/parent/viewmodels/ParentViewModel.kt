@@ -3,7 +3,10 @@ package com.example.epsswim.presentation.ui.parent.viewmodels
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.epsswim.data.model.app.pfp.PfpResponse
 import com.example.epsswim.data.model.app.swimmer.Children
+import com.example.epsswim.data.model.requestBody.pfp.swimmer.SwimmerPfpVariables
+import com.example.epsswim.data.model.requestBody.pfp.trainer.TrainerPfpVariables
 import com.example.epsswim.data.model.requestBody.swimmer.Query
 import com.example.epsswim.data.repositories.ParentRepository
 import com.example.epsswim.data.utils.Queries
@@ -17,7 +20,10 @@ import retrofit2.Response
 import javax.inject.Inject
 
 @HiltViewModel
-class ParentViewModel @Inject constructor(private val parentRepository: ParentRepository) : ViewModel()  {
+class ParentViewModel @Inject constructor(
+    private val parentRepository: ParentRepository,
+
+) : ViewModel()  {
     private val _swimmerList = MutableStateFlow<Children?>(null)
     val swimmerList: StateFlow<Children?> = _swimmerList
 
@@ -38,5 +44,31 @@ class ParentViewModel @Inject constructor(private val parentRepository: ParentRe
                 }
             })
         }
+    }
+    fun updateSwimmerPfp(swimmerid: String, pfpUrl: String){
+        viewModelScope.launch {
+            parentRepository.updateSwimmerPfp(
+                com.example.epsswim.data.model.requestBody.pfp.swimmer.Query(
+                    query = Queries.UPLOAD_TRAINER_PHOTO_PROFILE,
+                    variables = SwimmerPfpVariables(
+                        swimmerid = swimmerid,
+                        pfpUrl = pfpUrl
+                    )
+                )
+            ).enqueue(object : Callback<PfpResponse> {
+                override fun onResponse(call: Call<PfpResponse>, response: Response<PfpResponse>) {
+                    if (response.isSuccessful) {
+                        Log.d("UpdatePicApi", "onResponse: success fetch data ${response.body()}")
+                    } else {
+                        Log.d("UpdatePicApi", "onResponse: failed fetch data ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<PfpResponse>, t: Throwable) {
+                    Log.d("UpdatePicApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
+                }
+            })
+        }
+
     }
 }

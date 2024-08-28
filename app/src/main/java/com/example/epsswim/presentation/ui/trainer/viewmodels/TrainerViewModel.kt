@@ -28,8 +28,6 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
     private val _trainerInfo = MutableStateFlow<TrainerResponse?>(null)
     val trainerInfo: StateFlow<TrainerResponse?> = _trainerInfo
 
-    val isLoading = MutableStateFlow(false)
-
     init {
         getTrainerLevels()
         getTrainerInfo()
