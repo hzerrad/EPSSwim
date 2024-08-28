@@ -14,6 +14,7 @@ import com.example.epsswim.data.network.TokenInterceptor
 import com.example.epsswim.data.repositories.tokenRepository.JWTManager
 import com.example.epsswim.data.repositories.tokenRepository.JwtTokenDataStore
 import com.example.epsswim.data.utils.Constants
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -79,5 +80,10 @@ object AppModule {
     .addConverterFactory(GsonConverterFactory.create())
     .build()
     .create(EpsClientInterface::class.java)
+
+    @Provides
+    @Singleton
+    fun provideFirebaseStorage(): FirebaseStorage = FirebaseStorage.getInstance()
+
 
 }
