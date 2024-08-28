@@ -1,8 +1,14 @@
 package com.example.epsswim.presentation.ui.common.screens
 
+import android.net.Uri
 import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +31,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -33,6 +40,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -50,9 +58,11 @@ import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
+import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
 import com.example.epsswim.presentation.ui.common.viewmodels.SharedViewModel
 import com.example.epsswim.presentation.ui.common.viewmodels.UserViewModel
+import com.example.epsswim.presentation.ui.parent.viewmodels.ParentViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.getFullName
@@ -63,20 +73,54 @@ fun SwimmerProfile(
     navController: NavHostController,
     swimmerId: String,
     sharedViewModel: SharedViewModel,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    parentViewModel: ParentViewModel
 ) {
     LaunchedEffect(key1 = swimmerId) {
         sharedViewModel.getSwimmer(swimmerId)
+    }
+    var isLoading by remember {
+        mutableStateOf(true)
     }
     val swimmerState = sharedViewModel.swimmer.collectAsStateWithLifecycle()
     var swimmer by remember {
         mutableStateOf<Swimmer?>(null)
     }
     if (swimmerState.value != null){
+        isLoading = false
         swimmer = swimmerState.value!!.data.swimmers.first()
         Log.d("TAG", "SwimmerProfile: $swimmer")
     }
-    if (swimmer != null)
+    val context = LocalContext.current
+    var selectedImage by remember {
+        mutableStateOf<Uri?>(null)
+    }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+        onResult = { uri -> selectedImage = uri}
+    )
+    val uploadState by userViewModel.uploadResult.observeAsState()
+    LaunchedEffect (key1 = selectedImage) {
+        selectedImage?.let {
+            isLoading= true
+            swimmer = null
+            userViewModel.uploadProfilePicture(it)
+        }
+    }
+    LaunchedEffect(key1 = uploadState) {
+        uploadState?.let { result ->
+            if (result.isSuccess){
+                parentViewModel.updateSwimmerPfp(swimmerId,result.getOrDefault(""))
+                isLoading= false
+                Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
+            } else {
+                isLoading= false
+                Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+
+    if (!isLoading)
         Column (
             modifier = Modifier
                 .background(MyBackground)
@@ -138,6 +182,11 @@ fun SwimmerProfile(
                             modifier = Modifier
                                 .clip(CircleShape)
                                 .size(120.dp)
+                                .clickable {
+                                    singlePhotoPickerLauncher.launch(
+                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                    )
+                                }
                         )
                         Spacer(modifier = Modifier.height(5.dp))
                         Text(
@@ -320,7 +369,7 @@ fun SwimmerProfile(
             }
         }
     else
-        CircularProgressIndicator()
+        Loading()
 
 }
 

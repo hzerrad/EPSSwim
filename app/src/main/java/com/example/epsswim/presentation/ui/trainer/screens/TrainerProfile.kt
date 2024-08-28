@@ -57,6 +57,7 @@ import coil.compose.AsyncImage
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.trainer.Trainer
 import com.example.epsswim.presentation.navigation.Screen
+import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.ProfileCard
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.common.viewmodels.UserViewModel
@@ -114,7 +115,7 @@ fun MainContent(
     var isLoading by remember {
         mutableStateOf(false)
     }
-    LaunchedEffect (key1 = selectedImage != null) {
+    LaunchedEffect (key1 = selectedImage) {
         selectedImage?.let {
             isLoading= true
             userViewModel.uploadProfilePicture(it)
@@ -368,11 +369,3 @@ fun MainContent(
     }
 }
 
-@Composable
-fun Loading() {
-    Box(modifier = Modifier
-        .background(color = MyBackground.copy(0.1f))
-        .fillMaxSize()){
-        CircularProgressIndicator()
-    }
-}

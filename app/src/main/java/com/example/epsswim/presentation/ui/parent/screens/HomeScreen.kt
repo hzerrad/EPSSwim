@@ -41,7 +41,7 @@ import com.example.epsswim.presentation.ui.theme.MyBackground
 fun HomeScreen(
     navController: NavHostController,
     authViewModel: AuthViewmodel,
-    parentViewModel: ParentViewModel = hiltViewModel(),
+    parentViewModel: ParentViewModel ,
 ) {
     val swimmerListState = parentViewModel.swimmerList.collectAsState()
     var swimmerList by remember {

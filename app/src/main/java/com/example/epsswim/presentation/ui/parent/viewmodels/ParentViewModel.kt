@@ -49,7 +49,7 @@ class ParentViewModel @Inject constructor(
         viewModelScope.launch {
             parentRepository.updateSwimmerPfp(
                 com.example.epsswim.data.model.requestBody.pfp.swimmer.Query(
-                    query = Queries.UPLOAD_TRAINER_PHOTO_PROFILE,
+                    query = Queries.UPLOAD_SWIMMER_PHOTO_PROFILE,
                     variables = SwimmerPfpVariables(
                         swimmerid = swimmerid,
                         pfpUrl = pfpUrl
