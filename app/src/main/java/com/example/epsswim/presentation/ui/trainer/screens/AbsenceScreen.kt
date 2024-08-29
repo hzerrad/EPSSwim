@@ -76,7 +76,7 @@ fun AbsenceScreen(
                             modifier=Modifier.padding(bottom = 30.dp),
                             title = it.levelname
                         ){
-                            navController.navigate(Screen.LevelScreen)
+                            navController.navigate(Screen.LevelScreen(it.levelid,it.levelname))
                         }
                     }
                 }

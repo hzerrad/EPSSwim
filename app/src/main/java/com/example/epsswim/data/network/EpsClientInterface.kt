@@ -42,4 +42,9 @@ interface EpsClientInterface {
     fun updateSwimmerPfp(
         @Body query: com.example.epsswim.data.model.requestBody.pfp.swimmer.Query
     ): Call<PfpResponse>
+
+    @POST("graphql/")
+    fun getSwimmersByLevel(
+        @Body query: Query
+    ): Call<Children>
 }

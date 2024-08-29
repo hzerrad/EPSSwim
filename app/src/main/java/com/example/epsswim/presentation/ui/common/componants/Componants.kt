@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -45,6 +46,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -134,7 +136,7 @@ fun MyBottomBar(
 ) {
     Surface (
         modifier = Modifier
-            .padding(start = 10.dp, bottom = 60.dp, end = 10.dp) ,
+            .padding(start = 20.dp, bottom = 60.dp, end = 20.dp) ,
         shape = RoundedCornerShape(60.dp),
         shadowElevation = 8.dp
     ){
@@ -158,16 +160,25 @@ fun MyBottomBar(
             ) {
                 items.forEach {  item ->
                     val selected = item.route== destination?.route?.split("?")?.first()
-                    IconButton(onClick = {
-                        navController.navigate(item.screen) {
-                            popUpTo(navController.graph.findStartDestination().id)
-                            launchSingleTop = true
+                    Column (
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center,
+                        modifier = Modifier.clickable {
+                            navController.navigate(item.screen) {
+                                popUpTo(navController.graph.findStartDestination().id)
+                                launchSingleTop = true
+                            }
                         }
-                    }) {
+                    ) {
                         Icon(
                             painter = painterResource(id = if (selected) item.iconFilled else item.icon),
                             contentDescription = "icon",
                             tint = if (selected) MyPrimary else Color(0xff9DB2CE),
+                        )
+                        Text(
+                            text = stringResource(id = item.titleId),
+                            fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
+                            color = if (selected) MyPrimary else Color(0xff9DB2CE)
                         )
                     }
                 }

@@ -8,4 +8,5 @@ class TrainerRepository @Inject constructor(private val epsClientInterface: EpsC
     fun getTrainerLevels(query: Query) = epsClientInterface.getLevels(query = query)
     fun getTrainerInfo(query: Query) = epsClientInterface.getTrainerInfo(query = query)
     fun updateTrainerPfp(query: com.example.epsswim.data.model.requestBody.pfp.trainer.Query) = epsClientInterface.updateTrainerPfp(query = query)
+    fun getSwimmersByLevel(query: Query) = epsClientInterface.getSwimmersByLevel(query)
 }

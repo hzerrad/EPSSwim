@@ -26,7 +26,7 @@ sealed class Screen {
     data object CompetitionScreen : Screen()
 
     @Serializable
-    data object LevelScreen : Screen()
+    data class LevelScreen(val id: String,val name:String) : Screen()
 
     @Serializable
     data object TrainerProfile : Screen()

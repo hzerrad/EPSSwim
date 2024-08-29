@@ -5,9 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.levels.LevelsResponse
 import com.example.epsswim.data.model.app.pfp.PfpResponse
+import com.example.epsswim.data.model.app.swimmer.Children
 import com.example.epsswim.data.model.app.trainer.TrainerResponse
 import com.example.epsswim.data.model.requestBody.pfp.trainer.TrainerPfpVariables
 import com.example.epsswim.data.model.requestBody.swimmer.Query
+import com.example.epsswim.data.model.requestBody.swimmer.SwimmerVariables
 import com.example.epsswim.data.repositories.TrainerRepository
 import com.example.epsswim.data.utils.Queries
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,6 +29,8 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
 
     private val _trainerInfo = MutableStateFlow<TrainerResponse?>(null)
     val trainerInfo: StateFlow<TrainerResponse?> = _trainerInfo
+    private val _swimmerList = MutableStateFlow<Children?>(null)
+    val swimmerList: StateFlow<Children?> = _swimmerList
 
     init {
         getTrainerLevels()
@@ -95,6 +99,26 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
             })
         }
 
+    }
+    fun getSwimmersByLevelId (levelid: String){
+        viewModelScope.launch {
+            trainerRepository.getSwimmersByLevel(Query(
+                Queries.GET_SWIMMERS_BY_LEVEL_ID,
+                variables = SwimmerVariables(levelid = levelid)
+            )).enqueue(object : Callback<Children> {
+                override fun onResponse(call: Call<Children>, response: Response<Children>) {
+                    if (response.isSuccessful) {
+                        _swimmerList.value = response.body()
+                    } else {
+                        Log.d("TrainerApi", "onResponse: failed fetch data ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<Children>, t: Throwable) {
+                    Log.d("TrainerApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
+                }
+            })
+        }
     }
 
 }

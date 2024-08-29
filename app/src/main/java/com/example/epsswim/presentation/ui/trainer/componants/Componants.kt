@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -24,6 +23,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -73,7 +73,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Black
-import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
@@ -94,14 +93,18 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
 import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.theme.MySecondary
+import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.getArabicDate
 import com.example.epsswim.presentation.utils.getArabicWeekDay
+import com.example.epsswim.presentation.utils.getFullName
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
 import com.kizitonwose.calendar.core.WeekDay
@@ -818,7 +821,7 @@ fun MySearchBar(
     )
 }
 @Composable
-fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
+fun AbsenceSwimmerCard(modifier: Modifier,swimmer: Swimmer, onClick: () -> Unit){
     var selected by remember {
         mutableStateOf(false)
     }
@@ -845,16 +848,17 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .padding(bottom = 12.dp),
-                    text = "محمد عليم",
+                    text = getFullName(swimmer.firstname,swimmer.lastname),
                     fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
                     fontSize = 20.sp,
                     color = Color.Black
                 )
+
                 Text(
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(end = 40.dp, bottom = 12.dp),
-                    text =   stringResource(id = R.string.level) + "1",
+                    text = stringResource(R.string.age) + calculateAge(swimmer.birthday),
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                     color = Color.Black
@@ -863,16 +867,7 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(end = 40.dp, bottom = 12.dp),
-                    text = stringResource(R.string.age) + "11",
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 18.sp,
-                    color = Color.Black
-                )
-                Text(
-                    modifier = Modifier
-                        .align(Alignment.End)
-                        .padding(end = 40.dp, bottom = 12.dp),
-                    text = stringResource(id = R.string.absence_number) + "3",
+                    text = stringResource(id = R.string.absence_number) + swimmer.swimmerAbsences_aggregate.aggregate.count.toString(),
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                     color = Color.Black
@@ -898,12 +893,13 @@ fun AbsenceSwimmerCard(modifier: Modifier,onClick:() -> Unit){
                 }
             }
         }
-        Image(
+        AsyncImage(
+            model = swimmer.pfpUrl,
             modifier = Modifier
                 .background(MySecondary, RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(12.dp))
                 .align(Alignment.TopCenter)
                 .size(125.dp),
-            painter = painterResource(id = R.drawable.img),
             contentDescription = "swimmer image",
             contentScale = ContentScale.Crop
         )

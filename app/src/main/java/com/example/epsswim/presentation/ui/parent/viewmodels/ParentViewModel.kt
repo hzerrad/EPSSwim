@@ -28,6 +28,10 @@ class ParentViewModel @Inject constructor(
     val swimmerList: StateFlow<Children?> = _swimmerList
 
     init {
+        getSwimmers()
+    }
+
+     fun getSwimmers() {
         viewModelScope.launch {
             parentRepository.getParentSwimmers(Query(Queries.GET_PARENT_SWIMMERS)).enqueue(object :
                 Callback<Children> {
@@ -45,6 +49,7 @@ class ParentViewModel @Inject constructor(
             })
         }
     }
+
     fun updateSwimmerPfp(swimmerid: String, pfpUrl: String){
         viewModelScope.launch {
             parentRepository.updateSwimmerPfp(

@@ -100,4 +100,20 @@ object Queries {
       }  
     }
 """
+    const val GET_SWIMMERS_BY_LEVEL_ID = """
+    query GetSwimmerByLevelId(${'$'}levelid: uuid!) {
+      swimmers(where: {levelid: {_eq: ${'$'}levelid}}) {
+        swimmerid
+        firstname
+        lastname
+        birthday
+        pfpUrl
+        swimmerAbsences_aggregate {
+          aggregate {
+            count(columns: entityid)
+          }
+       }
+     }
+   }
+"""
 }

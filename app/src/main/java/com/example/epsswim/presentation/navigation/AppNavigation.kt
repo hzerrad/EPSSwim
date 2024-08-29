@@ -90,8 +90,13 @@ fun AppNavigation(
             )
         }
         composable<Screen.LevelScreen>{
+            val detail = it.toRoute<Screen.LevelScreen>()
+
             LevelScreen(
                 navController = navController,
+                trainerViewmodel=trainerViewmodel,
+                levelName = detail.name,
+                levelID = detail.id
             )
         }
         composable<Screen.TrainerProfile>{

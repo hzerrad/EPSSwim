@@ -43,6 +43,9 @@ fun HomeScreen(
     authViewModel: AuthViewmodel,
     parentViewModel: ParentViewModel ,
 ) {
+    LaunchedEffect(true) {
+        parentViewModel.getSwimmers()
+    }
     val swimmerListState = parentViewModel.swimmerList.collectAsState()
     var swimmerList by remember {
         mutableStateOf<List<Swimmer>>(emptyList())
