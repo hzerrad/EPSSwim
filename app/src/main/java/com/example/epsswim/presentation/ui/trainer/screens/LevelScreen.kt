@@ -69,11 +69,13 @@ import com.example.epsswim.presentation.ui.theme.MySecondary
 import com.example.epsswim.presentation.ui.trainer.componants.AbsenceSwimmerCard
 import com.example.epsswim.presentation.ui.trainer.componants.MyWeekCalendar
 import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
+import com.example.epsswim.presentation.utils.getDate
 import com.example.epsswim.presentation.utils.rememberImeState
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditorDefaults
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,11 +102,15 @@ fun LevelScreen(
     var lastIndex by remember {
         mutableIntStateOf(0)
     }
+    var presenceNumber by remember {
+        mutableIntStateOf(0)
+    }
     LaunchedEffect(key1 = swimmerListState.value == null) {
         if (swimmerListState.value != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
             lastIndex = swimmerList.size - 1
             currentSwimmer = swimmerList[index]
+            presenceNumber = swimmerList.size
         }
     }
 
@@ -138,6 +144,9 @@ fun LevelScreen(
 
 
     ){
+        val selectedDate = remember {
+            mutableStateOf(LocalDate.now())
+        }
         val sheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
@@ -162,7 +171,9 @@ fun LevelScreen(
                     .fillMaxSize()
             ){
                 Column {
-                    MyWeekCalendar()
+                    MyWeekCalendar(
+                        selectedDate = selectedDate
+                    )
                     Column (
                         horizontalAlignment = Alignment.End,
                         modifier = Modifier
@@ -171,7 +182,7 @@ fun LevelScreen(
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp),
-                            text = stringResource(R.string.number_of_presence) +"23/"+ swimmerList.size.toString(),
+                            text = stringResource(R.string.number_of_presence) + presenceNumber +"/"+ swimmerList.size.toString(),
                             fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
                             fontSize = 20.sp,
                         )
@@ -220,9 +231,10 @@ fun LevelScreen(
                                 modifier = Modifier
                                     .padding(horizontal = 36.dp)
                                     .align(Alignment.Center),
-                                swimmer = currentSwimmer!!
+                                swimmer = currentSwimmer!!,
+                                enabled = getDate(selectedDate.value) == getDate(LocalDate.now()),
+                                selectedDate = selectedDate.value
                             ){
-                                navController.popBackStack()
                                 navController.navigate(Screen.SwimmerProfile)
                             }
                         }

@@ -104,6 +104,7 @@ import com.example.epsswim.presentation.ui.theme.MySecondary
 import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.getArabicDate
 import com.example.epsswim.presentation.utils.getArabicWeekDay
+import com.example.epsswim.presentation.utils.getDate
 import com.example.epsswim.presentation.utils.getFullName
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
@@ -665,9 +666,8 @@ fun LevelCard(modifier: Modifier, title: String, onClick: () -> Unit) {
         )
     }
 }
-@Preview
 @Composable
-fun MyWeekCalendar(){
+fun MyWeekCalendar(selectedDate : MutableState<LocalDate>){
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         val currentDate = remember { LocalDate.now() }
         val currentMonth = remember { YearMonth.now() }
@@ -682,9 +682,7 @@ fun MyWeekCalendar(){
             firstVisibleWeekDate = currentDate,
             firstDayOfWeek = firstDayOfWeek
         )
-        val selectedDate = remember {
-            mutableStateOf(currentDate)
-        }
+        selectedDate.value = currentDate
         val configuration = LocalConfiguration.current
         val screenWidth = configuration.screenWidthDp.dp *0.95f
         val itemDp = screenWidth/7
@@ -821,11 +819,16 @@ fun MySearchBar(
     )
 }
 @Composable
-fun AbsenceSwimmerCard(modifier: Modifier,swimmer: Swimmer, onClick: () -> Unit){
+fun AbsenceSwimmerCard(
+    modifier: Modifier,
+    swimmer: Swimmer,
+    enabled: Boolean,
+    selectedDate : LocalDate,
+    onClick: () -> Unit){
+
     var selected by remember {
         mutableStateOf(false)
     }
-
     Box(
         modifier = modifier
             .clickable { onClick() }
@@ -879,6 +882,7 @@ fun AbsenceSwimmerCard(modifier: Modifier,swimmer: Swimmer, onClick: () -> Unit)
                         .padding(start = 40.dp, bottom = 40.dp)
                         .align(Alignment.Start),
                     onClick = { selected = !selected },
+                    enabled = enabled,
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = buttonColor,
                         containerColor = buttonContainerColor

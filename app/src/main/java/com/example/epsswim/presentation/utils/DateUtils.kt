@@ -19,3 +19,8 @@ fun calculateAge(dateString: String): Int {
 
     return age
 }
+fun getDate(localDate: LocalDate): String {
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    return localDate.format(formatter)
+
+}
