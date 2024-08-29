@@ -86,8 +86,11 @@ fun LevelScreen(
     levelID: String,
     trainerViewmodel: TrainerViewModel
 ) {
-    LaunchedEffect(key1 = levelID) {
-        trainerViewmodel.getSwimmersByLevelId(levelID)
+    val selectedDate = remember {
+        mutableStateOf(LocalDate.now())
+    }
+    LaunchedEffect(key1 = levelID,key2 = getDate(selectedDate.value)) {
+        trainerViewmodel.getSwimmersByLevelId(levelID,getDate(selectedDate.value))
     }
     val swimmerListState = trainerViewmodel.swimmerList.collectAsState()
     var swimmerList by remember {
@@ -105,9 +108,22 @@ fun LevelScreen(
     var presenceNumber by remember {
         mutableIntStateOf(0)
     }
-    LaunchedEffect(key1 = swimmerListState.value == null) {
+    val sheetState = rememberModalBottomSheetState()
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
+    var note by remember {
+        mutableStateOf("")
+    }
+    val noteState = rememberRichTextState()
+
+    val imeState = rememberImeState()
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(key1 = swimmerListState.value) {
         if (swimmerListState.value != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
+            note = swimmerListState.value?.data?.levels_by_pk?.notes?.firstOrNull()?.description ?: ""
+            noteState.setMarkdown(note)
             lastIndex = swimmerList.size - 1
             currentSwimmer = swimmerList[index]
             presenceNumber = swimmerList.size
@@ -144,19 +160,8 @@ fun LevelScreen(
 
 
     ){
-        val selectedDate = remember {
-            mutableStateOf(LocalDate.now())
-        }
-        val sheetState = rememberModalBottomSheetState()
-        var showBottomSheet by remember { mutableStateOf(false) }
-        val scope = rememberCoroutineScope()
-        var note by remember {
-            mutableStateOf("")
-        }
-        val state = rememberRichTextState()
-        val titleSize = MaterialTheme.typography.displaySmall.fontSize
-        val imeState = rememberImeState()
-        val scrollState = rememberScrollState()
+
+
 
         LaunchedEffect(key1 = imeState.value) {
             if (imeState.value){
@@ -233,7 +238,6 @@ fun LevelScreen(
                                     .align(Alignment.Center),
                                 swimmer = currentSwimmer!!,
                                 enabled = getDate(selectedDate.value) == getDate(LocalDate.now()),
-                                selectedDate = selectedDate.value
                             ){
                                 navController.navigate(Screen.SwimmerProfile)
                             }
@@ -271,7 +275,7 @@ fun LevelScreen(
                                     TextButton(
                                         onClick = {
                                             scope.launch {
-                                                note = state.toMarkdown()
+                                                note = noteState.toMarkdown()
                                                 sheetState.hide()
                                             }.invokeOnCompletion {
                                                 showBottomSheet= false
@@ -288,30 +292,31 @@ fun LevelScreen(
                                             color = MyPrimary
                                         )
                                     }
+                                    if (getDate(selectedDate.value) == getDate(LocalDate.now()))
+                                        MarkDownController(
+                                            onBoldClick = {
+                                                noteState.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                                            },
+                                            onItalicClick = {
+                                                noteState.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic))
+                                            },
+                                            onUnderlineClick = {
+                                                noteState.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
+                                            },
+                                            onTitleClick = {
+                                                noteState.toggleSpanStyle(SpanStyle(fontSize = 24.sp))
+                                            },
 
-                                    MarkDownController(
-                                        onBoldClick = {
-                                            state.toggleSpanStyle(SpanStyle(fontWeight = FontWeight.Bold))
-                                        },
-                                        onItalicClick = {
-                                            state.toggleSpanStyle(SpanStyle(fontStyle = FontStyle.Italic))
-                                        },
-                                        onUnderlineClick = {
-                                            state.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
-                                        },
-                                        onTitleClick = {
-                                            state.toggleSpanStyle(SpanStyle(fontSize = titleSize))
-                                        },
-
-                                        onTextColorClick = {
-                                            state.toggleSpanStyle(SpanStyle(color = Color.Red))
-                                        }
-                                    )
+                                            onTextColorClick = {
+                                                noteState.toggleSpanStyle(SpanStyle(color = Color.Red))
+                                            }
+                                        )
                                     RichTextEditor(
                                         modifier = Modifier
                                             .padding(16.dp)
                                             .fillMaxWidth(),
-                                        state = state,
+                                        state = noteState,
+                                        enabled = getDate(selectedDate.value) == getDate(LocalDate.now()),
                                         placeholder = {
                                             Text(text = "أضف ملاحظة...")
                                         },

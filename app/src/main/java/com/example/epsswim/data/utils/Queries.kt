@@ -101,19 +101,31 @@ object Queries {
     }
 """
     const val GET_SWIMMERS_BY_LEVEL_ID = """
-    query GetSwimmerByLevelId(${'$'}levelid: uuid!) {
+    query GetSwimmerByLevelId(${'$'}levelid: uuid!, ${'$'}absencedate: date = "") {
       swimmers(where: {levelid: {_eq: ${'$'}levelid}}) {
-        swimmerid
-        firstname
-        lastname
-        birthday
-        pfpUrl
-        swimmerAbsences_aggregate {
-          aggregate {
-            count(columns: entityid)
-          }
-       }
-     }
-   }
+      swimmerid
+      firstname
+      lastname
+      birthday
+      pfpUrl
+      swimmerAbsences_aggregate(where: {absencedate: {_eq: ${'$'}absencedate}}) {
+        aggregate {
+          count(columns: entityid)
+        }
+      }
+      totalAbsences: swimmerAbsences_aggregate {
+        aggregate {
+          count(columns: entityid)
+        }
+      }
+    }
+    levels_by_pk(levelid: ${'$'}levelid) {
+      notes(where: {notedate: {_eq: ${'$'}absencedate}}) {
+        noteid
+        notedate
+        description
+      }
+    }
+  }
 """
 }

@@ -45,6 +45,6 @@ interface EpsClientInterface {
 
     @POST("graphql/")
     fun getSwimmersByLevel(
-        @Body query: Query
+        @Body query: com.example.epsswim.data.model.requestBody.level.Query
     ): Call<Children>
 }

@@ -754,39 +754,7 @@ fun Day(day: WeekDay, selected: Boolean = false, dp: Dp,onClick: () -> Unit) {
     }
 }
 
-@Composable
-fun LogoutCard(modifier: Modifier,onClick: () -> Unit){
-    ElevatedCard(
-        onClick = onClick ,
-        modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
-        colors = CardDefaults.elevatedCardColors(
-            containerColor = Color(0xffFF8888)
-        ),
-        elevation = CardDefaults.cardElevation(5.dp)
-    ){
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = painterResource(id = R.drawable.logout_ic),
-                contentDescription = "icon",
-                tint = Black
-            )
-            Text(
-                text = stringResource(id = R.string.logout),
-                fontFamily = FontFamily(listOf(Font(R.font.cairo_bold))),
-                color = Black,
-                fontSize = 20.sp,
-            )
-        }
-    }
-}
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun MySearchBar(
@@ -823,12 +791,12 @@ fun AbsenceSwimmerCard(
     modifier: Modifier,
     swimmer: Swimmer,
     enabled: Boolean,
-    selectedDate : LocalDate,
     onClick: () -> Unit){
 
     var selected by remember {
         mutableStateOf(false)
     }
+    selected= swimmer.swimmerAbsences_aggregate.aggregate.count == 1
     Box(
         modifier = modifier
             .clickable { onClick() }
@@ -870,7 +838,7 @@ fun AbsenceSwimmerCard(
                     modifier = Modifier
                         .align(Alignment.End)
                         .padding(end = 40.dp, bottom = 12.dp),
-                    text = stringResource(id = R.string.absence_number) + swimmer.swimmerAbsences_aggregate.aggregate.count.toString(),
+                    text = stringResource(id = R.string.absence_number) + swimmer.totalAbsences.aggregate.count.toString(),
                     fontWeight = FontWeight.Normal,
                     fontSize = 18.sp,
                     color = Color.Black

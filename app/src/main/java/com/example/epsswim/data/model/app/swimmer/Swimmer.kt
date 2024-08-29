@@ -10,6 +10,7 @@ data class Swimmer(
     val swimmerid: String,
     val trainer: Trainer,
     val swimmerAbsences_aggregate: SwimmerAbsencesAggregate,
+    val totalAbsences: SwimmerAbsencesAggregate,
     val sex: String
 
 )
