@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -59,6 +60,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
+import com.example.epsswim.data.model.app.trainer.Trainer
+import com.example.epsswim.data.model.requestBody.absences.SwimmerId
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
@@ -89,12 +92,24 @@ fun LevelScreen(
     val selectedDate = remember {
         mutableStateOf(LocalDate.now())
     }
+    val isDataSent = remember {
+        mutableStateOf(false)
+    }
+    val isLoading = remember {
+        mutableStateOf(false)
+    }
+    val isError = remember {
+        mutableStateOf(false)
+    }
     LaunchedEffect(key1 = levelID,key2 = getDate(selectedDate.value)) {
         trainerViewmodel.getSwimmersByLevelId(levelID,getDate(selectedDate.value))
     }
     val swimmerListState = trainerViewmodel.swimmerList.collectAsState()
     var swimmerList by remember {
         mutableStateOf<List<Swimmer>>(emptyList())
+    }
+    val absentList = remember {
+        mutableListOf<SwimmerId>()
     }
     var currentSwimmer by remember {
         mutableStateOf<Swimmer?>(null)
@@ -107,6 +122,9 @@ fun LevelScreen(
     }
     var presenceNumber by remember {
         mutableIntStateOf(0)
+    }
+    var trainerId by remember {
+        mutableStateOf("")
     }
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -123,10 +141,16 @@ fun LevelScreen(
         if (swimmerListState.value != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
             note = swimmerListState.value?.data?.levels_by_pk?.notes?.firstOrNull()?.description ?: ""
+            trainerId = swimmerListState.value?.data?.levels_by_pk?.trainerid ?: ""
             noteState.setMarkdown(note)
             lastIndex = swimmerList.size - 1
             currentSwimmer = swimmerList[index]
             presenceNumber = swimmerList.size
+        }
+    }
+    LaunchedEffect (isDataSent.value,isError.value,isLoading.value) {
+        if (!isLoading.value && isDataSent.value && !isError.value){
+            navController.popBackStack()
         }
     }
 
@@ -146,7 +170,17 @@ fun LevelScreen(
                 },
                 actions = {
                     IconButton( onClick = {
-                        navController.popBackStack()
+                        isDataSent.value = true
+                        isLoading.value = true
+                        trainerViewmodel.insertAbsencesAndNotes(
+                            isLoading = isLoading,
+                            isError=isError,
+                            objects = absentList.toList(),
+                            levelid = levelID,
+                            trainerid = trainerId,
+                            description = noteState.toMarkdown()
+
+                        )
                     }){
                         Icon(
                             painter = painterResource(id = R.drawable.done_ic),
@@ -236,10 +270,11 @@ fun LevelScreen(
                                 modifier = Modifier
                                     .padding(horizontal = 36.dp)
                                     .align(Alignment.Center),
+                                absentList = absentList,
                                 swimmer = currentSwimmer!!,
                                 enabled = getDate(selectedDate.value) == getDate(LocalDate.now()),
                             ){
-                                navController.navigate(Screen.SwimmerProfile)
+                                navController.navigate(Screen.SwimmerProfile(currentSwimmer!!.swimmerid,false))
                             }
                         }
                         Button(

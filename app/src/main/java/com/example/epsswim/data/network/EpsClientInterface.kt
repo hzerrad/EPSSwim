@@ -50,6 +50,6 @@ interface EpsClientInterface {
     ): Call<Children>
     @POST("graphql/")
     fun insertAbsencesAndNotes(
-        @Body query: com.example.epsswim.data.model.requestBody.level.Query
+        @Body query: com.example.epsswim.data.model.requestBody.absences.Query
     ): Call<AbsencesResponse>
 }

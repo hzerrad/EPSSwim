@@ -67,6 +67,7 @@ fun AppNavigation(
             SwimmerProfile(
                 navController = navController,
                 swimmerId = detail.id,
+                isParent =detail.isParent,
                 sharedViewModel = sharedViewModel,
                 userViewModel = userViewModel,
                 parentViewModel = parentViewModel

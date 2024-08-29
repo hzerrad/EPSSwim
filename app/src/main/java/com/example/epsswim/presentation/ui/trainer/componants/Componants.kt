@@ -96,6 +96,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
+import com.example.epsswim.data.model.requestBody.absences.SwimmerId
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
@@ -790,6 +791,7 @@ fun MySearchBar(
 fun AbsenceSwimmerCard(
     modifier: Modifier,
     swimmer: Swimmer,
+    absentList: MutableList<SwimmerId>,
     enabled: Boolean,
     onClick: () -> Unit){
 
@@ -849,7 +851,10 @@ fun AbsenceSwimmerCard(
                     modifier = Modifier
                         .padding(start = 40.dp, bottom = 40.dp)
                         .align(Alignment.Start),
-                    onClick = { selected = !selected },
+                    onClick = {
+                        selected = !selected
+                        if (selected) absentList.add(SwimmerId(swimmer.swimmerid)) else absentList.remove(SwimmerId(swimmer.swimmerid))
+                              },
                     enabled = enabled,
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = buttonColor,

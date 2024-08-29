@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -77,6 +78,7 @@ import kotlinx.coroutines.launch
 fun SwimmerProfile(
     navController: NavHostController,
     swimmerId: String,
+    isParent : Boolean,
     sharedViewModel: SharedViewModel,
     userViewModel: UserViewModel,
     parentViewModel: ParentViewModel
@@ -211,7 +213,7 @@ fun SwimmerProfile(
                                 modifier = Modifier
                                     .clip(CircleShape)
                                     .size(120.dp)
-                                    .clickable {
+                                    .clickable(enabled = isParent) {
                                         singlePhotoPickerLauncher.launch(
                                             PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
                                         )

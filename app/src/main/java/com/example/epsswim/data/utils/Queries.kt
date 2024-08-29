@@ -125,6 +125,7 @@ object Queries {
         notedate
         description
       }
+      trainerid
     }
   }
 """
