@@ -40,6 +40,10 @@ fun AbsenceScreen(
     navController: NavHostController,
     trainerViewModel: TrainerViewModel
 ) {
+    LaunchedEffect(true) {
+        trainerViewModel.getTrainerLevels()
+
+    }
     val levelsListState = trainerViewModel.levelList.collectAsState()
     var levelsList by remember {
         mutableStateOf<List<Level>>(emptyList())

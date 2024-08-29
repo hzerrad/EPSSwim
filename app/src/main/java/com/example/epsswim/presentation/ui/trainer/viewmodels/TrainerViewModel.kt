@@ -33,11 +33,10 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
     val swimmerList: StateFlow<Children?> = _swimmerList
 
     init {
-        getTrainerLevels()
         getTrainerInfo()
     }
 
-    private fun getTrainerLevels(){
+    fun getTrainerLevels(){
         viewModelScope.launch {
             trainerRepository.getTrainerLevels(Query(Queries.GET_LEVELS)).enqueue(object : Callback<LevelsResponse> {
                 override fun onResponse(call: Call<LevelsResponse>, response: Response<LevelsResponse>) {

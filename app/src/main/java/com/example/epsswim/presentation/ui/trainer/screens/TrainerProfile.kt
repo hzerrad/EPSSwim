@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -64,6 +66,8 @@ import com.example.epsswim.presentation.ui.common.viewmodels.UserViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
 import com.example.epsswim.presentation.utils.getFullName
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun TrainerProfile(
@@ -104,6 +108,7 @@ fun MainContent(
     trainer: Trainer?
 ) {
     val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var selectedImage by remember {
         mutableStateOf<Uri?>(null)
     }
@@ -217,102 +222,18 @@ fun MainContent(
                     }
                 }
             }
-
+            val scrollState = rememberScrollState()
             Column (
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
                     .fillMaxWidth()
             ) {
                 ProfileCard(
                     modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
                     title = stringResource(R.string.personal_info),
-                    icon = R.drawable.personal_info_ic
-                ){
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-
-                                append("تاريخ الميلاد : ")
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(trainer!!.birthday)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
-
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(stringResource(R.string.blood_type))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(trainer!!.bloodtype)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(stringResource(R.string.phone_number))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(trainer!!.phonenumber)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
-
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(stringResource(R.string.absence_number))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(trainer!!.trainerAbsences_aggregate.aggregate.count.toString())
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                    )
-                }
-                ProfileCard(
-                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
-                    title = stringResource(R.string.absences),
-                    icon = R.drawable.calendar_ic,
-                ){
-                    trainer!!.trainerAbsences.forEachIndexed { index, trainerAbsence ->
+                    icon = R.drawable.personal_info_ic,
+                )
+                    {
                         Text(
                             text = buildAnnotatedString {
                                 withStyle(style = SpanStyle(
@@ -320,24 +241,119 @@ fun MainContent(
                                 )
                                 ) {
 
-                                    append(" الغياب ${index + 1} :")
+                                    append("تاريخ الميلاد : ")
                                 }
                                 withStyle(style = SpanStyle(
                                     fontWeight = FontWeight.Bold
                                 )
                                 ) {
-                                    append(trainerAbsence.absencedate)
+                                    append(trainer!!.birthday)
+                                }
+                            },
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(bottom = 14.dp)
+
+                        )
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(stringResource(R.string.blood_type))
+                                }
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(trainer!!.bloodtype)
+                                }
+                            },
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(bottom = 14.dp)
+                        )
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(stringResource(R.string.phone_number))
+                                }
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(trainer!!.phonenumber)
+                                }
+                            },
+                            color = Color.Black,
+                            fontSize = 16.sp,
+                            modifier = Modifier.padding(bottom = 14.dp)
+
+                        )
+                        Text(
+                            text = buildAnnotatedString {
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(stringResource(R.string.absence_number))
+                                }
+                                withStyle(style = SpanStyle(
+                                    fontWeight = FontWeight.Bold
+                                )
+                                ) {
+                                    append(trainer!!.trainerAbsences_aggregate.aggregate.count.toString())
                                 }
                             },
                             color = Color.Black,
                             fontSize = 16.sp,
                         )
                     }
-                }
+                ProfileCard(
+                    modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                    title = stringResource(R.string.absences),
+                    icon = R.drawable.calendar_ic,
+                ) {
+                        trainer!!.trainerAbsences.forEachIndexed { index, trainerAbsence ->
+                            Text(
+                                text = buildAnnotatedString {
+                                    withStyle(style = SpanStyle(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    ) {
+
+                                        append(" الغياب ${index + 1} :")
+                                    }
+                                    withStyle(style = SpanStyle(
+                                        fontWeight = FontWeight.Bold
+                                    )
+                                    ) {
+                                        append(trainerAbsence.absencedate)
+                                    }
+                                },
+                                color = Color.Black,
+                                fontSize = 16.sp,
+                            )
+                        }
+                    }
                 ProfileCard(
                     modifier = Modifier.padding(20.dp),
                     title = stringResource(R.string.levels),
                     icon = R.drawable.levels_ic,
+                    isLastCard = true,
+                    onScrollStateChange = { condition ->
+                        scope.launch {
+                            if (condition){
+                                delay(250)
+                                scrollState.animateScrollTo(scrollState.maxValue, tween(500))
+                            }
+
+                        }
+                    }
                 ){
                     trainer!!.levels.forEachIndexed { index, level ->
                         Text(
