@@ -24,6 +24,7 @@ class SharedViewModel @Inject constructor(private val sharedRepository: SharedRe
 
     fun getSwimmer(swimmerId: String) {
         viewModelScope.launch {
+            _swimmer.value = null
             sharedRepository.getSwimmerById(
                 Query(query = Queries.GET_SWIMMER_BY_ID, variables = SwimmerVariables(swimmerId))
             ).enqueue(object :

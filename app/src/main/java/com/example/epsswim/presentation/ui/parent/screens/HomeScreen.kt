@@ -36,6 +36,7 @@ import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
 import com.example.epsswim.presentation.ui.parent.componants.SwimmerCard
 import com.example.epsswim.presentation.ui.parent.viewmodels.ParentViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
+import kotlinx.coroutines.delay
 
 @Composable
 fun HomeScreen(
@@ -44,13 +45,14 @@ fun HomeScreen(
     parentViewModel: ParentViewModel ,
 ) {
     LaunchedEffect(true) {
+        delay(500)
         parentViewModel.getSwimmers()
     }
     val swimmerListState = parentViewModel.swimmerList.collectAsState()
     var swimmerList by remember {
         mutableStateOf<List<Swimmer>>(emptyList())
     }
-    LaunchedEffect(key1 = swimmerListState.value == null) {
+    LaunchedEffect(key1 = swimmerListState.value) {
         if (swimmerListState.value != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
             Log.d("TAG", "HomeScreen: $swimmerList")

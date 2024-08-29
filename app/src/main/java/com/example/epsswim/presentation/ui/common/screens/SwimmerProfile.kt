@@ -3,6 +3,7 @@ package com.example.epsswim.presentation.ui.common.screens
 import android.net.Uri
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -83,14 +85,13 @@ fun SwimmerProfile(
         sharedViewModel.getSwimmer(swimmerId)
     }
     var isLoading by remember {
-        mutableStateOf(true)
+        mutableStateOf(false)
     }
     val swimmerState = sharedViewModel.swimmer.collectAsStateWithLifecycle()
     var swimmer by remember {
         mutableStateOf<Swimmer?>(null)
     }
     if (swimmerState.value != null){
-        isLoading = false
         swimmer = swimmerState.value!!.data.swimmers.first()
         Log.d("TAG", "SwimmerProfile: $swimmer")
     }
@@ -105,28 +106,46 @@ fun SwimmerProfile(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImage = uri}
     )
-    val uploadState by userViewModel.uploadResult.observeAsState()
+    val uploadState = userViewModel.uploadResult.observeAsState()
+    var uploadStateValue by remember {
+        mutableStateOf<Result<String>?>(null)
+    }
+    if (uploadState.value != null)
+        uploadStateValue = uploadState.value
     LaunchedEffect (key1 = selectedImage) {
         selectedImage?.let {
             isLoading= true
-            swimmer = null
             userViewModel.uploadProfilePicture(it)
         }
     }
-    LaunchedEffect(key1 = uploadState) {
-        uploadState?.let { result ->
+    LaunchedEffect(key1 = uploadStateValue) {
+        uploadStateValue?.let { result ->
             if (result.isSuccess){
                 parentViewModel.updateSwimmerPfp(swimmerId,result.getOrDefault(""))
-                isLoading= false
-                Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
+                swimmer = null
+                sharedViewModel.getSwimmer(swimmerId)
+                if (isLoading){
+                    Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
+                    isLoading = false
+                }
             } else {
-                isLoading= false
-                Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
+                if (isLoading){
+                    Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
+                    isLoading = false
+                }
+
             }
         }
     }
+    BackHandler {
+        uploadStateValue = null
+        swimmer = null
+        navController.popBackStack()
+    }
 
-    if (!isLoading)
+    if (swimmer == null)
+        Loading()
+    else
         Column (
             modifier = Modifier
                 .background(MyBackground)
@@ -159,6 +178,7 @@ fun SwimmerProfile(
                         },
                         navigationIcon = {
                             IconButton(onClick = {
+                                uploadStateValue = null
                                 swimmer = null
                                 navController.popBackStack()
                             }){
@@ -181,19 +201,22 @@ fun SwimmerProfile(
                             .padding(top = 10.dp)
 //                       .align(Alignment.BottomCenter)
                     ) {
-                        AsyncImage(
-                            model = swimmer!!.pfpUrl,
-                            contentDescription ="profile pic" ,
-                            contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .clip(CircleShape)
-                                .size(120.dp)
-                                .clickable {
-                                    singlePhotoPickerLauncher.launch(
-                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-                                    )
-                                }
-                        )
+                        if (isLoading)
+                            CircularProgressIndicator()
+                        else
+                            AsyncImage(
+                                model = swimmer!!.pfpUrl,
+                                contentDescription = "profile pic",
+                                contentScale = ContentScale.Crop,
+                                modifier = Modifier
+                                    .clip(CircleShape)
+                                    .size(120.dp)
+                                    .clickable {
+                                        singlePhotoPickerLauncher.launch(
+                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                        )
+                                    }
+                            )
                         Spacer(modifier = Modifier.height(5.dp))
                         Text(
                             text = getFullName(swimmer!!.firstname,swimmer!!.lastname),
@@ -209,151 +232,151 @@ fun SwimmerProfile(
                 title = stringResource(R.string.personal_info),
                 icon = R.drawable.personal_info_ic
             )
-                {
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+            {
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-                                append(stringResource(R.string.level))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(swimmer!!.level.levelname)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+                            append(stringResource(R.string.level))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append(swimmer!!.level.levelname)
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-                                append("الجنس : ")
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(swimmer!!.sex)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
+                            append("الجنس : ")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append(swimmer!!.sex)
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-                                append("تاريخ الميلاد : ")
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(swimmer!!.birthday)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
+                            append("تاريخ الميلاد : ")
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append(swimmer!!.birthday)
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-                                append(stringResource(R.string.age))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(calculateAge(swimmer!!.birthday).toString())
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
+                            append(stringResource(R.string.age))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append(calculateAge(swimmer!!.birthday).toString())
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-                                append(stringResource(R.string.trainer_name))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(getFullName(swimmer!!.trainer.firstname,swimmer!!.trainer.lastname))
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+                            append(stringResource(R.string.trainer_name))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append(getFullName(swimmer!!.trainer.firstname,swimmer!!.trainer.lastname))
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-                                append(stringResource(R.string.trainer_phone))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(swimmer!!.trainer.phonenumber)
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(bottom = 14.dp)
+                            append(stringResource(R.string.trainer_phone))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append(swimmer!!.trainer.phonenumber)
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
 
-                    )
-                    Text(
-                        text = buildAnnotatedString {
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
+                )
+                Text(
+                    text = buildAnnotatedString {
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
 
-                                append(stringResource(R.string.absence_number))
-                            }
-                            withStyle(style = SpanStyle(
-                                fontWeight = FontWeight.Bold
-                            )
-                            ) {
-                                append(swimmer!!.swimmerAbsences_aggregate.aggregate.count.toString())
-                            }
-                        },
-                        color = Color.Black,
-                        fontSize = 16.sp,
-                    )
-                }
+                            append(stringResource(R.string.absence_number))
+                        }
+                        withStyle(style = SpanStyle(
+                            fontWeight = FontWeight.Bold
+                        )
+                        ) {
+                            append(swimmer!!.swimmerAbsences_aggregate.aggregate.count.toString())
+                        }
+                    },
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                )
+            }
             ProfileCard(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
                 title = stringResource(R.string.competition),
@@ -385,8 +408,7 @@ fun SwimmerProfile(
             }
 
         }
-    else
-        Loading()
+
 
 }
 
