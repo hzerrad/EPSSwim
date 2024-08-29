@@ -32,9 +32,6 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
     private val _swimmerList = MutableStateFlow<Children?>(null)
     val swimmerList: StateFlow<Children?> = _swimmerList
 
-    init {
-        getTrainerInfo()
-    }
 
     fun getTrainerLevels(){
         viewModelScope.launch {
@@ -86,6 +83,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
                 override fun onResponse(call: Call<PfpResponse>, response: Response<PfpResponse>) {
                     if (response.isSuccessful) {
                         Log.d("UpdatePicApi", "onResponse: success fetch data ${response.body()}")
+                        _trainerInfo.value = null
                         getTrainerInfo()
                     } else {
                         Log.d("UpdatePicApi", "onResponse: failed fetch data ${response.code()}")

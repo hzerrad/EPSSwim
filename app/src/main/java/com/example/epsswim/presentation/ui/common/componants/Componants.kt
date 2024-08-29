@@ -70,7 +70,7 @@ fun Loading() {
     Box(modifier = Modifier
         .background(color = MyBackground.copy(0.1f))
         .fillMaxSize()){
-        CircularProgressIndicator()
+        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     }
 }
 
