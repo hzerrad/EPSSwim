@@ -128,4 +128,20 @@ object Queries {
     }
   }
 """
+    const val INSERT_ABSENCES_AND_NOTE = """
+    mutation InsertAbsencesAndNotes(${'$'}objects: [absences_insert_input!]!, ${'$'}levelid: uuid!, ${'$'}trainerid: uuid!, ${'$'}description: String!) {
+      insert_absences(objects: ${'$'}objects) {
+        returning {
+          absenceid
+          entityid
+          absencedate
+        }
+      }
+      insert_notes_one(object: {levelid: ${'$'}levelid, trainerid: ${'$'}trainerid, description: ${'$'}description}) {
+        noteid
+        notedate
+        description
+      }
+    }
+    """
 }

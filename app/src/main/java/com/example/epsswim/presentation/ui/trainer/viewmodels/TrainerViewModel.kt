@@ -10,7 +10,6 @@ import com.example.epsswim.data.model.app.trainer.TrainerResponse
 import com.example.epsswim.data.model.requestBody.level.LevelVariables
 import com.example.epsswim.data.model.requestBody.pfp.trainer.TrainerPfpVariables
 import com.example.epsswim.data.model.requestBody.swimmer.Query
-import com.example.epsswim.data.model.requestBody.swimmer.SwimmerVariables
 import com.example.epsswim.data.repositories.TrainerRepository
 import com.example.epsswim.data.utils.Queries
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -100,10 +99,12 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
     }
     fun getSwimmersByLevelId (levelid: String,absencedate: String?){
         viewModelScope.launch {
-            trainerRepository.getSwimmersByLevel(com.example.epsswim.data.model.requestBody.level.Query(
-                Queries.GET_SWIMMERS_BY_LEVEL_ID,
-                variables = LevelVariables(levelid = levelid,absencedate = absencedate)
-            )).enqueue(object : Callback<Children> {
+            trainerRepository.getSwimmersByLevel(
+                com.example.epsswim.data.model.requestBody.level.Query(
+                    Queries.GET_SWIMMERS_BY_LEVEL_ID,
+                    variables = LevelVariables(levelid = levelid, absencedate = absencedate)
+                )
+            ).enqueue(object : Callback<Children> {
                 override fun onResponse(call: Call<Children>, response: Response<Children>) {
                     if (response.isSuccessful) {
                         _swimmerList.value = response.body()

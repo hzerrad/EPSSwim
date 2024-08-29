@@ -1,5 +1,6 @@
 package com.example.epsswim.data.network
 
+import com.example.epsswim.data.model.app.absences.AbsencesResponse
 import com.example.epsswim.data.model.app.levels.LevelsResponse
 import com.example.epsswim.data.model.app.pfp.PfpResponse
 import com.example.epsswim.data.model.app.swimmer.Children
@@ -47,4 +48,8 @@ interface EpsClientInterface {
     fun getSwimmersByLevel(
         @Body query: com.example.epsswim.data.model.requestBody.level.Query
     ): Call<Children>
+    @POST("graphql/")
+    fun insertAbsencesAndNotes(
+        @Body query: com.example.epsswim.data.model.requestBody.level.Query
+    ): Call<AbsencesResponse>
 }
