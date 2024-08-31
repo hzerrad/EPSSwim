@@ -126,7 +126,9 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
     fun insertAbsencesAndNotes(
         isLoading : MutableState<Boolean>,
         isError : MutableState<Boolean>,
-        objects : List<SwimmerId>,
+        objects1 : List<SwimmerId>,
+        objects2 : List<String>,
+        absencedate: String,
         levelid: String,
         trainerid: String,
         description: String,
@@ -136,7 +138,9 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
                 com.example.epsswim.data.model.requestBody.absences.Query(
                     Queries.INSERT_ABSENCES_AND_NOTE,
                     variables = AbsencesVariables(
-                        objects = objects,
+                        objects1 = objects1,
+                        objects2 = objects2,
+                        absencedate = absencedate,
                         levelid = levelid,
                         trainerid = trainerid,
                         description = description

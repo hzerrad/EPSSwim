@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -88,7 +87,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -105,7 +103,6 @@ import com.example.epsswim.presentation.ui.theme.MySecondary
 import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.getArabicDate
 import com.example.epsswim.presentation.utils.getArabicWeekDay
-import com.example.epsswim.presentation.utils.getDate
 import com.example.epsswim.presentation.utils.getFullName
 import com.kizitonwose.calendar.compose.WeekCalendar
 import com.kizitonwose.calendar.compose.weekcalendar.rememberWeekCalendarState
@@ -792,13 +789,15 @@ fun AbsenceSwimmerCard(
     modifier: Modifier,
     swimmer: Swimmer,
     absentList: MutableList<SwimmerId>,
+    presentList: MutableList<String>,
     enabled: Boolean,
-    onClick: () -> Unit){
+    onClick: () -> Unit,
+){
 
     var selected by remember {
         mutableStateOf(false)
     }
-    selected= swimmer.swimmerAbsences_aggregate.aggregate.count == 1
+    selected= absentList.contains(SwimmerId(swimmer.swimmerid))
     Box(
         modifier = modifier
             .clickable { onClick() }
@@ -853,7 +852,13 @@ fun AbsenceSwimmerCard(
                         .align(Alignment.Start),
                     onClick = {
                         selected = !selected
-                        if (selected) absentList.add(SwimmerId(swimmer.swimmerid)) else absentList.remove(SwimmerId(swimmer.swimmerid))
+                        if (selected){
+                            absentList.add(SwimmerId(swimmer.swimmerid))
+                            presentList.remove(swimmer.swimmerid)
+                        }else{
+                            absentList.remove(SwimmerId(swimmer.swimmerid))
+                            presentList.add(swimmer.swimmerid)
+                        }
                               },
                     enabled = enabled,
                     colors = ButtonDefaults.outlinedButtonColors(

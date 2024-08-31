@@ -23,7 +23,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -60,7 +59,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
-import com.example.epsswim.data.model.app.trainer.Trainer
 import com.example.epsswim.data.model.requestBody.absences.SwimmerId
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.Loading
@@ -101,16 +99,24 @@ fun LevelScreen(
     val isError = remember {
         mutableStateOf(false)
     }
+    val absentList = remember {
+        mutableListOf<SwimmerId>()
+    }
+    val presentList = remember {
+        mutableListOf<String>()
+    }
+    trainerViewmodel.getSwimmersByLevelId(levelID,getDate(selectedDate.value))
+
     LaunchedEffect(key1 = levelID,key2 = getDate(selectedDate.value)) {
+        absentList.clear()
+        presentList.clear()
         trainerViewmodel.getSwimmersByLevelId(levelID,getDate(selectedDate.value))
     }
     val swimmerListState = trainerViewmodel.swimmerList.collectAsState()
     var swimmerList by remember {
         mutableStateOf<List<Swimmer>>(emptyList())
     }
-    val absentList = remember {
-        mutableListOf<SwimmerId>()
-    }
+
     var currentSwimmer by remember {
         mutableStateOf<Swimmer?>(null)
     }
@@ -140,6 +146,20 @@ fun LevelScreen(
     LaunchedEffect(key1 = swimmerListState.value) {
         if (swimmerListState.value != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
+            absentList.addAll(
+                swimmerList.filter {
+                    it.swimmerAbsences_aggregate.aggregate.count != 0
+                }.map {
+                    SwimmerId(it.swimmerid)
+                }
+            )
+            presentList.addAll(
+                swimmerList.filter {
+                    it.swimmerAbsences_aggregate.aggregate.count == 0
+                }.map {
+                    it.swimmerid
+                }
+            )
             note = swimmerListState.value?.data?.levels_by_pk?.notes?.firstOrNull()?.description ?: ""
             trainerId = swimmerListState.value?.data?.levels_by_pk?.trainerid ?: ""
             noteState.setMarkdown(note)
@@ -150,6 +170,8 @@ fun LevelScreen(
     }
     LaunchedEffect (isDataSent.value,isError.value,isLoading.value) {
         if (!isLoading.value && isDataSent.value && !isError.value){
+            absentList.clear()
+            absentList.clear()
             navController.popBackStack()
         }
     }
@@ -175,12 +197,16 @@ fun LevelScreen(
                         trainerViewmodel.insertAbsencesAndNotes(
                             isLoading = isLoading,
                             isError=isError,
-                            objects = absentList.toList(),
+                            objects1 = absentList.toList(),
+                            objects2 = presentList.toList(),
+                            absencedate = getDate(selectedDate.value),
                             levelid = levelID,
                             trainerid = trainerId,
                             description = noteState.toMarkdown()
 
                         )
+                        Log.d("TAG", "LevelScreen: abs: ${absentList.toList()} pres: ${presentList.toList()}")
+
                     }){
                         Icon(
                             painter = painterResource(id = R.drawable.done_ic),
@@ -221,7 +247,7 @@ fun LevelScreen(
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp),
-                            text = stringResource(R.string.number_of_presence) + presenceNumber +"/"+ swimmerList.size.toString(),
+                            text = stringResource(R.string.number_of_presence) + (presenceNumber-absentList.size) +"/"+ swimmerList.size.toString(),
                             fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
                             fontSize = 20.sp,
                         )
@@ -271,6 +297,7 @@ fun LevelScreen(
                                     .padding(horizontal = 36.dp)
                                     .align(Alignment.Center),
                                 absentList = absentList,
+                                presentList = presentList,
                                 swimmer = currentSwimmer!!,
                                 enabled = getDate(selectedDate.value) == getDate(LocalDate.now()),
                             ){

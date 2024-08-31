@@ -130,15 +130,14 @@ object Queries {
   }
 """
     const val INSERT_ABSENCES_AND_NOTE = """
-    mutation InsertAbsencesAndNotes(${'$'}objects: [absences_insert_input!]!, ${'$'}levelid: uuid!, ${'$'}trainerid: uuid!, ${'$'}description: String!) {
-      insert_absences(objects: ${'$'}objects) {
-        returning {
-          absenceid
-          entityid
-          absencedate
-        }
+    mutation InsertAbsencesAndNotes(${'$'}objects1: [absences_insert_input!]!, ${'$'}objects2: [uuid!] = [], ${'$'}absencedate: date!, ${'$'}levelid: uuid!, ${'$'}trainerid: uuid!, ${'$'}description: String!) {
+      insert_absences(objects: ${'$'}objects1) {
+        affected_rows
       }
-      insert_notes_one(object: {levelid: ${'$'}levelid, trainerid: ${'$'}trainerid, description: ${'$'}description}) {
+      delete_absences(where: {entityid: {_in: ${'$'}objects2}, absencedate: {_eq: ${'$'}absencedate}}) {
+        affected_rows
+      }
+      insert_notes_one(object: {notedate: ${'$'}absencedate, levelid: ${'$'}levelid, description: ${'$'}description, trainerid: ${'$'}trainerid}, on_conflict: {constraint: notes_unique, update_columns: description}) {
         noteid
         notedate
         description
