@@ -131,7 +131,7 @@ object Queries {
 """
     const val INSERT_ABSENCES_AND_NOTE = """
     mutation InsertAbsencesAndNotes(${'$'}objects1: [absences_insert_input!]!, ${'$'}objects2: [uuid!] = [], ${'$'}absencedate: date!, ${'$'}levelid: uuid!, ${'$'}trainerid: uuid!, ${'$'}description: String!) {
-      insert_absences(objects: ${'$'}objects1) {
+      insert_absences(objects: ${'$'}objects1, on_conflict: {constraint: absencedate_unique, update_columns:[]}) {
         affected_rows
       }
       delete_absences(where: {entityid: {_in: ${'$'}objects2}, absencedate: {_eq: ${'$'}absencedate}}) {
