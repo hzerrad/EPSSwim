@@ -1,6 +1,5 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
-import android.util.Log
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -126,9 +125,7 @@ fun LevelScreen(
     var lastIndex by remember {
         mutableIntStateOf(0)
     }
-    var presenceNumber by remember {
-        mutableIntStateOf(0)
-    }
+
     var trainerId by remember {
         mutableStateOf("")
     }
@@ -165,7 +162,7 @@ fun LevelScreen(
             noteState.setMarkdown(note)
             lastIndex = swimmerList.size - 1
             currentSwimmer = swimmerList[index]
-            presenceNumber = swimmerList.size
+            isLoading.value = currentSwimmer != null
         }
     }
     LaunchedEffect (isDataSent.value,isError.value,isLoading.value) {
@@ -205,7 +202,7 @@ fun LevelScreen(
                             description = noteState.toMarkdown()
 
                         )
-                        Log.d("TAG", "LevelScreen: abs: ${absentList.toList()} pres: ${presentList.toList()}")
+//                        Log.d("TAG", "LevelScreen: abs: ${absentList.toList()} pres: ${presentList.toList()}")
 
                     }){
                         Icon(
@@ -229,7 +226,7 @@ fun LevelScreen(
             }
         }
 
-        if (currentSwimmer != null)
+        if (isLoading.value)
             Surface(
                 modifier = Modifier
                     .padding(it)
@@ -247,7 +244,7 @@ fun LevelScreen(
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp),
-                            text = stringResource(R.string.number_of_presence) + (presenceNumber-absentList.size) +"/"+ swimmerList.size.toString(),
+                            text = stringResource(R.string.number_of_presence) + presentList.size +"/"+ swimmerList.size.toString(),
                             fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
                             fontSize = 20.sp,
                         )

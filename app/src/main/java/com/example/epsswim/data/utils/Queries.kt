@@ -144,4 +144,10 @@ object Queries {
       }
     }
     """
+    const val GET_ALL_COMPETITION = """
+   
+    """
+    const val INSERT_COMPETITION = """
+   
+    """
 }

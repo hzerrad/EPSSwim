@@ -28,7 +28,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -45,10 +44,14 @@ import com.example.epsswim.presentation.ui.trainer.componants.CompetitionDetails
 import com.example.epsswim.presentation.ui.trainer.componants.FullScreenDialogContent
 import com.example.epsswim.presentation.ui.trainer.componants.MySearchBar
 import com.example.epsswim.presentation.ui.trainer.componants.ParticipantCard
+import com.example.epsswim.presentation.ui.trainer.viewmodels.CompetitionViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompetitionsScreen(navController: NavHostController) {
+fun CompetitionsScreen(
+    navController: NavHostController,
+    competitionViewModel: CompetitionViewModel
+) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }

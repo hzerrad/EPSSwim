@@ -21,6 +21,7 @@ import com.example.epsswim.presentation.ui.trainer.screens.AbsenceScreen
 import com.example.epsswim.presentation.ui.trainer.screens.CompetitionsScreen
 import com.example.epsswim.presentation.ui.trainer.screens.LevelScreen
 import com.example.epsswim.presentation.ui.trainer.screens.TrainerProfile
+import com.example.epsswim.presentation.ui.trainer.viewmodels.CompetitionViewModel
 import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
 
 @Composable
@@ -34,6 +35,7 @@ fun AppNavigation(
     val trainerViewmodel : TrainerViewModel = hiltViewModel()
     val userViewModel : UserViewModel = hiltViewModel()
     val parentViewModel: ParentViewModel = hiltViewModel()
+    val competitionViewModel : CompetitionViewModel = hiltViewModel()
 
     NavHost(
         modifier = modifier,
@@ -88,6 +90,7 @@ fun AppNavigation(
         composable<Screen.CompetitionScreen>{
             CompetitionsScreen(
                 navController = navController,
+                competitionViewModel = competitionViewModel
             )
         }
         composable<Screen.LevelScreen>{

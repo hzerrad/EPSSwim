@@ -52,4 +52,14 @@ interface EpsClientInterface {
     fun insertAbsencesAndNotes(
         @Body query: com.example.epsswim.data.model.requestBody.absences.Query
     ): Call<AbsencesResponse>
+
+    @POST("graphql/")
+    fun insertCompetition(
+        @Body query: com.example.epsswim.data.model.requestBody.absences.Query
+    ): Call<AbsencesResponse>
+
+    @POST("graphql/")
+    fun getCompetitions(
+        @Body query: com.example.epsswim.data.model.requestBody.absences.Query
+    ): Call<AbsencesResponse>
 }
