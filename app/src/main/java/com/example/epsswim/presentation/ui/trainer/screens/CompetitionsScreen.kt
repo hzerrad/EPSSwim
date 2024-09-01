@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,6 +17,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +38,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.swimmer.Level
+import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
@@ -56,6 +61,28 @@ fun CompetitionsScreen(
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
     val showFullScreenDialog = remember { mutableStateOf(false) }
+
+    LaunchedEffect(key1 = true) {
+        competitionViewModel.getTrainerSwimmers()
+    }
+    val levelListState = competitionViewModel.levelList.collectAsState()
+    var levelList by remember {
+        mutableStateOf<List<Level>>(emptyList())
+    }
+    val swimmerList = remember {
+        mutableListOf<Swimmer>()
+    }
+    LaunchedEffect(key1 = levelListState.value) {
+        if(levelListState.value != null){
+            levelList = levelListState.value?.data?.levels ?: emptyList()
+            levelList.forEach { lvl ->
+                swimmerList.addAll(lvl.swimmers)
+            }
+            Log.d("TAG", "CompetitionsScreen: ${swimmerList.size}")
+        }
+
+
+    }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Scaffold (
@@ -138,6 +165,7 @@ fun CompetitionsScreen(
                             properties = DialogProperties(usePlatformDefaultWidth = false)
                         ){
                             FullScreenDialogContent(
+                                participants= swimmerList.toList(),
                                 onDismiss ={
                                     showFullScreenDialog.value = false
                                 },

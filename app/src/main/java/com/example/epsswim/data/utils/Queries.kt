@@ -150,4 +150,15 @@ object Queries {
     const val INSERT_COMPETITION = """
    
     """
+    const val GET_TRAINER_SWIMMERS = """
+    query GetTrainerSwimmers {
+      levels {
+        swimmers {
+          swimmerid
+          firstname
+          lastname
+        }
+      }
+    }
+    """
 }

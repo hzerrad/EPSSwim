@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.componants
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -76,6 +77,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
@@ -118,7 +120,11 @@ import java.util.Locale
 
 
 @Composable
-fun FullScreenDialogContent( onDismiss: () -> Unit={}, onDone: () -> Unit={}) {
+fun FullScreenDialogContent(
+    participants: List<Swimmer>,
+    onDone: () -> Unit = {},
+    onDismiss: () -> Unit = {}
+) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Surface (color = MyBackground) {
             Column (
@@ -130,7 +136,7 @@ fun FullScreenDialogContent( onDismiss: () -> Unit={}, onDone: () -> Unit={}) {
                     onDismiss =onDismiss,
                     onDone =onDone
                 )
-                DialogBody()
+                DialogBody(participants)
             }
         }
     }
@@ -139,11 +145,14 @@ fun FullScreenDialogContent( onDismiss: () -> Unit={}, onDone: () -> Unit={}) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DialogBody() {
+private fun DialogBody(participants: List<Swimmer>) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
     var isCardSelected by remember {mutableStateOf(false)}
 
+    val participantList = remember {
+        mutableStateOf<List<Swimmer>>(emptyList())
+    }
     Column (
         modifier = Modifier
             .clickable(
@@ -224,7 +233,6 @@ private fun DialogBody() {
                 yearRange = 2024..2034
             ),
             label = stringResource(R.string.competition_date),
-//            isIllegalInput = isDateNotValid(dateOfBorrowState.value,dateOfReturnState.value),
             isIllegalInput = false,
             dateState = competitionDate
         )
@@ -279,15 +287,17 @@ private fun DialogBody() {
             fontFamily = FontFamily(listOf(Font(R.font.cairo_regular))),
         )
         EditableParticipantExposedDropdownMenu(
+            participants = participants,
             modifier = Modifier
                 .onFocusChanged { isCardSelected = false }
                 .padding(bottom = 12.dp)
-        )
-        val participants = remember {
-            mutableListOf(" أحمد شمشون","محمود عبدالرحمن","سعيد معمر")
+        ){
+            participantList.value += it
         }
+
+
         ParticipantsContainer(
-            participants = participants,
+            participants = participantList,
             modifier = Modifier
                 .onFocusChanged { isCardSelected = false }
                 .padding(bottom = 12.dp)
@@ -298,8 +308,8 @@ private fun DialogBody() {
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ParticipantsContainer(
-    participants: MutableList<String>
-    ,modifier: Modifier
+    participants: MutableState<List<Swimmer>>,
+    modifier: Modifier
 ) {
 
     OutlinedCard(
@@ -308,7 +318,7 @@ fun ParticipantsContainer(
             .fillMaxWidth()
             .heightIn(min = 56.dp),
         shape = RoundedCornerShape(4.dp),
-        border = if (participants.isNotEmpty()) BorderStroke(2.dp, MyPrimary) else BorderStroke(1.dp, Color.DarkGray),
+        border = if (participants.value.isNotEmpty()) BorderStroke(2.dp, MyPrimary) else BorderStroke(1.dp, Color.DarkGray),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MyBackground
         ),
@@ -318,12 +328,12 @@ fun ParticipantsContainer(
                 .padding(0.dp)
                 .fillMaxWidth()
         ){
-            participants.forEach{ participant ->
+            participants.value.forEach{ participant ->
                 Tag(
                     modifier=Modifier.padding(8.dp),
-                    text = participant
+                    text = getFullName(participant.firstname,participant.lastname)
                 ){
-                    participants.add(participant)
+                    participants.value -= participant
                 }
             }
         }
@@ -580,11 +590,16 @@ fun CustomDatePicker (
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun EditableParticipantExposedDropdownMenu(modifier: Modifier) {
-    val options = listOf("Cupcake", "Donut", "Eclair", "Froyo", "Gingerbread")
+fun EditableParticipantExposedDropdownMenu(
+    modifier: Modifier,
+    participants: List<Swimmer>,
+    onParticipantSelected: (Swimmer) -> Unit
+    ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     var text by remember { mutableStateOf(TextFieldValue()) }
-    val filteredOptions = options.filter{
-        it.contains(text.text, ignoreCase = true)
+    val filteredOptions = participants.filter {
+        getFullName(it.firstname,it.lastname).contains(text.text,ignoreCase = true)
     }
     val (allowExpanded, setExpanded) = remember { mutableStateOf(false) }
     val expanded = allowExpanded && filteredOptions.isNotEmpty()
@@ -623,14 +638,17 @@ fun EditableParticipantExposedDropdownMenu(modifier: Modifier) {
         ) {
             filteredOptions.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option, style = MaterialTheme.typography.bodyLarge) },
+                    text = {
+                        Text(
+                            getFullName(option.firstname,option.lastname),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    },
                     onClick = {
-                        text =
-                            TextFieldValue(
-                                text = option,
-                                selection = TextRange(option.length),
-                            )
+                        onParticipantSelected(option)
+                        text = TextFieldValue(text = getFullName(option.firstname,option.lastname), selection = TextRange(getFullName(option.firstname,option.lastname).length))
                         setExpanded(false)
+                        keyboardController?.hide()
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     colors = MenuDefaults.itemColors(
@@ -902,7 +920,9 @@ fun ExposedDropdownMenuParticipationType(
         onExpandedChange = { expanded = it }
     ) {
         OutlinedTextField(
-            modifier = Modifier.menuAnchor().fillMaxWidth(),
+            modifier = Modifier
+                .menuAnchor()
+                .fillMaxWidth(),
             value = text,
             onValueChange = {},
             readOnly = true,
