@@ -46,7 +46,7 @@ interface EpsClientInterface {
 
     @POST("graphql/")
     fun getSwimmersByLevel(
-        @Body query: com.example.epsswim.data.model.requestBody.level.Query
+        @Body query: com.example.epsswim.data.model.requestBody.competition.Query
     ): Call<Children>
     @POST("graphql/")
     fun insertAbsencesAndNotes(
@@ -65,7 +65,7 @@ interface EpsClientInterface {
 
     @POST("graphql/")
     fun getTrainerSwimmers(
-        @Body query: com.example.epsswim.data.model.requestBody.level.Query
+        @Body query: com.example.epsswim.data.model.requestBody.competition.Query
     ): Call<LevelsResponse>
 
 }

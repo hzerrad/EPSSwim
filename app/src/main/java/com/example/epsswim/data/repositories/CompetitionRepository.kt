@@ -1,6 +1,6 @@
 package com.example.epsswim.data.repositories
 
-import com.example.epsswim.data.model.requestBody.level.Query
+import com.example.epsswim.data.model.requestBody.competition.Query
 import com.example.epsswim.data.network.EpsClientInterface
 import javax.inject.Inject
 

@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.levels.LevelsResponse
-import com.example.epsswim.data.model.requestBody.level.Query
+import com.example.epsswim.data.model.requestBody.competition.Query
 import com.example.epsswim.data.repositories.CompetitionRepository
 import com.example.epsswim.data.utils.Queries
 import dagger.hilt.android.lifecycle.HiltViewModel

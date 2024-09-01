@@ -148,7 +148,19 @@ object Queries {
    
     """
     const val INSERT_COMPETITION = """
-   
+   mutation CreateCompetitionWithParticipants(${'$'}competitionData: competitions_insert_input!) {
+     insert_competitions_one(object: ${'$'}competitionData) {
+       event
+       competitiondate
+       location
+       isbrevet
+       participants {
+         swimmer {
+           swimmerid
+         }
+       }
+     }
+   }
     """
     const val GET_TRAINER_SWIMMERS = """
     query GetTrainerSwimmers {
