@@ -195,4 +195,28 @@ object Queries {
       }
     }
     """
+    const val GET_SWIMMING_TYPES = """
+    query GetTrainerSwimmers {
+      levels {
+        levelid
+        swimmers {
+          swimmerid
+          firstname
+          lastname
+        }
+      }
+    }
+    """
+    const val INSERT_PARTICIPATION = """
+    mutation AddSwimmerEventRecord(${'$'}swimmerid: uuid!, ${'$'}eventtypeid: uuid!, ${'$'}competitionid: uuid!, ${'$'}laptimes: [float8!]!) {
+      insert_swimmerevents_one(object: {swimmerid: ${'$'}swimmerid, competitionid: ${'$'}competitionid, eventtypeid: ${'$'}eventtypeid, laptimes: ${'$'}laptimes}) {
+        laptimes
+        swimmer {
+          swimmerid
+          firstname
+          lastname
+        }
+      }
+    }
+    """
 }

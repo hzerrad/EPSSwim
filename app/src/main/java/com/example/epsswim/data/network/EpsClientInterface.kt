@@ -3,6 +3,7 @@ package com.example.epsswim.data.network
 import com.example.epsswim.data.model.app.absences.AbsencesResponse
 import com.example.epsswim.data.model.app.competition.CompetitionResponse
 import com.example.epsswim.data.model.app.levels.LevelsResponse
+import com.example.epsswim.data.model.app.participation.swimmingtypes.SwimmingTypesResponse
 import com.example.epsswim.data.model.app.pfp.PfpResponse
 import com.example.epsswim.data.model.app.swimmer.Children
 import com.example.epsswim.data.model.app.trainer.TrainerResponse
@@ -68,5 +69,9 @@ interface EpsClientInterface {
     fun getTrainerSwimmers(
         @Body query: com.example.epsswim.data.model.requestBody.competition.Query
     ): Call<LevelsResponse>
+    @POST("graphql/")
+    fun getSwimmingTypes(
+        @Body query: com.example.epsswim.data.model.requestBody.participation.Query
+    ): Call<SwimmingTypesResponse>
 
 }
