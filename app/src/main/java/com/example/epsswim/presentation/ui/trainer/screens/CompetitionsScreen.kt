@@ -1,9 +1,11 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +39,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.competition.Competition
 import com.example.epsswim.data.model.app.swimmer.Level
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
@@ -61,6 +64,19 @@ fun CompetitionsScreen(
     var showBottomSheet by remember { mutableStateOf(false) }
     val showFullScreenDialog = remember { mutableStateOf(false) }
 
+    val competitionListState = competitionViewModel.competitionList.collectAsState()
+    var competitionList by remember {
+        mutableStateOf<List<Competition>>(emptyList())
+    }
+    var currentCompetition by remember {
+        mutableStateOf<Competition?>(null)
+    }
+    LaunchedEffect(key1 = competitionListState.value) {
+        if(competitionListState.value == null)
+            competitionViewModel.getCompetitions()
+        else
+            competitionList = competitionListState.value?.data?.competitions ?: emptyList()
+    }
     LaunchedEffect(key1 = true) {
         competitionViewModel.getTrainerSwimmers()
     }
@@ -82,8 +98,6 @@ fun CompetitionsScreen(
             }
             levelID = levelList.first().levelid
         }
-
-
     }
 
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
@@ -125,12 +139,12 @@ fun CompetitionsScreen(
                         }
                     )
                     LazyColumn (modifier = Modifier.padding(top = 40.dp)) {
-                        items(3){
+                        items(items = competitionList.filter {it.event.contains(searchedText.value)}){ competition ->
                             CompetitionCard(
                                 modifier = Modifier.padding(bottom = 20.dp),
-                                name = "المسابقة الولائية",
-                                date = "10/12/2024"
+                                competition = competition
                             ) {
+                                currentCompetition = competition
                                 showBottomSheet= true
                             }
                         }
@@ -144,7 +158,7 @@ fun CompetitionsScreen(
                             containerColor = MyBackground
                         ) {
                             Column (Modifier.padding(start = 24.dp, end = 24.dp, bottom = 50.dp)){
-                                CompetitionDetailsCard(Modifier.padding(bottom = 12.dp))
+                                CompetitionDetailsCard(Modifier.padding(bottom = 12.dp),competition = currentCompetition!!)
                                 Text(
                                     text = stringResource(R.string.the_participants),
                                     fontWeight = FontWeight.Medium,
@@ -152,12 +166,19 @@ fun CompetitionsScreen(
                                     modifier = Modifier.padding(bottom = 12.dp),
                                     fontSize = 20.sp,
                                 )
-                                ParticipantCard(Modifier.padding(bottom = 12.dp)){
-                                    navController.navigate(Screen.ParticipationDetails)
+                                LazyColumn {
+                                    items(items = currentCompetition!!.participants){
+                                        ParticipantCard(
+                                            modifier = Modifier.padding(bottom = 12.dp),
+                                            participant = it
+                                        ){
+                                            navController.navigate(Screen.ParticipationDetails)
+                                        }
+                                    }
+
+
                                 }
-                                ParticipantCard(Modifier.padding(bottom = 12.dp)){
-                                    navController.navigate(Screen.ParticipationDetails)
-                                }
+
                             }
                         }
                     }

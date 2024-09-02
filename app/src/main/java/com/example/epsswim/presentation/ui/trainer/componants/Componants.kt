@@ -80,7 +80,6 @@ import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -95,6 +94,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.competition.Competition
+import com.example.epsswim.data.model.app.competition.Participant
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.data.model.requestBody.absences.SwimmerId
 import com.example.epsswim.data.model.requestBody.competition.CompetitionData
@@ -315,7 +316,8 @@ private fun DialogBody(participants: List<Swimmer>, competitionData: MutableStat
                 .onFocusChanged { isCardSelected = false }
                 .padding(bottom = 12.dp)
         ){
-            participantList.value += it
+            if (!participantList.value.contains(it))
+                participantList.value += it
         }
 
         ParticipantsContainer(
@@ -426,7 +428,7 @@ private fun DialogHeader(competitionData: CompetitionData,onDismiss: () -> Unit,
 }
 
 @Composable
-fun ParticipantCard(modifier: Modifier,onClick: () -> Unit) {
+fun ParticipantCard(modifier: Modifier, participant: Participant, onClick: () -> Unit) {
     OutlinedCard(
         onClick = onClick,
         modifier = modifier.fillMaxWidth(),
@@ -440,26 +442,26 @@ fun ParticipantCard(modifier: Modifier,onClick: () -> Unit) {
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ){
-            Image(
+            AsyncImage(
                 modifier = Modifier
                     .padding(end = 16.dp)
-                    .size(65.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .border(0.2.dp, Black),
-                painter = painterResource(id = R.drawable.img),
+                    .width(65.dp)
+                    .border(0.2.dp, Black, RoundedCornerShape(12.dp)),
+                model = participant.swimmer.pfpUrl,
                 contentDescription = stringResource(R.string.profile_img),
                 contentScale = ContentScale.Crop
             )
             Column  {
                 Text(
-                    text = "محمد عليم",
+                    text = getFullName(participant.swimmer.firstname,participant.swimmer.lastname),
                     fontWeight = FontWeight.Medium,
                     fontSize = 18.sp,
                     color = Black
                 )
                 Spacer(modifier = Modifier.height(5.dp))
                 Text(
-                    text = "مستوى جونيور (18 سنة)",
+                    text = "مستوى "+ participant.swimmer.level.levelname +" ( ${calculateAge(participant.swimmer.birthday)} سنة)",
                     fontSize = 14.sp,
                     color = Color.Gray
                 )
@@ -469,7 +471,7 @@ fun ParticipantCard(modifier: Modifier,onClick: () -> Unit) {
 }
 
 @Composable
-fun CompetitionDetailsCard(modifier: Modifier) {
+fun CompetitionDetailsCard(modifier: Modifier, competition: Competition) {
     Row (
         modifier= modifier
             .fillMaxWidth(),
@@ -478,25 +480,26 @@ fun CompetitionDetailsCard(modifier: Modifier) {
     ) {
         Column {
             Text(
-                text = "المسابقة الولائية",
+                text = competition.event,
                 color = Black,
                 fontWeight = FontWeight.Medium,
                 fontSize = 22.sp,
             )
             Text(
-                text = "12/12/2023",
+                text = competition.competitiondate.replace('-','/'),
                 color = Color.Gray,
                 fontSize = 16.sp,
             )
             Text(
-                text = "سطيف, عين أرنات",
+                text = competition.location,
                 color = Color.Gray,
                 fontSize = 16.sp,
             )
         }
+        val competitionBadge = if (competition.isbrevet) R.drawable.competition_badge1 else R.drawable.competition_badge
         Image(
             modifier = Modifier.height(50.dp),
-            painter = painterResource(id = R.drawable.competition_badge),
+            painter = painterResource(id = competitionBadge),
             contentDescription = "competition badge",
             contentScale = ContentScale.Crop
         )
@@ -636,7 +639,10 @@ fun EditableParticipantExposedDropdownMenu(
     }
     val (allowExpanded, setExpanded) = remember { mutableStateOf(false) }
     val expanded = allowExpanded && filteredOptions.isNotEmpty()
-
+    LaunchedEffect(expanded) {
+        if (!expanded)
+            keyboardController!!.hide()
+    }
     ExposedDropdownMenuBox(
         modifier = modifier,
         expanded = expanded,
@@ -679,9 +685,9 @@ fun EditableParticipantExposedDropdownMenu(
                     },
                     onClick = {
                         onParticipantSelected(option)
-                        text = TextFieldValue(text = getFullName(option.firstname,option.lastname), selection = TextRange(getFullName(option.firstname,option.lastname).length))
+                        text = TextFieldValue()
+//                        text = TextFieldValue(text = getFullName(option.firstname,option.lastname), selection = TextRange(getFullName(option.firstname,option.lastname).length))
                         setExpanded(false)
-                        keyboardController?.hide()
                     },
                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding,
                     colors = MenuDefaults.itemColors(

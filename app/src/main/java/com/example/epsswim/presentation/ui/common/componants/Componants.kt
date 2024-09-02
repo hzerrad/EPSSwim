@@ -59,6 +59,7 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.competition.Competition
 import com.example.epsswim.presentation.navigation.BottomBarItem
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
@@ -188,7 +189,7 @@ fun MyBottomBar(
 
 }
 @Composable
-fun CompetitionCard(modifier: Modifier,name: String, date: String, onClick: () -> Unit) {
+fun CompetitionCard(modifier: Modifier,competition: Competition, onClick: () -> Unit) {
     OutlinedCard(
         onClick = { onClick() },
         modifier = modifier,
@@ -207,20 +208,21 @@ fun CompetitionCard(modifier: Modifier,name: String, date: String, onClick: () -
         ) {
             Column {
                 Text(
-                    text = name,
+                    text = competition.event,
                     color = Color.Black,
                     fontWeight = FontWeight.Medium,
                     fontSize = 16.sp,
                 )
                 Text(
-                    text = date,
+                    text = competition.competitiondate,
                     color = Color.Gray,
                     fontSize = 13.sp,
                 )
             }
+            val competitionBadge = if (competition.isbrevet) R.drawable.competition_badge1 else R.drawable.competition_badge
             Image(
                 modifier = Modifier.height(50.dp),
-                painter = painterResource(id = R.drawable.competition_badge),
+                painter = painterResource(id = competitionBadge),
                 contentDescription = "competition badge",
                 contentScale = ContentScale.Crop
             )

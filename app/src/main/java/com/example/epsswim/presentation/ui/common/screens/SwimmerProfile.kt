@@ -393,20 +393,20 @@ fun SwimmerProfile(
                     }
                 }
             ){
-                CompetitionCard(
-                    modifier=Modifier.padding(bottom = 16.dp),
-                    name="المسابقة الولائية",
-                    date = "12/08/2023"
-                ){
-                    navController.navigate(Screen.ParticipationDetails)
-                }
-                CompetitionCard(
-                    modifier=Modifier,
-                    name="المسابقة الولائية",
-                    date = "12/08/2023"
-                ){
-                    navController.navigate(Screen.ParticipationDetails)
-                }
+//                CompetitionCard(
+//                    modifier=Modifier.padding(bottom = 16.dp),
+//                    name="المسابقة الولائية",
+//                    date = "12/08/2023"
+//                ){
+//                    navController.navigate(Screen.ParticipationDetails)
+//                }
+//                CompetitionCard(
+//                    modifier=Modifier,
+//                    name="المسابقة الولائية",
+//                    date = "12/08/2023"
+//                ){
+//                    navController.navigate(Screen.ParticipationDetails)
+//                }
             }
 
         }

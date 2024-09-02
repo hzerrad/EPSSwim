@@ -158,6 +158,7 @@ object Queries {
            firstname
            lastname
            birthday
+           pfpUrl
            level {
              levelid
              levelname

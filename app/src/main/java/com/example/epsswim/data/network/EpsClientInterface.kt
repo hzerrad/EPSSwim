@@ -1,6 +1,7 @@
 package com.example.epsswim.data.network
 
 import com.example.epsswim.data.model.app.absences.AbsencesResponse
+import com.example.epsswim.data.model.app.competition.CompetitionResponse
 import com.example.epsswim.data.model.app.levels.LevelsResponse
 import com.example.epsswim.data.model.app.pfp.PfpResponse
 import com.example.epsswim.data.model.app.swimmer.Children
@@ -56,12 +57,12 @@ interface EpsClientInterface {
     @POST("graphql/")
     fun insertCompetition(
         @Body query: com.example.epsswim.data.model.requestBody.competition.Query
-    ): Call<LevelsResponse>
+    ): Call<CompetitionResponse>
 
     @POST("graphql/")
     fun getCompetitions(
-        @Body query: com.example.epsswim.data.model.requestBody.absences.Query
-    ): Call<AbsencesResponse>
+        @Body query: com.example.epsswim.data.model.requestBody.competition.Query
+    ): Call<CompetitionResponse>
 
     @POST("graphql/")
     fun getTrainerSwimmers(
