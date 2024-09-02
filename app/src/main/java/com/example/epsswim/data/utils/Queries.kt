@@ -196,14 +196,11 @@ object Queries {
     }
     """
     const val GET_SWIMMING_TYPES = """
-    query GetTrainerSwimmers {
-      levels {
-        levelid
-        swimmers {
-          swimmerid
-          firstname
-          lastname
-        }
+    query GetEvents {
+      eventtypes {
+        eventtypeid
+        eventname
+        distance
       }
     }
     """
@@ -217,6 +214,36 @@ object Queries {
           lastname
         }
       }
+    }
+    """
+    const val GET_PARTICIPATION = """
+    query GetSwimmerRecord(${'$'}competitionid: uuid!, ${'$'}swimmerid: uuid!) {
+      competitions_by_pk(competitionid: ${'$'}competitionid) {
+        competitionid
+        competitiondate
+        event
+        isbrevet
+        location
+      }
+      swimmerevents(where: {competitionid: {_eq: ${'$'}competitionid}, swimmerid: {_eq: ${'$'}swimmerid}}) {
+        laptimes
+        eventtype {
+          eventtypeid
+          eventname
+          distance
+        }
+      }
+      swimmers_by_pk(swimmerid: ${'$'}swimmerid) {
+        swimmerid
+        firstname
+        lastname
+        birthday
+        pfpUrl
+        level {
+          levelid
+          levelname
+        }
+      } 
     }
     """
 }

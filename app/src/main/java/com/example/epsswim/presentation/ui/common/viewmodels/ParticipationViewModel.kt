@@ -1,9 +1,8 @@
-package com.example.epsswim.presentation.ui.trainer.viewmodels
+package com.example.epsswim.presentation.ui.common.viewmodels
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.epsswim.data.model.app.levels.LevelsResponse
 import com.example.epsswim.data.model.app.participation.swimmingtypes.SwimmingTypesResponse
 import com.example.epsswim.data.model.requestBody.participation.Query
 import com.example.epsswim.data.repositories.ParticipationRepository
@@ -29,13 +28,15 @@ class ParticipationViewModel @Inject constructor(private val participationReposi
                 override fun onResponse(call: Call<SwimmingTypesResponse>, response: Response<SwimmingTypesResponse>) {
                     if (response.isSuccessful) {
                         _swimmingTypes.value = response.body()
+                        Log.d("SwimmingTypes", "onResponse: data : ${response.body()}")
+
                     } else {
-                        Log.d("LevelsApi", "onResponse: failed fetch data ${response.code()}")
+                        Log.d("SwimmingTypes", "onResponse: failed fetch data ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<SwimmingTypesResponse>, t: Throwable) {
-                    Log.d("LevelsApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
+                    Log.d("SwimmingTypes", "onFailure: failed fetch data, check your internet connection ${t.message}")
                 }
             })
 

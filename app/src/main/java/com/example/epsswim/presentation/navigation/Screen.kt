@@ -17,7 +17,7 @@ sealed class Screen {
     data class SwimmerProfile(val id: String="",val isParent : Boolean) : Screen()
 
     @Serializable
-    data object ParticipationDetails : Screen()
+    data class ParticipationDetails(val swimmerID: String="",val competitionID: String="") : Screen()
 
     @Serializable
     data object AbsenceScreen : Screen()

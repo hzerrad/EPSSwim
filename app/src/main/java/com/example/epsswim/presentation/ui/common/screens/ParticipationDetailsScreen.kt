@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.common.screens
 
+import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -34,6 +35,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -58,8 +60,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.participation.swimmingtypes.Eventtype
+import com.example.epsswim.data.model.app.participation.swimmingtypes.SwimmingTypesResponse
+import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.model.StopWatch
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionParticipationCard
@@ -68,6 +74,7 @@ import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.trainer.componants.ExposedDropdownMenuParticipationType
+import com.example.epsswim.presentation.ui.common.viewmodels.ParticipationViewModel
 import com.example.epsswim.presentation.utils.Constants
 import com.example.epsswim.presentation.utils.getDistance
 import com.example.epsswim.presentation.utils.getSwimmingType
@@ -77,8 +84,22 @@ import kotlinx.coroutines.launch
 @Composable
 fun ParticipationDetailsScreen(
     navController: NavHostController,
-    isTrainer: MutableState<Boolean?>
+    participationViewModel: ParticipationViewModel,
+    isTrainer: MutableState<Boolean?>,
+    swimmerID: String,
+    competitionID : String
 ) {
+    val swimmingTypesState = participationViewModel.swimmingTypes.collectAsStateWithLifecycle()
+    var swimmingTypes by remember {
+        mutableStateOf<List<Eventtype>?>(null)
+    }
+    LaunchedEffect(key1 = swimmingTypesState.value) {
+        if(swimmingTypesState.value == null)
+            participationViewModel.getSwimmingTypes()
+        else
+            swimmingTypes = swimmingTypesState.value?.data?.eventtypes ?: emptyList()
+    }
+
     Scaffold (
         topBar = {
             MyAppBar(

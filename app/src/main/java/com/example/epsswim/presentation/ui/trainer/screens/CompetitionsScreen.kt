@@ -172,7 +172,7 @@ fun CompetitionsScreen(
                                             modifier = Modifier.padding(bottom = 12.dp),
                                             participant = it
                                         ){
-                                            navController.navigate(Screen.ParticipationDetails)
+                                            navController.navigate(Screen.ParticipationDetails(swimmerID = it.swimmer.swimmerid, competitionID = currentCompetition!!.competitionid))
                                         }
                                     }
 
