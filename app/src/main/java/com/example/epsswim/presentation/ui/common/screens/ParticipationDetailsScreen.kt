@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -62,13 +64,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import coil.compose.AsyncImage
 import com.example.epsswim.R
+import com.example.epsswim.data.model.app.competition.Competition
+import com.example.epsswim.data.model.app.participation.Swimmerevent
 import com.example.epsswim.data.model.app.participation.swimmingtypes.Eventtype
 import com.example.epsswim.data.model.app.participation.swimmingtypes.SwimmingTypesResponse
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.model.StopWatch
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionParticipationCard
+import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
@@ -76,7 +82,9 @@ import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.trainer.componants.ExposedDropdownMenuParticipationType
 import com.example.epsswim.presentation.ui.common.viewmodels.ParticipationViewModel
 import com.example.epsswim.presentation.utils.Constants
+import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.getDistance
+import com.example.epsswim.presentation.utils.getFullName
 import com.example.epsswim.presentation.utils.getSwimmingType
 import kotlinx.coroutines.launch
 
@@ -93,11 +101,37 @@ fun ParticipationDetailsScreen(
     var swimmingTypes by remember {
         mutableStateOf<List<Eventtype>?>(null)
     }
+    var isLoading by remember {
+        mutableStateOf(false)
+    }
     LaunchedEffect(key1 = swimmingTypesState.value) {
         if(swimmingTypesState.value == null)
             participationViewModel.getSwimmingTypes()
         else
             swimmingTypes = swimmingTypesState.value?.data?.eventtypes ?: emptyList()
+    }
+    val participationState = participationViewModel.participation.collectAsStateWithLifecycle()
+    var swimmer by remember {
+        mutableStateOf<Swimmer?>(null)
+    }
+    var swimmerParticipation by remember {
+        mutableStateOf<List<Swimmerevent>?>(null)
+    }
+    var competition by remember {
+        mutableStateOf<Competition?>(null)
+    }
+    LaunchedEffect(key1 = participationState.value) {
+        if(participationState.value == null)
+            participationViewModel.getParticipation(swimmerID,competitionID)
+        else{
+            swimmer = participationState.value?.data?.swimmers_by_pk
+            competition = participationState.value?.data?.competitions_by_pk
+            swimmerParticipation = participationState.value?.data?.swimmerevents
+        }
+    }
+    LaunchedEffect(swimmer, competition, swimmerParticipation) {
+        if (swimmer == null || competition == null || swimmerParticipation == null)
+            isLoading = true
     }
 
     Scaffold (
@@ -121,182 +155,188 @@ fun ParticipationDetailsScreen(
         val sheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
-        Surface (
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-        ){
-            CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl){
-                Column(
-                    Modifier
-                        .padding(horizontal = 20.dp, vertical = 30.dp)
-                        .fillMaxSize()
-                ) {
-                    Text(
-                        text = stringResource(R.string.the_participator),
-                        fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
-                        fontSize = 20.sp,
-                        color = MyPrimary
-                    )
-                    CompetitionParticipationCard(Modifier.padding(bottom = 15.dp)){
-                        Row (
-                            modifier = Modifier
-                                .clickable {
-                                    navController.navigate(Screen.SwimmerProfile)
-                                }
-                                .padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ){
-                            Image(
+        if (isLoading) {
+            Loading()
+        }
+        else {
+            Surface (
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+            ){
+                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl){
+                    Column(
+                        Modifier
+                            .padding(horizontal = 20.dp, vertical = 30.dp)
+                            .fillMaxSize()
+                    ) {
+                        Text(
+                            text = stringResource(R.string.the_participator),
+                            fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
+                            fontSize = 20.sp,
+                            color = MyPrimary
+                        )
+                        CompetitionParticipationCard(Modifier.padding(bottom = 15.dp)){
+                            Row (
                                 modifier = Modifier
-                                    .padding(end = 16.dp)
-                                    .size(65.dp)
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .border(0.2.dp, Color.Black),
-                                painter = painterResource(id = R.drawable.img),
-                                contentDescription = stringResource(R.string.profile_img),
-                                contentScale = ContentScale.Crop
-                            )
-                            Column  {
-                                Text(
-                                    text = "محمد عليم",
-                                    fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
-                                    fontSize = 18.sp,
-                                    color = Color.Black
+                                    .clickable {
+                                        navController.navigate(Screen.SwimmerProfile)
+                                    }
+                                    .padding(16.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ){
+                                AsyncImage(
+                                    modifier = Modifier
+                                        .padding(end = 16.dp)
+                                        .clip(RoundedCornerShape(12.dp))
+                                        .size(65.dp)
+                                        .border(0.2.dp, Color.Black, RoundedCornerShape(12.dp)),
+                                    model = swimmer!!.pfpUrl,
+                                    contentDescription = stringResource(R.string.profile_img),
+                                    contentScale = ContentScale.Crop
                                 )
-                                Spacer(modifier = Modifier.height(5.dp))
-                                Text(
-                                    text = "مستوى جونيور (18 سنة)",
-                                    fontFamily = FontFamily(listOf(Font(R.font.cairo_regular))),
-                                    fontSize = 14.sp,
-                                    color = Color.Gray
-                                )
+                                Column  {
+                                    Text(
+                                        text = getFullName(swimmer!!.firstname, swimmer!!.lastname),
+                                        fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
+                                        fontSize = 18.sp,
+                                        color = Color.Black
+                                    )
+                                    Spacer(modifier = Modifier.height(5.dp))
+                                    Text(
+                                        text = "مستوى "+ swimmer!!.level.levelname +" ( ${calculateAge(swimmer!!.birthday)} سنة)",
+                                        fontFamily = FontFamily(listOf(Font(R.font.cairo_regular))),
+                                        fontSize = 14.sp,
+                                        color = Color.Gray
+                                    )
+                                }
                             }
                         }
-                    }
-                    Text(
-                        text = stringResource(R.string.the_competition),
-                        fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
-                        fontSize = 20.sp,
-                        color = MyPrimary
-                    )
-                    CompetitionParticipationCard(Modifier.padding(bottom = 15.dp)){
-                        Row (
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
+                        Text(
+                            text = stringResource(R.string.the_competition),
+                            fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
+                            fontSize = 20.sp,
+                            color = MyPrimary
+                        )
+                        CompetitionParticipationCard(Modifier.padding(bottom = 15.dp)){
+                            Row (
+                                modifier = Modifier
+                                    .padding(16.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
                                 Column {
                                     Text(
-                                        text = "المسابقة الولائية",
+                                        text = competition!!.event,
                                         fontWeight = FontWeight.Medium,
                                         fontSize = 16.sp,
                                         color = Color.Black
                                     )
 
                                     Text(
-                                        text = "08/10/2023",
+                                        text = competition!!.competitiondate.replace("-","/"),
                                         fontWeight = FontWeight.Normal,
                                         fontSize = 14.sp,
                                         color = Color.Gray
                                     )
                                     Text(
-                                        text = "سطيف, عين ارنات",
+                                        text = competition!!.location,
                                         fontWeight = FontWeight.Normal,
                                         fontSize = 14.sp,
                                         color = Color.Gray
                                     )
-                                    Text(
-                                        text = "مسابقة شهادة",
-                                        fontWeight = FontWeight.Normal,
-                                        fontSize = 14.sp,
-                                        color = Color.Gray
-                                    )
+                                    if (competition!!.isbrevet)
+                                        Text(
+                                            text = "مسابقة شهادة",
+                                            fontWeight = FontWeight.Normal,
+                                            fontSize = 14.sp,
+                                            color = Color.Gray
+                                        )
                                 }
-                            Image(
-                                modifier = Modifier.height(56.dp),
-                                painter = painterResource(id = R.drawable.competition_badge),
-                                contentDescription = "competition badge",
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                    }
-                    Text(
-                        text = stringResource(R.string.the_participator),
-                        fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
-                        fontSize = 20.sp,
-                        color = MyPrimary
-                    )
-                    CompetitionParticipationCard(Modifier.padding(bottom = 15.dp)){
-                        Column (
-                            modifier = Modifier
-                                .padding(16.dp)
-                                .fillMaxWidth(),
-                        ) {
-                            Row (
-                                modifier = Modifier.align(Alignment.CenterHorizontally)
-                            ) {
-                                Text(
-                                    text = "سباحة حرة -100 متر-",
-                                    fontWeight = FontWeight.Medium,
-                                    fontSize = 16.sp,
-                                    color = Color.Black
-                                )
-                                Icon(
-                                    painter = painterResource(id = R.drawable.free_style_nage_ic),
-                                    contentDescription = "swimming type",
-                                    tint = Color(0xff138dff),
-                                    modifier = Modifier.size(30.dp)
+                                Image(
+                                    modifier = Modifier.height(56.dp),
+                                    painter = painterResource(id = if (competition!!.isbrevet) R.drawable.competition_badge1 else R.drawable.competition_badge),
+                                    contentDescription = "competition badge",
+                                    contentScale = ContentScale.Crop
                                 )
                             }
-                            Text(
-                                text = "التوقف الأول : 1.54s",
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 14.sp,
-                                color = Color.Black
-                            )
-
-                            Text(
-                                text = "التوقف الثاني : 1.54s",
-                                fontWeight = FontWeight.Normal,
-                                fontSize = 14.sp,
-                                color = Color.Black
-                            )
                         }
-                    }
-                    if (isTrainer.value!!){
-                        Button(
-                            onClick = {
-                                showBottomSheet = true
-                            },
-                            modifier = Modifier
-                                .padding(bottom = 24.dp)
-                                .fillMaxWidth(),
-                            shape = RoundedCornerShape(8.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
-                            elevation = ButtonDefaults.buttonElevation(3.dp),
-                        ) {
-                            Text(
-                                text = stringResource(R.string.add_participation),
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 20.sp,
-                            )
-                        }
-                    }
+                        Text(
+                            text = stringResource(R.string.the_participation),
+                            fontFamily = FontFamily(listOf(Font(R.font.cairo_medium))),
+                            fontSize = 20.sp,
+                            color = MyPrimary
+                        )
+                        LazyColumn {
+                            items(items = swimmerParticipation!!){
+                                CompetitionParticipationCard(Modifier.padding(bottom = 15.dp)){
+                                    Column (
+                                        modifier = Modifier
+                                            .padding(16.dp)
+                                            .fillMaxWidth(),
+                                    ) {
+                                        Row (
+                                            modifier = Modifier.align(Alignment.CenterHorizontally)
+                                        ) {
+                                            Text(
+                                                text = it.eventtype.eventname,
+                                                fontWeight = FontWeight.Medium,
+                                                fontSize = 16.sp,
+                                                color = Color.Black
+                                            )
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.free_style_nage_ic),
+                                                contentDescription = "swimming type",
+                                                tint = Color(0xff138dff),
+                                                modifier = Modifier.size(30.dp)
+                                            )
+                                        }
+                                        it.laptimes.forEachIndexed { index,laptime ->
+                                            Text(
+                                                text = "التوقف "+ (index+1) +": ${laptime.toString()}",
+                                                fontWeight = FontWeight.Normal,
+                                                fontSize = 14.sp,
+                                                color = Color.Black
+                                            )
+                                        }
 
-                    if (showBottomSheet) {
-                        ModalBottomSheet(
-                            onDismissRequest = {
-                                showBottomSheet = false
-                            },
-                            sheetState = sheetState,
-                            containerColor = MyBackground
-                        ) {
-                            ParticipationSheetContent{
-                                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                                    showBottomSheet= false
+                                    }
+                                }
+
+                            }
+                        }
+                        if (isTrainer.value!!){
+                            Button(
+                                onClick = {
+                                    showBottomSheet = true
+                                },
+                                modifier = Modifier
+                                    .padding(bottom = 24.dp)
+                                    .fillMaxWidth(),
+                                shape = RoundedCornerShape(8.dp),
+                                colors = ButtonDefaults.buttonColors(containerColor = MyPrimary, contentColor = MyBackground),
+                                elevation = ButtonDefaults.buttonElevation(3.dp),
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.add_participation),
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 20.sp,
+                                )
+                            }
+                        }
+                        if (showBottomSheet) {
+                            ModalBottomSheet(
+                                onDismissRequest = {
+                                    showBottomSheet = false
+                                },
+                                sheetState = sheetState,
+                                containerColor = MyBackground
+                            ) {
+                                ParticipationSheetContent{
+                                    scope.launch { sheetState.hide() }.invokeOnCompletion {
+                                        showBottomSheet= false
+                                    }
                                 }
                             }
                         }
