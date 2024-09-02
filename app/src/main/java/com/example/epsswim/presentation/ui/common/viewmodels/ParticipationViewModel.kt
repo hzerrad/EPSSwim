@@ -71,15 +71,16 @@ class ParticipationViewModel @Inject constructor(private val participationReposi
 
         }
     }
-    fun insertParticipation(swimmerID:String,competitionID :String){
+    fun insertParticipation(participationVariables: ParticipationVariables){
         viewModelScope.launch {
             participationRepository.insertParticipation(Query(
                 query = Queries.INSERT_PARTICIPATION,
-                variables = ParticipationVariables(competitionid = competitionID, swimmerid = swimmerID)
+                variables = participationVariables
             )).enqueue(object :
                 Callback<ParticipationResponse> {
                 override fun onResponse(call: Call<ParticipationResponse>, response: Response<ParticipationResponse>) {
                     if (response.isSuccessful) {
+                        getParticipation(participationVariables.swimmerid,participationVariables.competitionid)
                         Log.d("Participation", "onResponse: data : ${response.body()}")
 
                     } else {
@@ -93,6 +94,10 @@ class ParticipationViewModel @Inject constructor(private val participationReposi
             })
 
         }
+    }
+
+    fun clearState() {
+        _participation.value = null
     }
 
 }

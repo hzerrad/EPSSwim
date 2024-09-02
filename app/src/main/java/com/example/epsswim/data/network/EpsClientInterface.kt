@@ -7,6 +7,7 @@ import com.example.epsswim.data.model.app.participation.ParticipationResponse
 import com.example.epsswim.data.model.app.participation.swimmingtypes.SwimmingTypesResponse
 import com.example.epsswim.data.model.app.pfp.PfpResponse
 import com.example.epsswim.data.model.app.swimmer.Children
+import com.example.epsswim.data.model.app.swimmer.profile.SwimmerInfoResponse
 import com.example.epsswim.data.model.app.trainer.TrainerResponse
 import com.example.epsswim.data.model.requestBody.swimmer.Query
 import retrofit2.Call
@@ -24,7 +25,7 @@ interface EpsClientInterface {
     @POST("graphql/")
     fun getSwimmerById(
         @Body query: Query
-    ): Call<Children>
+    ): Call<SwimmerInfoResponse>
 
 
     @POST("graphql/")

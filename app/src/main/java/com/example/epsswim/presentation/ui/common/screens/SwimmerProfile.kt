@@ -60,6 +60,8 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
+import com.example.epsswim.data.model.app.swimmer.profile.Competitionswimmer
+import com.example.epsswim.data.model.app.swimmer.profile.SwimmersByPk
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.Loading
@@ -91,11 +93,16 @@ fun SwimmerProfile(
     }
     val swimmerState = sharedViewModel.swimmer.collectAsStateWithLifecycle()
     var swimmer by remember {
-        mutableStateOf<Swimmer?>(null)
+        mutableStateOf<SwimmersByPk?>(null)
     }
-    if (swimmerState.value != null){
-        swimmer = swimmerState.value!!.data.swimmers.first()
-        Log.d("TAG", "SwimmerProfile: $swimmer")
+    var competitions by remember {
+        mutableStateOf<List<Competitionswimmer>?>(null)
+    }
+    LaunchedEffect(swimmerState.value ) {
+        if (swimmerState.value != null){
+            swimmer = swimmerState.value?.data?.swimmers_by_pk
+            competitions = swimmerState.value?.data?.competitionswimmers
+        }
     }
     val context = LocalContext.current
     val scrollState = rememberScrollState()
@@ -142,6 +149,7 @@ fun SwimmerProfile(
     BackHandler {
         uploadStateValue = null
         swimmer = null
+        competitions = null
         navController.popBackStack()
     }
 
@@ -380,6 +388,33 @@ fun SwimmerProfile(
                 )
             }
             ProfileCard(
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp),
+                title = stringResource(R.string.absences),
+                icon = R.drawable.calendar_ic,
+            ) {
+                swimmer!!.swimmerAbsences.forEachIndexed { index, swimmerAbsence ->
+                    Text(
+                        text = buildAnnotatedString {
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+
+                                append(" الغياب ${index + 1} :")
+                            }
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold
+                            )
+                            ) {
+                                append(swimmerAbsence.absencedate)
+                            }
+                        },
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                    )
+                }
+            }
+            ProfileCard(
                 modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
                 title = stringResource(R.string.competition),
                 icon = R.drawable.competition_profile_ic,
@@ -393,20 +428,15 @@ fun SwimmerProfile(
                     }
                 }
             ){
-//                CompetitionCard(
-//                    modifier=Modifier.padding(bottom = 16.dp),
-//                    name="المسابقة الولائية",
-//                    date = "12/08/2023"
-//                ){
-//                    navController.navigate(Screen.ParticipationDetails)
-//                }
-//                CompetitionCard(
-//                    modifier=Modifier,
-//                    name="المسابقة الولائية",
-//                    date = "12/08/2023"
-//                ){
-//                    navController.navigate(Screen.ParticipationDetails)
-//                }
+                competitions!!.forEach {
+                    CompetitionCard(
+                        modifier=Modifier.padding(bottom = 16.dp),
+                        competition=it.competition
+                    ){
+                        navController.navigate(Screen.ParticipationDetails(swimmerId, competitionID = it.competition.competitionid))
+                    }
+                }
+
             }
 
         }

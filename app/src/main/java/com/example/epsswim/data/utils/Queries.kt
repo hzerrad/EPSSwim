@@ -27,7 +27,7 @@ object Queries {
 
     const val GET_SWIMMER_BY_ID = """
     query GetSwimmerById(${'$'}swimmerid: uuid!) {
-      swimmers(where: {swimmerid: {_eq: ${'$'}swimmerid}}) {
+      swimmers_by_pk(swimmerid: ${'$'}swimmerid) {
         swimmerid
         firstname
         lastname
@@ -49,7 +49,20 @@ object Queries {
             count(columns: entityid)
           }
         }
+        swimmerAbsences {
+          absenceid
+          absencedate
+        }
       }
+      competitionswimmers(where: {swimmerid: {_eq: ${'$'}swimmerid}}) {
+        competition {
+          competitionid
+          competitiondate
+          event
+          isbrevet
+          location
+        }
+      }  
     }
 """
     const val GET_LEVELS = """
@@ -205,7 +218,7 @@ object Queries {
     }
     """
     const val INSERT_PARTICIPATION = """
-    mutation AddSwimmerEventRecord(${'$'}swimmerid: uuid!, ${'$'}eventtypeid: uuid!, ${'$'}competitionid: uuid!, ${'$'}laptimes: [float8!]!) {
+    mutation AddSwimmerEventRecord(${'$'}swimmerid: uuid!, ${'$'}eventtypeid: uuid!, ${'$'}competitionid: uuid!, ${'$'}laptimes: [bigint!]!) {
       insert_swimmerevents_one(object: {swimmerid: ${'$'}swimmerid, competitionid: ${'$'}competitionid, eventtypeid: ${'$'}eventtypeid, laptimes: ${'$'}laptimes}) {
         laptimes
         swimmer {

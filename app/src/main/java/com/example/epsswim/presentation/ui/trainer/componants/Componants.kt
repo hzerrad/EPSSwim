@@ -96,6 +96,7 @@ import coil.compose.AsyncImage
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.competition.Competition
 import com.example.epsswim.data.model.app.competition.Participant
+import com.example.epsswim.data.model.app.participation.swimmingtypes.Eventtype
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.data.model.requestBody.absences.SwimmerId
 import com.example.epsswim.data.model.requestBody.competition.CompetitionData
@@ -948,11 +949,11 @@ fun AbsenceSwimmerCard(
 @Composable
 fun ExposedDropdownMenuParticipationType(
     modifier: Modifier,
-    options : List<String>,
-    onSelectItem : (String) -> Unit
+    swimmingTypes: List<Eventtype>,
+    onSelectItem: (Eventtype) -> Unit
 ){
     var expanded by remember { mutableStateOf(false) }
-    var text by remember { mutableStateOf(options[0]) }
+    var text by remember { mutableStateOf(swimmingTypes[0].eventname) }
     ExposedDropdownMenuBox(
         modifier = modifier,
         expanded = expanded,
@@ -982,11 +983,11 @@ fun ExposedDropdownMenuParticipationType(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            options.forEach { option ->
+            swimmingTypes.forEach { option ->
                 DropdownMenuItem(
-                    text = { Text(option, style = MaterialTheme.typography.bodyLarge) },
+                    text = { Text(option.eventname, style = MaterialTheme.typography.bodyLarge) },
                     onClick = {
-                        text = option
+                        text = option.eventname
                         expanded = false
                         onSelectItem(option)
                     },
