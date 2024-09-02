@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.levels.LevelsResponse
+import com.example.epsswim.data.model.requestBody.competition.CompetitionData
+import com.example.epsswim.data.model.requestBody.competition.CompetitionVariables
 import com.example.epsswim.data.model.requestBody.competition.Query
 import com.example.epsswim.data.repositories.CompetitionRepository
 import com.example.epsswim.data.utils.Queries
@@ -28,6 +30,29 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
                 override fun onResponse(call: Call<LevelsResponse>, response: Response<LevelsResponse>) {
                     if (response.isSuccessful) {
                         _levelList.value = response.body()
+                    } else {
+                        Log.d("LevelsApi", "onResponse: failed fetch data ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<LevelsResponse>, t: Throwable) {
+                    Log.d("LevelsApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
+                }
+            })
+
+        }
+    }
+    fun insertCompetition(competitionData: CompetitionData){
+        viewModelScope.launch {
+            competitionRepository.insertCompetition(Query(
+                query = Queries.INSERT_COMPETITION,
+                variables = CompetitionVariables(competitionData)
+
+            )).enqueue(object :
+                Callback<LevelsResponse> {
+                override fun onResponse(call: Call<LevelsResponse>, response: Response<LevelsResponse>) {
+                    if (response.isSuccessful) {
+                        Log.d("TAG", "onResponse: Data inserted ")
                     } else {
                         Log.d("LevelsApi", "onResponse: failed fetch data ${response.code()}")
                     }

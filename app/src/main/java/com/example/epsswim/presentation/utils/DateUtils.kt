@@ -24,3 +24,7 @@ fun getDate(localDate: LocalDate): String {
     return localDate.format(formatter)
 
 }
+fun formatDate(value: String): String {
+    val parts = value.split("/")
+    return "${parts[2]}-${parts[1]}-${parts[0]}"
+}

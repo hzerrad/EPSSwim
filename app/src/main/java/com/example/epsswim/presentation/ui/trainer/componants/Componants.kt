@@ -1,6 +1,5 @@
 package com.example.epsswim.presentation.ui.trainer.componants
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -61,6 +60,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -97,12 +97,16 @@ import coil.compose.AsyncImage
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.data.model.requestBody.absences.SwimmerId
+import com.example.epsswim.data.model.requestBody.competition.CompetitionData
+import com.example.epsswim.data.model.requestBody.competition.Data
+import com.example.epsswim.data.model.requestBody.competition.Participants
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
 import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.theme.MySecondary
 import com.example.epsswim.presentation.utils.calculateAge
+import com.example.epsswim.presentation.utils.formatDate
 import com.example.epsswim.presentation.utils.getArabicDate
 import com.example.epsswim.presentation.utils.getArabicWeekDay
 import com.example.epsswim.presentation.utils.getFullName
@@ -122,21 +126,35 @@ import java.util.Locale
 @Composable
 fun FullScreenDialogContent(
     participants: List<Swimmer>,
-    onDone: () -> Unit = {},
+    levelID : String,
+    onDone: (CompetitionData) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Surface (color = MyBackground) {
+            val competitionData = remember {
+                mutableStateOf(
+                    CompetitionData(
+                        competitiondate = "",
+                        event = "",
+                        location = "",
+                        participants = Participants(emptyList()),
+                        isbrevet = false,
+                        levelid = levelID
+                    )
+                )
+            }
             Column (
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .fillMaxSize()
             ) {
                 DialogHeader(
+                    competitionData =competitionData.value,
                     onDismiss =onDismiss,
-                    onDone =onDone
+                    onDone = onDone
                 )
-                DialogBody(participants)
+                DialogBody(participants,competitionData)
             }
         }
     }
@@ -145,7 +163,7 @@ fun FullScreenDialogContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun DialogBody(participants: List<Swimmer>) {
+private fun DialogBody(participants: List<Swimmer>, competitionData: MutableState<CompetitionData>) {
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
     var isCardSelected by remember {mutableStateOf(false)}
@@ -179,6 +197,7 @@ private fun DialogBody(participants: List<Swimmer>) {
             onValueChange = {
                 name = it
                 nameTyped = true
+                competitionData.value = competitionData.value.copy(event = it)
             },
             label = { Text(stringResource(R.string.competition_name)) },
             isError = name.isEmpty() && nameTyped,
@@ -201,6 +220,7 @@ private fun DialogBody(participants: List<Swimmer>) {
             onValueChange = {
                 place = it
                 placeTyped = true
+                competitionData.value = competitionData.value.copy(location = it)
             },
             label = { Text(stringResource(R.string.competition_place)) },
             isError = name.isEmpty() && nameTyped,
@@ -228,6 +248,7 @@ private fun DialogBody(participants: List<Swimmer>) {
             modifier = Modifier
                 .onFocusChanged { isCardSelected = false }
                 .padding(bottom = 12.dp),
+            competitionData = competitionData,
             datePickerState = rememberDatePickerState(
                 initialSelectedDateMillis = initialDate,
                 yearRange = 2024..2034
@@ -246,6 +267,7 @@ private fun DialogBody(participants: List<Swimmer>) {
                     onClick = {
                         focusManager.clearFocus(true)
                         isCardSelected = !isCardSelected
+
                     }
                 )
                 .padding(bottom = 16.dp)
@@ -269,6 +291,7 @@ private fun DialogBody(participants: List<Swimmer>) {
                     checked = isBrevet,
                     onCheckedChange = {
                         isBrevet = it
+                        competitionData.value = competitionData.value.copy(isbrevet = it)
                     },
                     colors = SwitchDefaults.colors(
                         checkedThumbColor = MyBackground,
@@ -295,13 +318,16 @@ private fun DialogBody(participants: List<Swimmer>) {
             participantList.value += it
         }
 
-
         ParticipantsContainer(
             participants = participantList,
             modifier = Modifier
                 .onFocusChanged { isCardSelected = false }
                 .padding(bottom = 12.dp)
         )
+        LaunchedEffect(key1 = participantList.value) {
+            competitionData.value= competitionData.value
+                .copy(participants=Participants(participantList.value.map { Data(swimmerid = it.swimmerid) }))
+        }
     }
 }
 
@@ -369,7 +395,7 @@ fun Tag(modifier: Modifier,text: String,onClick: () -> Unit) {
 }
 
 @Composable
-private fun DialogHeader(onDismiss: () -> Unit, onDone: () -> Unit) {
+private fun DialogHeader(competitionData: CompetitionData,onDismiss: () -> Unit, onDone: (CompetitionData) -> Unit) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -389,8 +415,9 @@ private fun DialogHeader(onDismiss: () -> Unit, onDone: () -> Unit) {
             TextButton(
                 modifier =  Modifier.align(Alignment.CenterEnd),
                 onClick = {
-                    onDone()
-                },
+                    onDone(competitionData)
+                }
+                ,
             ) {
                 Text(text = stringResource(R.string.save), fontSize = 16.sp, color = MyPrimary)
             }
@@ -550,7 +577,8 @@ fun CustomDatePicker (
     datePickerState: DatePickerState,
     label: String,
     isIllegalInput: Boolean,
-    dateState: MutableState<String>
+    dateState: MutableState<String>,
+    competitionData: MutableState<CompetitionData>
 ) {
     val pattern = "dd/MM/yyyy"
     val formatter = SimpleDateFormat(pattern, Locale.getDefault())
@@ -576,6 +604,8 @@ fun CustomDatePicker (
                             isOpen.value = false
                             if (it != null) {
                                 dateState.value = formatter.format(Date(it))
+                                competitionData.value = competitionData.value.copy(competitiondate = formatDate(dateState.value))
+
                             }
                         },
                         onDismissRequest = { isOpen.value = false },
@@ -587,6 +617,9 @@ fun CustomDatePicker (
         readOnly = true
     )
 }
+
+
+
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

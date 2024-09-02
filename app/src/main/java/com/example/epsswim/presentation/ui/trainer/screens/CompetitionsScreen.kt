@@ -1,6 +1,5 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -69,6 +68,9 @@ fun CompetitionsScreen(
     var levelList by remember {
         mutableStateOf<List<Level>>(emptyList())
     }
+    var levelID by remember {
+        mutableStateOf("")
+    }
     val swimmerList = remember {
         mutableListOf<Swimmer>()
     }
@@ -78,7 +80,7 @@ fun CompetitionsScreen(
             levelList.forEach { lvl ->
                 swimmerList.addAll(lvl.swimmers)
             }
-            Log.d("TAG", "CompetitionsScreen: ${swimmerList.size}")
+            levelID = levelList.first().levelid
         }
 
 
@@ -166,10 +168,12 @@ fun CompetitionsScreen(
                         ){
                             FullScreenDialogContent(
                                 participants= swimmerList.toList(),
+                                levelID = levelID,
                                 onDismiss ={
                                     showFullScreenDialog.value = false
                                 },
                                 onDone = {
+                                    competitionViewModel.insertCompetition(it)
                                     showFullScreenDialog.value = false
                                 },
                             )

@@ -4,6 +4,6 @@ import com.example.epsswim.data.model.requestBody.level.LevelVariables
 
 data class Query(
     val query: String,
-    val variables: CompetitionVariables? = null
+    val variables: LevelVariables? = null
 
 )

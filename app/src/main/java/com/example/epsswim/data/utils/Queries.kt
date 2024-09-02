@@ -145,7 +145,27 @@ object Queries {
     }
     """
     const val GET_ALL_COMPETITION = """
-   
+   query GetCompetitions {
+     competitions {
+       competitionid
+       event
+       competitiondate
+       isbrevet
+       location
+       participants {
+         swimmer {
+           swimmerid
+           firstname
+           lastname
+           birthday
+           level {
+             levelid
+             levelname
+           } 
+         }
+       }
+     }
+   }
     """
     const val INSERT_COMPETITION = """
    mutation CreateCompetitionWithParticipants(${'$'}competitionData: competitions_insert_input!) {
@@ -165,6 +185,7 @@ object Queries {
     const val GET_TRAINER_SWIMMERS = """
     query GetTrainerSwimmers {
       levels {
+        levelid
         swimmers {
           swimmerid
           firstname

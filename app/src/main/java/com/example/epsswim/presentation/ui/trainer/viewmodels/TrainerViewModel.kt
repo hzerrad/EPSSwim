@@ -104,7 +104,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
     fun getSwimmersByLevelId (levelid: String,absencedate: String?){
         viewModelScope.launch {
             trainerRepository.getSwimmersByLevel(
-                com.example.epsswim.data.model.requestBody.competition.Query(
+                com.example.epsswim.data.model.requestBody.level.Query(
                     Queries.GET_SWIMMERS_BY_LEVEL_ID,
                     variables = LevelVariables(levelid = levelid, absencedate = absencedate)
                 )

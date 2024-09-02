@@ -5,5 +5,6 @@ data class CompetitionData(
     val event: String,
     val isbrevet: Boolean,
     val location: String,
-    val participants: Participants
+    val participants: Participants,
+    val levelid : String
 )
