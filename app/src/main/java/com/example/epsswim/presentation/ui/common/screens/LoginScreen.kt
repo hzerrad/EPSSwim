@@ -35,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -79,6 +80,7 @@ fun LoginScreen(
         mutableStateOf(true)
     }
     val context = LocalContext.current
+    val focusManager = LocalFocusManager.current
 
     LaunchedEffect(key1 = token.value, key2 = role.value) {
         Log.d("ROLE", "Login: $role ")
@@ -196,6 +198,7 @@ fun LoginScreen(
                 onClick = {
                     authViewmodel.login(LoginBody(username, password))
                     enabled = false
+                    focusManager.clearFocus()
                 }
             ) {
                 if (!enabled)

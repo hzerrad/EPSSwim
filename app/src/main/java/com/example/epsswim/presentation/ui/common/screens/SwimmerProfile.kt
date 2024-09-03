@@ -153,7 +153,8 @@ fun SwimmerProfile(
         uploadStateValue = null
         swimmer = null
         competitions = null
-        navController.popBackStack()
+        sharedViewModel.clearState()
+        navController.navigateUp()
     }
 
     if (swimmer == null)
@@ -193,7 +194,9 @@ fun SwimmerProfile(
                             IconButton(onClick = {
                                 uploadStateValue = null
                                 swimmer = null
-                                navController.popBackStack()
+                                competitions = null
+                                sharedViewModel.clearState()
+                                navController.navigateUp()
                             }){
                                 Icon(
                                     painter = painterResource(id = R.drawable.chevron_left),
@@ -418,7 +421,7 @@ fun SwimmerProfile(
                 }
             }
             ProfileCard(
-                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp),
+                modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 30.dp, bottom = 30.dp),
                 title = stringResource(R.string.competition),
                 icon = R.drawable.competition_profile_ic,
                 isLastCard = true,

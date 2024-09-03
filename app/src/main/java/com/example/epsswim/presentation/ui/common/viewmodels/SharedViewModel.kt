@@ -45,4 +45,8 @@ class SharedViewModel @Inject constructor(private val sharedRepository: SharedRe
             })
         }
     }
+
+    fun clearState() {
+        _swimmer.value = null
+    }
 }
