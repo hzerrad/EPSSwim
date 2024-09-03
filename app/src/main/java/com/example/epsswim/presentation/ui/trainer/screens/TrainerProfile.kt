@@ -210,6 +210,8 @@ fun MainContent(
                     else
                         AsyncImage(
                             model = trainer!!.pfpUrl,
+                            error = painterResource(id = R.drawable.img),
+                            fallback =  painterResource(id = R.drawable.img),
                             contentDescription = "profile pic",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier

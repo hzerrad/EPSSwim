@@ -222,6 +222,8 @@ fun SwimmerProfile(
                         else
                             AsyncImage(
                                 model = swimmer!!.pfpUrl,
+                                error = painterResource(id = R.drawable.img),
+                                fallback =  painterResource(id = R.drawable.img),
                                 contentDescription = "profile pic",
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier

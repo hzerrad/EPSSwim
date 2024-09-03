@@ -33,6 +33,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -133,6 +134,8 @@ fun SwimmerCard(modifier: Modifier, swimmer: Swimmer, onClick: () -> Unit){
             ) {
                 AsyncImage(
                     model = swimmer.pfpUrl,
+                    error = painterResource(id = R.drawable.img),
+                    fallback =  painterResource(id = R.drawable.img),
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
                         .size(80.dp),

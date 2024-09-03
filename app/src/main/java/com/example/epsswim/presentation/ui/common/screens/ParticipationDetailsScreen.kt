@@ -166,7 +166,12 @@ fun ParticipationDetailsScreen(
                             Row (
                                 modifier = Modifier
                                     .clickable {
-                                        navController.navigate(Screen.SwimmerProfile(participation!!.data.swimmers_by_pk.swimmerid, isParent = false))
+                                        navController.navigate(
+                                            Screen.SwimmerProfile(
+                                                participation!!.data.swimmers_by_pk.swimmerid,
+                                                isParent = false
+                                            )
+                                        )
                                     }
                                     .padding(16.dp),
                                 verticalAlignment = Alignment.CenterVertically
@@ -178,6 +183,8 @@ fun ParticipationDetailsScreen(
                                         .size(65.dp)
                                         .border(0.2.dp, Color.Black, RoundedCornerShape(12.dp)),
                                     model = participation!!.data.swimmers_by_pk.pfpUrl,
+                                    error = painterResource(id = R.drawable.img),
+                                    fallback =  painterResource(id = R.drawable.img),
                                     contentDescription = stringResource(R.string.profile_img),
                                     contentScale = ContentScale.Crop
                                 )
