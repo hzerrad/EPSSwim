@@ -1,7 +1,7 @@
 package com.example.epsswim.presentation.ui.common.viewmodels
 
 import android.util.Log
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,7 +12,6 @@ import com.example.epsswim.data.repositories.AuthRepository
 import com.example.epsswim.data.repositories.tokenRepository.JwtTokenDataStore
 import com.example.epsswim.data.utils.Utils
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -34,6 +33,11 @@ class AuthViewmodel  @Inject constructor(
 
     private val _isLoggedIn = MutableStateFlow<Boolean?>(null)
     val isLoggedIn: StateFlow<Boolean?> = _isLoggedIn
+    private val _isIncorrectCredentials = mutableStateOf(false)
+    val isIncorrectCredentials: State<Boolean> = _isIncorrectCredentials
+    private val _isNotConnected = mutableStateOf(false)
+    val isNotConnected : State<Boolean> = _isNotConnected
+
 
     init {
         viewModelScope.launch {
@@ -51,13 +55,20 @@ class AuthViewmodel  @Inject constructor(
                     viewModelScope.launch {
                         jwtTokenDataStore.saveAccessJwt(token.value!!)
                     }
+                    _isIncorrectCredentials.value = false
+                    _isNotConnected.value = false
                     Log.d("AuthApi", "onResponse: ${response.body()}")
                 } else {
+                    _isIncorrectCredentials.value = true
+                    _isNotConnected.value = false
                     Log.d("AuthApi", "onResponse: failed fetch data ${response.code()}")
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                _isNotConnected.value = true
+                _isIncorrectCredentials.value = false
+
                 Log.d("AuthApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
             }
         })
@@ -67,6 +78,8 @@ class AuthViewmodel  @Inject constructor(
             _token.value = null
             _role.value = null
             _isLoggedIn.value = false
+            _isIncorrectCredentials.value = false
+            _isNotConnected.value = false
             jwtTokenDataStore.clearAllTokens()
         }
     }
