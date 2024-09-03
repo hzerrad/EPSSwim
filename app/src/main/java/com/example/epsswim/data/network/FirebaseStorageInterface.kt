@@ -5,6 +5,6 @@ import javax.inject.Singleton
 
 @Singleton
 interface FirebaseStorageInterface {
-    suspend fun uploadImage(imageUri: Uri): Result<String>
+    suspend fun uploadImage(imageUri: Uri,filename: String): Result<String>
 
 }

@@ -33,6 +33,8 @@ class SharedViewModel @Inject constructor(private val sharedRepository: SharedRe
                 override fun onResponse(call: Call<SwimmerInfoResponse>, response: Response<SwimmerInfoResponse>) {
                     if (response.isSuccessful) {
                         _swimmer.value = response.body()
+                        Log.d("SwimmerApi", "onResponse: success fetch data ${response.body()}")
+
                     } else {
                         Log.d("SwimmerApi", "onResponse: failed fetch data ${response.code()}")
                     }

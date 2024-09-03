@@ -15,9 +15,9 @@ class UserViewModel @Inject constructor(private val firebaseStorageRepository: F
     private val _uploadResult = MutableLiveData<Result<String>>()
     val uploadResult: LiveData<Result<String>> = _uploadResult
 
-    fun uploadProfilePicture(imageUri: Uri) {
+    fun uploadProfilePicture(imageUri: Uri,filename:String) {
         viewModelScope.launch {
-            val result = firebaseStorageRepository.uploadImage(imageUri)
+            val result = firebaseStorageRepository.uploadImage(imageUri, filename = filename)
             _uploadResult.value = result
         }
     }

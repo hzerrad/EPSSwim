@@ -126,21 +126,22 @@ fun MainContent(
     LaunchedEffect (key1 = selectedImage) {
         selectedImage?.let {
             isLoading = true
-            userViewModel.uploadProfilePicture(it)
+            userViewModel.uploadProfilePicture(it,trainer!!.trainerid)
         }
     }
     LaunchedEffect(key1 = uploadState) {
         uploadState?.let { result ->
             if (result.isSuccess){
                 trainerViewModel.updateTrainerPfp(trainer!!.trainerid,result.getOrDefault(""))
+                selectedImage = null
                 if (isLoading){
-                    Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
                     isLoading = false
+                    Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
                 }
             } else {
                 if (isLoading){
-                    Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
                     isLoading = false
+                    Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
                 }
 
             }

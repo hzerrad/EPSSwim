@@ -65,13 +65,7 @@ object AppModule {
     fun provideJwtTokenManager(dataStore: DataStore<Preferences>): JWTManager {
         return JwtTokenDataStore(dataStore = dataStore)
     }
-//    @Provides
-//    @Singleton
-//    fun provideApolloClient(): ApolloClient {
-//        return ApolloClient.Builder()
-//            .serverUrl("https://example.com/graphql")
-//            .build()
-//    }
+
     @Provides
     @Singleton
     fun provideEpsClient(okHttpClient: OkHttpClient): EpsClientInterface = Retrofit.Builder()

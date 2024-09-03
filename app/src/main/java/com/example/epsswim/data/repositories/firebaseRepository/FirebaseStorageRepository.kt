@@ -8,9 +8,9 @@ import javax.inject.Inject
 
 class FirebaseStorageRepository @Inject constructor(private val firebaseStorage: FirebaseStorage) :
     FirebaseStorageInterface {
-    override suspend fun uploadImage(imageUri: Uri): Result<String> {
+    override suspend fun uploadImage(imageUri: Uri,filename: String): Result<String> {
         return try {
-            val storageRef = firebaseStorage.reference.child("profile_pics/${imageUri.lastPathSegment}")
+            val storageRef = firebaseStorage.reference.child("profile_pics/$filename")
             storageRef.putFile(imageUri).await()
             val downloadUrl = storageRef.downloadUrl.await().toString()
             Result.success(downloadUrl)

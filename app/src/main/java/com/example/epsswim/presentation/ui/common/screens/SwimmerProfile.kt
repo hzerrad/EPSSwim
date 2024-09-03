@@ -124,23 +124,26 @@ fun SwimmerProfile(
     LaunchedEffect (key1 = selectedImage) {
         selectedImage?.let {
             isLoading= true
-            userViewModel.uploadProfilePicture(it)
+            userViewModel.uploadProfilePicture(it,swimmerId)
         }
     }
-    LaunchedEffect(key1 = uploadStateValue) {
+    LaunchedEffect(key1 = uploadState.value) {
+        if (uploadState.value != null)
+            uploadStateValue = uploadState.value
         uploadStateValue?.let { result ->
             if (result.isSuccess){
                 parentViewModel.updateSwimmerPfp(swimmerId,result.getOrDefault(""))
+                selectedImage = null
                 swimmer = null
                 sharedViewModel.getSwimmer(swimmerId)
                 if (isLoading){
-                    Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_LONG).show()
                     isLoading = false
+                    Toast.makeText(context, " تم تحميل الصورة بنجاح", Toast.LENGTH_SHORT).show()
                 }
             } else {
                 if (isLoading){
-                    Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_LONG).show()
                     isLoading = false
+                    Toast.makeText(context, " فشل تحميل الصورة", Toast.LENGTH_SHORT).show()
                 }
 
             }
