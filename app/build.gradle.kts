@@ -31,10 +31,12 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isDebuggable = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -102,8 +104,6 @@ dependencies {
     implementation(libs.coil.compose)
     // The compose calendar library for Android
     implementation("com.kizitonwose.calendar:compose:2.4.1")
-    //Apollo
-    implementation("com.apollographql.apollo:apollo-runtime:4.0.0")
     //Datastore
     implementation ("androidx.datastore:datastore-preferences:1.1.1")
     //JWTDecoder
@@ -116,13 +116,3 @@ dependencies {
     implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc06")
 
 }
-//apollo {
-//    service("service") {
-//        packageName.set("com.example.epsswim")
-//        introspection {
-//            endpointUrl.set("https://example.com/graphql")
-//            headers.put("api-key", "1234567890abcdef")
-//            schemaFile.set(file("src/main/graphql/schema.graphqls"))
-//        }
-//    }
-//}
