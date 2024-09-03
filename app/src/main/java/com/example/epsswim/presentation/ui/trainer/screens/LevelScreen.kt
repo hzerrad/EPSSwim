@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -67,6 +68,7 @@ import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
 import com.example.epsswim.presentation.ui.theme.MySecondary
 import com.example.epsswim.presentation.ui.trainer.componants.AbsenceSwimmerCard
+import com.example.epsswim.presentation.ui.trainer.componants.MarkDownController
 import com.example.epsswim.presentation.ui.trainer.componants.MyWeekCalendar
 import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
 import com.example.epsswim.presentation.utils.getDate
@@ -140,7 +142,7 @@ fun LevelScreen(
     val imeState = rememberImeState()
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(key1 = swimmerListState.value) {
+    LaunchedEffect(key1 = swimmerListState.value, key2 = presentList) {
         if (swimmerListState.value != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
             absentList.addAll(
@@ -179,7 +181,9 @@ fun LevelScreen(
                 title = levelName,
                 navigationIcon = {
                     IconButton( onClick = {
-                        navController.popBackStack()
+                        absentList.clear()
+                        presentList.clear()
+                        navController.navigateUp()
                     }){
                         Icon(
                             painter = painterResource(id = R.drawable.chevron_left),
@@ -202,7 +206,6 @@ fun LevelScreen(
                             description = noteState.toMarkdown()
 
                         )
-//                        Log.d("TAG", "LevelScreen: abs: ${absentList.toList()} pres: ${presentList.toList()}")
 
                     }){
                         Icon(
@@ -215,11 +218,12 @@ fun LevelScreen(
         },
         contentWindowInsets = WindowInsets(0,0,0,)
 
-
     ){
-
-
-
+        BackHandler {
+            absentList.clear()
+            presentList.clear()
+            navController.navigateUp()
+        }
         LaunchedEffect(key1 = imeState.value) {
             if (imeState.value){
                 scrollState.animateScrollTo(scrollState.maxValue, tween(300))
@@ -362,13 +366,16 @@ fun LevelScreen(
                                             onUnderlineClick = {
                                                 noteState.toggleSpanStyle(SpanStyle(textDecoration = TextDecoration.Underline))
                                             },
-                                            onTitleClick = {
-                                                noteState.toggleSpanStyle(SpanStyle(fontSize = 24.sp))
-                                            },
-
-                                            onTextColorClick = {
-                                                noteState.toggleSpanStyle(SpanStyle(color = Color.Red))
+                                            onUnorderedListClick = {
+                                                noteState.toggleUnorderedList()
                                             }
+//                                            onTitleClick = {
+//                                                noteState.toggleSpanStyle(SpanStyle(fontSize = 24.sp))
+//                                            },
+//
+//                                            onTextColorClick = {
+//                                                noteState.toggleSpanStyle(SpanStyle(color = Color.Red))
+//                                            }
                                         )
                                     RichTextEditor(
                                         modifier = Modifier
@@ -401,113 +408,3 @@ fun LevelScreen(
     }
 }
 
-@Composable
-fun MarkDownController(
-    modifier: Modifier = Modifier,
-    onBoldClick: () -> Unit,
-    onItalicClick: () -> Unit,
-    onUnderlineClick: () -> Unit,
-    onTitleClick: () -> Unit,
-    onTextColorClick: () -> Unit,
-) {
-    var boldSelected by rememberSaveable { mutableStateOf(false) }
-    var italicSelected by rememberSaveable { mutableStateOf(false) }
-    var underlineSelected by rememberSaveable { mutableStateOf(false) }
-    var titleSelected by rememberSaveable { mutableStateOf(false) }
-    var textColorSelected by rememberSaveable { mutableStateOf(false) }
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ){
-        ControlWrapper(
-            selected = boldSelected,
-            onChangeClick = { boldSelected = it },
-            onClick = onBoldClick
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.format_bold),
-                contentDescription = "Bold Control",
-                tint = MyPrimary
-            )
-        }
-        ControlWrapper(
-            selected = italicSelected,
-            onChangeClick = { italicSelected = it },
-            onClick = onItalicClick
-        ) {
-            Icon(
-                painter = painterResource(id =R.drawable.format_italic ),
-                contentDescription = "Italic Control",
-                tint = MyPrimary
-            )
-        }
-        ControlWrapper(
-            selected = underlineSelected,
-            onChangeClick = { underlineSelected = it },
-            onClick = onUnderlineClick
-        ) {
-            Icon(
-                painter = painterResource(id =R.drawable.format_underlined ),
-                contentDescription = "Underline Control",
-                tint = MyPrimary
-            )
-        }
-        ControlWrapper(
-            selected = titleSelected,
-            onChangeClick = { titleSelected = it },
-            onClick = onTitleClick
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.format_title ),
-                contentDescription = "Title Control",
-                tint = MyPrimary
-            )
-        }
-        ControlWrapper(
-            selected = textColorSelected,
-            onChangeClick = { textColorSelected = it },
-            onClick = onTextColorClick
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.format_text_xolor ),
-                contentDescription = "TextColor Control",
-                tint = MyPrimary
-            )
-        }
-    }
-}
-
-@Composable
-fun ControlWrapper(
-    selected: Boolean,
-    selectedColor: Color = MySecondary,
-    unselectedColor: Color = MyBackground,
-    onChangeClick: (Boolean) -> Unit,
-    onClick: () -> Unit,
-    content: @Composable () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(size = 6.dp))
-            .clickable {
-                onClick()
-                onChangeClick(!selected)
-            }
-            .background(
-                if (selected) selectedColor
-                else unselectedColor
-            )
-            .border(
-                width = 1.dp,
-                color = Color.Black,
-                shape = RoundedCornerShape(size = 6.dp)
-            )
-            .padding(all = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        content()
-    }
-}

@@ -139,7 +139,7 @@ fun CompetitionsScreen(
                         }
                     )
                     LazyColumn (modifier = Modifier.padding(top = 40.dp)) {
-                        items(items = competitionList.filter {it.event.contains(searchedText.value)}){ competition ->
+                        items(items = competitionList.filter {it.event.contains(searchedText.value,ignoreCase = true)}){ competition ->
                             CompetitionCard(
                                 modifier = Modifier.padding(bottom = 20.dp),
                                 competition = competition

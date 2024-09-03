@@ -468,12 +468,13 @@ fun ParticipationSheetContent(swimmingTypes:List<Eventtype>,onClick : (String,Li
             AnimatedVisibility(visible = isStopWatchActive) {
                 Button(
                     onClick = {
-                        //                    stopWatch.pause()
-                        if (stopsNum <= maxIndex){
+                        if (stopsNum < maxIndex){
                             stops[stopsNum] = stopWatchTime
                             lapTimes.add(stopsNum,parseTimeToMillis(stopWatchTime))
                             stopsNum++
-                        }else  {
+                        } else {
+                            stops[stopsNum] = stopWatchTime
+                            lapTimes.add(stopsNum,parseTimeToMillis(stopWatchTime))
                             stopWatch.pause()
                             stopsNum = 0
                         }

@@ -447,7 +447,7 @@ fun ParticipantCard(modifier: Modifier, participant: Participant, onClick: () ->
                 modifier = Modifier
                     .padding(end = 16.dp)
                     .clip(RoundedCornerShape(12.dp))
-                    .width(65.dp)
+                    .size(65.dp)
                     .border(0.2.dp, Black, RoundedCornerShape(12.dp)),
                 model = participant.swimmer.pfpUrl,
                 contentDescription = stringResource(R.string.profile_img),
@@ -903,7 +903,9 @@ fun AbsenceSwimmerCard(
                     color = Color.Black
                 )
                 val buttonColor = if (!selected) MyRed else MyBackground
+                val disabledButtonColor = if (!selected) MyRed.copy(alpha = 0.5f) else MyBackground.copy(alpha = 0.5f)
                 val buttonContainerColor = if (selected) MyRed else Color.White
+                val disabledButtonContainerColor = if (selected) MyRed.copy(alpha = 0.5f) else Color.White.copy(0.5f)
                 OutlinedButton(
                     modifier = Modifier
                         .padding(start = 40.dp, bottom = 40.dp)
@@ -921,7 +923,9 @@ fun AbsenceSwimmerCard(
                     enabled = enabled,
                     colors = ButtonDefaults.outlinedButtonColors(
                         contentColor = buttonColor,
-                        containerColor = buttonContainerColor
+                        containerColor = buttonContainerColor,
+                        disabledContentColor = disabledButtonColor,
+                        disabledContainerColor = disabledButtonContainerColor
                     ),
                     border = BorderStroke(1.dp, buttonColor)
                 ) {
@@ -934,6 +938,8 @@ fun AbsenceSwimmerCard(
             }
         }
         AsyncImage(
+            error = painterResource(id = R.drawable.img),
+            fallback = painterResource(id = R.drawable.img),
             model = swimmer.pfpUrl,
             modifier = Modifier
                 .background(MySecondary, RoundedCornerShape(12.dp))
@@ -995,5 +1001,128 @@ fun ExposedDropdownMenuParticipationType(
                 )
             }
         }
+    }
+}
+@Composable
+fun MarkDownController(
+    modifier: Modifier = Modifier,
+    onBoldClick: () -> Unit,
+    onItalicClick: () -> Unit,
+    onUnderlineClick: () -> Unit,
+//    onTitleClick: () -> Unit,
+//    onTextColorClick: () -> Unit,
+    onUnorderedListClick : () -> Unit
+) {
+    var boldSelected by rememberSaveable { mutableStateOf(false) }
+    var italicSelected by rememberSaveable { mutableStateOf(false) }
+    var underlineSelected by rememberSaveable { mutableStateOf(false) }
+    var titleSelected by rememberSaveable { mutableStateOf(false) }
+    var textColorSelected by rememberSaveable { mutableStateOf(false) }
+    var unorderedListSelected by rememberSaveable { mutableStateOf(false) }
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        ControlWrapper(
+            selected = boldSelected,
+            onChangeClick = { boldSelected = it },
+            onClick = onBoldClick
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.format_bold),
+                contentDescription = "Bold Control",
+                tint = MyPrimary
+            )
+        }
+        ControlWrapper(
+            selected = italicSelected,
+            onChangeClick = { italicSelected = it },
+            onClick = onItalicClick
+        ) {
+            Icon(
+                painter = painterResource(id =R.drawable.format_italic ),
+                contentDescription = "Italic Control",
+                tint = MyPrimary
+            )
+        }
+        ControlWrapper(
+            selected = underlineSelected,
+            onChangeClick = { underlineSelected = it },
+            onClick = onUnderlineClick
+        ) {
+            Icon(
+                painter = painterResource(id =R.drawable.format_underlined ),
+                contentDescription = "Underline Control",
+                tint = MyPrimary
+            )
+        }
+        ControlWrapper(
+            selected = unorderedListSelected,
+            onChangeClick = { unorderedListSelected = it },
+            onClick = onUnorderedListClick
+        ) {
+            Icon(
+                painter = painterResource(id =R.drawable.unordered_list ),
+                contentDescription = "unorderedList Control",
+                tint = MyPrimary
+            )
+        }
+//        ControlWrapper(
+//            selected = titleSelected,
+//            onChangeClick = { titleSelected = it },
+//            onClick = onTitleClick
+//        ) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.format_title ),
+//                contentDescription = "Title Control",
+//                tint = MyPrimary
+//            )
+//        }
+//        ControlWrapper(
+//            selected = textColorSelected,
+//            onChangeClick = { textColorSelected = it },
+//            onClick = onTextColorClick
+//        ) {
+//            Icon(
+//                painter = painterResource(id = R.drawable.format_text_xolor ),
+//                contentDescription = "TextColor Control",
+//                tint = MyPrimary
+//            )
+//        }
+    }
+}
+
+@Composable
+fun ControlWrapper(
+    selected: Boolean,
+    selectedColor: Color = MySecondary,
+    unselectedColor: Color = MyBackground,
+    onChangeClick: (Boolean) -> Unit,
+    onClick: () -> Unit,
+    content: @Composable () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(size = 6.dp))
+            .clickable {
+                onClick()
+                onChangeClick(!selected)
+            }
+            .background(
+                if (selected) selectedColor
+                else unselectedColor
+            )
+            .border(
+                width = 1.dp,
+                color = Color.Black,
+                shape = RoundedCornerShape(size = 6.dp)
+            )
+            .padding(all = 8.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        content()
     }
 }
