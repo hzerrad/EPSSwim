@@ -330,7 +330,6 @@ fun ParticipationDetailsScreen(
                                 containerColor = MyBackground
                             ) {
                                 ParticipationSheetContent(swimmingTypes!!){ swimmingTypeID,laptimes ->
-
                                     participationViewModel.insertParticipation(
                                         ParticipationVariables(
                                             competitionid = competitionID,
@@ -482,11 +481,17 @@ fun ParticipationSheetContent(swimmingTypes:List<Eventtype>,onClick : (String,Li
                     onClick = {
                         if (stopsNum < maxIndex){
                             stops[stopsNum] = stopWatchTime
-                            lapTimes.add(stopsNum,parseTimeToMillis(stopWatchTime))
+                            if (stopsNum in lapTimes.indices)
+                                lapTimes[stopsNum] = parseTimeToMillis(stopWatchTime)
+                            else
+                                lapTimes.add(parseTimeToMillis(stopWatchTime))
                             stopsNum++
                         } else {
                             stops[stopsNum] = stopWatchTime
-                            lapTimes.add(stopsNum,parseTimeToMillis(stopWatchTime))
+                            if (stopsNum in lapTimes.indices)
+                                lapTimes[stopsNum] = parseTimeToMillis(stopWatchTime)
+                            else
+                                lapTimes.add(parseTimeToMillis(stopWatchTime))
                             stopWatch.pause()
                             stopsNum = 0
                         }
