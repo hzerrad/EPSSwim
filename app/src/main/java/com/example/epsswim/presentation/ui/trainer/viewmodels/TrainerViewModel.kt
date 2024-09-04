@@ -2,6 +2,8 @@ package com.example.epsswim.presentation.ui.trainer.viewmodels
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.absences.AbsencesResponse
@@ -35,6 +37,8 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
     val trainerInfo: StateFlow<TrainerResponse?> = _trainerInfo
     private val _swimmerList = MutableStateFlow<Children?>(null)
     val swimmerList: StateFlow<Children?> = _swimmerList
+    private val _isNotConnected = mutableStateOf(false)
+    val isNotConnected : State<Boolean> = _isNotConnected
 
 
     fun getTrainerLevels(){
@@ -42,6 +46,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
             trainerRepository.getTrainerLevels(Query(Queries.GET_LEVELS)).enqueue(object : Callback<LevelsResponse> {
                 override fun onResponse(call: Call<LevelsResponse>, response: Response<LevelsResponse>) {
                     if (response.isSuccessful) {
+                        _isNotConnected.value = false
                         _levelList.value = response.body()
                     } else {
                         Log.d("LevelsApi", "onResponse: failed fetch data ${response.code()}")
@@ -49,6 +54,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
                 }
 
                 override fun onFailure(call: Call<LevelsResponse>, t: Throwable) {
+                    _isNotConnected.value = true
                     Log.d("LevelsApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
                 }
             })
@@ -60,6 +66,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
             trainerRepository.getTrainerInfo(Query(Queries.GET_TRAINER_BY_ID)).enqueue(object : Callback<TrainerResponse> {
                 override fun onResponse(call: Call<TrainerResponse>, response: Response<TrainerResponse>) {
                     if (response.isSuccessful) {
+                        _isNotConnected.value = false
                         _trainerInfo.value = response.body()
                     } else {
                         Log.d("TrainerInfoApi", "onResponse: failed fetch data ${response.code()}")
@@ -67,6 +74,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
                 }
 
                 override fun onFailure(call: Call<TrainerResponse>, t: Throwable) {
+                    _isNotConnected.value = true
                     Log.d("TrainerInfoApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
                 }
             })
@@ -111,6 +119,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
             ).enqueue(object : Callback<Children> {
                 override fun onResponse(call: Call<Children>, response: Response<Children>) {
                     if (response.isSuccessful) {
+                        _isNotConnected.value = false
                         _swimmerList.value = response.body()
                     } else {
                         Log.d("TrainerApi", "onResponse: failed fetch data ${response.code()}")
@@ -118,6 +127,7 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
                 }
 
                 override fun onFailure(call: Call<Children>, t: Throwable) {
+                    _isNotConnected.value = true
                     Log.d("TrainerApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
                 }
             })

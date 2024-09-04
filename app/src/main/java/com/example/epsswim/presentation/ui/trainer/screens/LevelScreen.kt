@@ -96,7 +96,7 @@ fun LevelScreen(
         mutableStateOf(false)
     }
     val isLoading = remember {
-        mutableStateOf(false)
+        mutableStateOf(true)
     }
     val isError = remember {
         mutableStateOf(false)
@@ -108,7 +108,6 @@ fun LevelScreen(
         mutableListOf<String>()
     }
     trainerViewmodel.getSwimmersByLevelId(levelID,getDate(selectedDate.value))
-
     LaunchedEffect(key1 = levelID,key2 = getDate(selectedDate.value)) {
         absentList.clear()
         presentList.clear()

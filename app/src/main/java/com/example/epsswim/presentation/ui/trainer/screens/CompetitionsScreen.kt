@@ -44,7 +44,9 @@ import com.example.epsswim.data.model.app.swimmer.Level
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
+import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.common.componants.NotConnectedScreen
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.trainer.componants.CompetitionDetailsCard
@@ -52,6 +54,7 @@ import com.example.epsswim.presentation.ui.trainer.componants.FullScreenDialogCo
 import com.example.epsswim.presentation.ui.trainer.componants.MySearchBar
 import com.example.epsswim.presentation.ui.trainer.componants.ParticipantCard
 import com.example.epsswim.presentation.ui.trainer.viewmodels.CompetitionViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -59,6 +62,10 @@ fun CompetitionsScreen(
     navController: NavHostController,
     competitionViewModel: CompetitionViewModel
 ) {
+    val isNotConnected by competitionViewModel.isNotConnected
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
     val keyboardController = LocalSoftwareKeyboardController.current
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -74,8 +81,11 @@ fun CompetitionsScreen(
     LaunchedEffect(key1 = competitionListState.value) {
         if(competitionListState.value == null)
             competitionViewModel.getCompetitions()
-        else
+        else{
+            isLoading = false
             competitionList = competitionListState.value?.data?.competitions ?: emptyList()
+        }
+
     }
     LaunchedEffect(key1 = true) {
         competitionViewModel.getTrainerSwimmers()
@@ -92,11 +102,18 @@ fun CompetitionsScreen(
     }
     LaunchedEffect(key1 = levelListState.value) {
         if(levelListState.value != null){
+            isLoading = false
             levelList = levelListState.value?.data?.levels ?: emptyList()
             levelList.forEach { lvl ->
                 swimmerList.addAll(lvl.swimmers)
             }
             levelID = levelList.first().levelid
+        }
+    }
+    LaunchedEffect(isNotConnected) {
+        if (isNotConnected){
+            delay(1000)
+            isLoading = false
         }
     }
 
@@ -118,89 +135,95 @@ fun CompetitionsScreen(
                 )
             }
         ) {
-
-            Surface(
-                modifier = Modifier
-                    .padding(it)
-                    .fillMaxSize(),
-                color = MyBackground
-            ) {
-                Column (Modifier.padding(horizontal = 20.dp, vertical = 30.dp)){
-                    val searchedText = remember {
-                        mutableStateOf("")
-                    }
-                    MySearchBar(
-                        text = searchedText,
-                        onSearchClicked = {
-                            keyboardController?.hide()
-                        },
-                        onTextChange = { text ->
-                            searchedText.value = text
+            if (isLoading)
+                Loading()
+            else if (isNotConnected)
+                NotConnectedScreen()
+            else{
+                Surface(
+                    modifier = Modifier
+                        .padding(it)
+                        .fillMaxSize(),
+                    color = MyBackground
+                ) {
+                    Column (Modifier.padding(horizontal = 20.dp, vertical = 30.dp)){
+                        val searchedText = remember {
+                            mutableStateOf("")
                         }
-                    )
-                    LazyColumn (modifier = Modifier.padding(top = 40.dp)) {
-                        items(items = competitionList.filter {it.event.contains(searchedText.value,ignoreCase = true)}){ competition ->
-                            CompetitionCard(
-                                modifier = Modifier.padding(bottom = 20.dp),
-                                competition = competition
-                            ) {
-                                currentCompetition = competition
-                                showBottomSheet= true
+                        MySearchBar(
+                            text = searchedText,
+                            onSearchClicked = {
+                                keyboardController?.hide()
+                            },
+                            onTextChange = { text ->
+                                searchedText.value = text
+                            }
+                        )
+                        LazyColumn (modifier = Modifier.padding(top = 40.dp)) {
+                            items(items = competitionList.filter {it.event.contains(searchedText.value,ignoreCase = true)}){ competition ->
+                                CompetitionCard(
+                                    modifier = Modifier.padding(bottom = 20.dp),
+                                    competition = competition
+                                ) {
+                                    currentCompetition = competition
+                                    showBottomSheet= true
+                                }
                             }
                         }
-                    }
-                    if (showBottomSheet) {
-                        ModalBottomSheet(
-                            onDismissRequest = {
-                                showBottomSheet = false
-                            },
-                            sheetState = sheetState,
-                            containerColor = MyBackground
-                        ) {
-                            Column (Modifier.padding(start = 24.dp, end = 24.dp, bottom = 50.dp)){
-                                CompetitionDetailsCard(Modifier.padding(bottom = 12.dp),competition = currentCompetition!!)
-                                Text(
-                                    text = stringResource(R.string.the_participants),
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Black,
-                                    modifier = Modifier.padding(bottom = 12.dp),
-                                    fontSize = 20.sp,
-                                )
-                                LazyColumn {
-                                    items(items = currentCompetition!!.participants){
-                                        ParticipantCard(
-                                            modifier = Modifier.padding(bottom = 12.dp),
-                                            participant = it
-                                        ){
-                                            navController.navigate(Screen.ParticipationDetails(swimmerID = it.swimmer.swimmerid, competitionID = currentCompetition!!.competitionid))
+                        if (showBottomSheet) {
+                            ModalBottomSheet(
+                                onDismissRequest = {
+                                    showBottomSheet = false
+                                },
+                                sheetState = sheetState,
+                                containerColor = MyBackground
+                            ) {
+                                Column (Modifier.padding(start = 24.dp, end = 24.dp, bottom = 50.dp)){
+                                    CompetitionDetailsCard(Modifier.padding(bottom = 12.dp),competition = currentCompetition!!)
+                                    Text(
+                                        text = stringResource(R.string.the_participants),
+                                        fontWeight = FontWeight.Medium,
+                                        color = Color.Black,
+                                        modifier = Modifier.padding(bottom = 12.dp),
+                                        fontSize = 20.sp,
+                                    )
+                                    LazyColumn {
+                                        items(items = currentCompetition!!.participants){
+                                            ParticipantCard(
+                                                modifier = Modifier.padding(bottom = 12.dp),
+                                                participant = it
+                                            ){
+                                                navController.navigate(Screen.ParticipationDetails(swimmerID = it.swimmer.swimmerid, competitionID = currentCompetition!!.competitionid))
+                                            }
                                         }
+
+
                                     }
 
-
                                 }
-
                             }
                         }
+                        if (showFullScreenDialog.value)
+                            Dialog(
+                                onDismissRequest = { showFullScreenDialog.value = false },
+                                properties = DialogProperties(usePlatformDefaultWidth = false)
+                            ){
+                                FullScreenDialogContent(
+                                    participants= swimmerList.toList(),
+                                    levelID = levelID,
+                                    onDismiss ={
+                                        showFullScreenDialog.value = false
+                                    },
+                                    onDone = {
+                                        competitionViewModel.insertCompetition(it)
+                                        showFullScreenDialog.value = false
+                                    },
+                                )
+                            }
                     }
-                    if (showFullScreenDialog.value)
-                        Dialog(
-                            onDismissRequest = { showFullScreenDialog.value = false },
-                            properties = DialogProperties(usePlatformDefaultWidth = false)
-                        ){
-                            FullScreenDialogContent(
-                                participants= swimmerList.toList(),
-                                levelID = levelID,
-                                onDismiss ={
-                                    showFullScreenDialog.value = false
-                                },
-                                onDone = {
-                                    competitionViewModel.insertCompetition(it)
-                                    showFullScreenDialog.value = false
-                                },
-                            )
-                        }
                 }
             }
+
         }
     }
 }

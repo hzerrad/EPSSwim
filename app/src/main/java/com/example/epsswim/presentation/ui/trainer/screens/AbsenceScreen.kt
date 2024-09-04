@@ -31,18 +31,24 @@ import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Level
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
+import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.common.componants.NotConnectedScreen
 import com.example.epsswim.presentation.ui.trainer.componants.LevelCard
 import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun AbsenceScreen(
     navController: NavHostController,
     trainerViewModel: TrainerViewModel
 ) {
+    val isNotConnected by trainerViewModel.isNotConnected
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
     LaunchedEffect(true) {
         trainerViewModel.getTrainerLevels()
-
     }
     val levelsListState = trainerViewModel.levelList.collectAsState()
     var levelsList by remember {
@@ -50,42 +56,56 @@ fun AbsenceScreen(
     }
     LaunchedEffect(key1 = levelsListState.value == null) {
         if (levelsListState.value != null){
+            isLoading=false
             levelsList = levelsListState.value?.data?.levels ?: emptyList()
             Log.d("TAG", "AbsenceScreen: $levelsList")
+        }
+    }
+    LaunchedEffect(isNotConnected) {
+        if (isNotConnected){
+            delay(1000)
+            isLoading = false
         }
     }
     Scaffold (
         topBar = { MyAppBar(title = stringResource(R.string.absences)) }
     ) {
-        Surface(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-        ) {
-            Column (
+        if (isLoading)
+            Loading()
+        else if (isNotConnected)
+            NotConnectedScreen()
+        else{
+            Surface(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 30.dp),
-                horizontalAlignment = Alignment.End
-            ){
-                Text(
-                    modifier = Modifier.padding(bottom = 30.dp),
-                    text = stringResource(R.string.levels),
-                    fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
-                    fontSize = 24.sp,
-                )
-                LazyColumn {
-                    items(items = levelsList){
-                        LevelCard(
-                            modifier=Modifier.padding(bottom = 30.dp),
-                            title = it.levelname
-                        ){
-                            navController.navigate(Screen.LevelScreen(it.levelid,it.levelname))
+                    .padding(it)
+                    .fillMaxSize()
+            ) {
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 30.dp),
+                    horizontalAlignment = Alignment.End
+                ){
+                    Text(
+                        modifier = Modifier.padding(bottom = 30.dp),
+                        text = stringResource(R.string.levels),
+                        fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
+                        fontSize = 24.sp,
+                    )
+                    LazyColumn {
+                        items(items = levelsList){
+                            LevelCard(
+                                modifier=Modifier.padding(bottom = 30.dp),
+                                title = it.levelname
+                            ){
+                                navController.navigate(Screen.LevelScreen(it.levelid,it.levelname))
+                            }
                         }
                     }
                 }
             }
         }
+
     }
 }
 

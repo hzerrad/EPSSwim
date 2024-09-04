@@ -66,6 +66,7 @@ fun HomeScreen(
     }
     LaunchedEffect(isNotConnected) {
         if (isNotConnected){
+            delay(1000)
             isLoading = false
         }
     }

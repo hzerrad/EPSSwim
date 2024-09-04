@@ -1,6 +1,8 @@
 package com.example.epsswim.presentation.ui.trainer.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.competition.CompetitionResponse
@@ -26,6 +28,8 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
 
     private val _competitionList = MutableStateFlow<CompetitionResponse?>(null)
     val competitionList: StateFlow<CompetitionResponse?> = _competitionList
+    private val _isNotConnected = mutableStateOf(false)
+    val isNotConnected : State<Boolean> = _isNotConnected
 
     fun getTrainerSwimmers(){
         viewModelScope.launch {
@@ -34,12 +38,14 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
                 override fun onResponse(call: Call<LevelsResponse>, response: Response<LevelsResponse>) {
                     if (response.isSuccessful) {
                         _levelList.value = response.body()
+                        _isNotConnected.value = false
                     } else {
                         Log.d("LevelsApi", "onResponse: failed fetch data ${response.code()}")
                     }
                 }
 
                 override fun onFailure(call: Call<LevelsResponse>, t: Throwable) {
+                    _isNotConnected.value = true
                     Log.d("LevelsApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
                 }
             })
@@ -79,6 +85,7 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
                 Callback<CompetitionResponse> {
                 override fun onResponse(call: Call<CompetitionResponse>, response: Response<CompetitionResponse>) {
                     if (response.isSuccessful) {
+                        _isNotConnected.value = false
                         _competitionList.value = response.body()
                     } else {
                         Log.d("LevelsApi", "onResponse: failed fetch data ${response.code()}")
@@ -86,6 +93,7 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
                 }
 
                 override fun onFailure(call: Call<CompetitionResponse>, t: Throwable) {
+                    _isNotConnected.value = true
                     Log.d("LevelsApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
                 }
             })
