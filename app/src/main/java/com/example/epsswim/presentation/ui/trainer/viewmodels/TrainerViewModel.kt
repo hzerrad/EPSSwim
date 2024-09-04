@@ -121,7 +121,10 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
                     if (response.isSuccessful) {
                         _isNotConnected.value = false
                         _swimmerList.value = response.body()
+                        Log.d("TrainerApi", "onResponse: success fetch data ${response.body()}")
+
                     } else {
+                        _isNotConnected.value = false
                         Log.d("TrainerApi", "onResponse: failed fetch data ${response.code()}")
                     }
                 }

@@ -143,7 +143,7 @@ fun LevelScreen(
     val scrollState = rememberScrollState()
 
     LaunchedEffect(key1 = swimmerListState.value, key2 = presentList) {
-        if (swimmerListState.value != null){
+        if (swimmerListState.value?.data?.swimmers != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
             absentList.addAll(
                 swimmerList.filter {
@@ -164,7 +164,7 @@ fun LevelScreen(
             noteState.setHtml(note)
             lastIndex = swimmerList.size - 1
             currentSwimmer = swimmerList[index]
-            isLoading.value = currentSwimmer != null
+            isLoading.value = currentSwimmer == null
         }
     }
     LaunchedEffect (isDataSent.value,isError.value,isLoading.value) {
@@ -230,7 +230,7 @@ fun LevelScreen(
             }
         }
 
-        if (isLoading.value)
+        if (! isLoading.value)
             Surface(
                 modifier = Modifier
                     .padding(it)
