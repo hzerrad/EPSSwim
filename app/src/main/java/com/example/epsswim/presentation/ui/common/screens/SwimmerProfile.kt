@@ -153,6 +153,7 @@ fun SwimmerProfile(
         uploadStateValue = null
         swimmer = null
         competitions = null
+        userViewModel.clearState()
         sharedViewModel.clearState()
         navController.navigateUp()
     }

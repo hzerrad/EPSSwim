@@ -12,13 +12,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UserViewModel @Inject constructor(private val firebaseStorageRepository: FirebaseStorageRepository) : ViewModel() {
-    private val _uploadResult = MutableLiveData<Result<String>>()
-    val uploadResult: LiveData<Result<String>> = _uploadResult
+    private val _uploadResult = MutableLiveData<Result<String>?>(null)
+    val uploadResult: MutableLiveData<Result<String>?> = _uploadResult
 
     fun uploadProfilePicture(imageUri: Uri,filename:String) {
         viewModelScope.launch {
             val result = firebaseStorageRepository.uploadImage(imageUri, filename = filename)
             _uploadResult.value = result
         }
+    }
+    fun clearState(){
+        _uploadResult.value = null
     }
 }
