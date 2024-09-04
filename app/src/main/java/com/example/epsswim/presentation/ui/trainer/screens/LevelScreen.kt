@@ -1,5 +1,6 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -161,7 +162,7 @@ fun LevelScreen(
             )
             note = swimmerListState.value?.data?.levels_by_pk?.notes?.firstOrNull()?.description ?: ""
             trainerId = swimmerListState.value?.data?.levels_by_pk?.trainerid ?: ""
-            noteState.setMarkdown(note)
+            noteState.setHtml(note)
             lastIndex = swimmerList.size - 1
             currentSwimmer = swimmerList[index]
             isLoading.value = currentSwimmer != null
@@ -203,7 +204,7 @@ fun LevelScreen(
                             absencedate = getDate(selectedDate.value),
                             levelid = levelID,
                             trainerid = trainerId,
-                            description = noteState.toMarkdown()
+                            description = note
 
                         )
 
@@ -338,7 +339,7 @@ fun LevelScreen(
                                     TextButton(
                                         onClick = {
                                             scope.launch {
-                                                note = noteState.toMarkdown()
+                                                note = noteState.toHtml()
                                                 sheetState.hide()
                                             }.invokeOnCompletion {
                                                 showBottomSheet= false
@@ -394,8 +395,6 @@ fun LevelScreen(
                                             unfocusedIndicatorColor = Color.Transparent
                                         )
                                     )
-
-
                                 }
                             }
 
