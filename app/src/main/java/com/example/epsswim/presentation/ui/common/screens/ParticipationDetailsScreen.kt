@@ -127,7 +127,7 @@ fun ParticipationDetailsScreen(
                     IconButton(
                         onClick = {
                             participationViewModel.clearState()
-                            navController.popBackStack()
+                            navController.navigateUp()
                         }
                     ){
                         Icon(
@@ -140,7 +140,7 @@ fun ParticipationDetailsScreen(
     ) {
         BackHandler {
             participationViewModel.clearState()
-            navController.popBackStack()
+            navController.navigateUp()
         }
         val sheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(false) }

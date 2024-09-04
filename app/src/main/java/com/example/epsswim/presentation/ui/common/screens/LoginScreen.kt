@@ -88,8 +88,14 @@ fun LoginScreen(
             enabled = true
             isTrainer.value =  role.value=="coach"
             when (isTrainer.value) {
-                true -> navController.navigate(Screen.AbsenceScreen)
-                false -> navController.navigate(Screen.ParentHome)
+                true ->{
+                    navController.popBackStack()
+                    navController.navigate(Screen.AbsenceScreen)
+                }
+                false ->{
+                    navController.popBackStack()
+                    navController.navigate(Screen.ParentHome)
+                }
                 else -> Log.e("login", "LoginScreen: role is null")
             }
         }
