@@ -1,6 +1,8 @@
 package com.example.epsswim.presentation.ui.parent.viewmodels
 
 import android.util.Log
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.epsswim.data.model.app.pfp.PfpResponse
@@ -27,6 +29,9 @@ class ParentViewModel @Inject constructor(
     private val _swimmerList = MutableStateFlow<Children?>(null)
     val swimmerList: StateFlow<Children?> = _swimmerList
 
+    private val _isNotConnected = mutableStateOf(false)
+    val isNotConnected : State<Boolean> = _isNotConnected
+
     init {
         getSwimmers()
     }
@@ -37,6 +42,7 @@ class ParentViewModel @Inject constructor(
                 Callback<Children> {
                 override fun onResponse(call: Call<Children>, response: Response<Children>) {
                     if (response.isSuccessful) {
+                        _isNotConnected.value = false
                         _swimmerList.value = response.body()
                     } else {
                         Log.d("ParentApi", "onResponse: failed fetch data ${response.code()}")
@@ -44,6 +50,7 @@ class ParentViewModel @Inject constructor(
                 }
 
                 override fun onFailure(call: Call<Children>, t: Throwable) {
+                    _isNotConnected.value = true
                     Log.d("ParentApi", "onFailure: failed fetch data, check your internet connection ${t.message}")
                 }
             })

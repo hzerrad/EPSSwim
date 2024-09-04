@@ -29,7 +29,9 @@ import androidx.navigation.NavHostController
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
+import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.common.componants.NotConnectedScreen
 import com.example.epsswim.presentation.ui.common.viewmodels.AuthViewmodel
 import com.example.epsswim.presentation.ui.common.viewmodels.SharedViewModel
 import com.example.epsswim.presentation.ui.parent.componants.MyTabRow
@@ -44,18 +46,27 @@ fun HomeScreen(
     authViewModel: AuthViewmodel,
     parentViewModel: ParentViewModel ,
 ) {
+    var isLoading by remember {
+        mutableStateOf(true)
+    }
     LaunchedEffect(true) {
         delay(500)
         parentViewModel.getSwimmers()
     }
+    val isNotConnected by parentViewModel.isNotConnected
     val swimmerListState = parentViewModel.swimmerList.collectAsState()
     var swimmerList by remember {
         mutableStateOf<List<Swimmer>>(emptyList())
     }
     LaunchedEffect(key1 = swimmerListState.value) {
         if (swimmerListState.value != null){
+            isLoading = false
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
-            Log.d("TAG", "HomeScreen: $swimmerList")
+        }
+    }
+    LaunchedEffect(isNotConnected) {
+        if (isNotConnected){
+            isLoading = false
         }
     }
 
@@ -83,42 +94,50 @@ fun HomeScreen(
                 .padding(it)
                 .fillMaxSize()
         ) {
-            Column (
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(vertical = 25.dp)
-            ) {
-                var selectedIndex by remember {
-                    mutableIntStateOf(1)
-                }
-                val tabsList = listOf(stringResource(R.string.professionals), stringResource(R.string.beginners))
+            if (isLoading)
+                Loading()
+            else if (isNotConnected)
+                NotConnectedScreen()
+            else{
+                Column (
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = 25.dp)
+                ) {
+                    var selectedIndex by remember {
+                        mutableIntStateOf(1)
+                    }
+                    val tabsList = listOf(stringResource(R.string.professionals), stringResource(R.string.beginners))
 
 
-                MyTabRow(selectedIndex,tabsList){ index->
-                    selectedIndex = index
-                }
-                if (swimmerListState.value != null)
-                    LazyColumn(modifier = Modifier.padding(top = 20.dp)) {
-                        items(
-                            items = swimmerList.filter {
-                                if (selectedIndex==1){
-                                    !it.ispro
+                    MyTabRow(selectedIndex,tabsList){ index->
+                        selectedIndex = index
+                    }
+                    if (swimmerListState.value != null)
+                        LazyColumn(modifier = Modifier.padding(top = 20.dp)) {
+                            items(
+                                items = swimmerList.filter {
+                                    if (selectedIndex==1){
+                                        !it.ispro
+                                    }
+                                    else{
+                                        it.ispro
+                                    }
                                 }
-                                else{
-                                    it.ispro
-                                }
-                            }
-                        ){
-                            SwimmerCard(
-                                swimmer = it,
-                                modifier = Modifier.padding(start = 15.dp,end = 15.dp, bottom = 20.dp)
                             ){
-                                navController.navigate(Screen.SwimmerProfile(it.swimmerid,true))
+                                SwimmerCard(
+                                    swimmer = it,
+                                    modifier = Modifier.padding(start = 15.dp,end = 15.dp, bottom = 20.dp)
+                                ){
+                                    navController.navigate(Screen.SwimmerProfile(it.swimmerid,true))
+                                }
                             }
                         }
-                    }
+                }
             }
         }
     }
 }
+
+
 

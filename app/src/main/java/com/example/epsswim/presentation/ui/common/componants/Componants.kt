@@ -74,7 +74,22 @@ fun Loading() {
         CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
     }
 }
-
+@Composable
+fun NotConnectedScreen() {
+    Box(modifier = Modifier
+        .background(color = MyBackground)
+        .fillMaxSize()
+    ){
+        Image(painter = painterResource(
+            id = R.drawable.no_connection),
+            contentDescription = "no conection",
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth(0.75f),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
 @Composable
 fun MyOutlinedTextField(
     modifier: Modifier = Modifier,
