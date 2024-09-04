@@ -1,6 +1,7 @@
 package com.example.epsswim.presentation.ui.common.screens
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.collection.LongList
 import androidx.collection.mutableLongListOf
 import androidx.compose.animation.AnimatedVisibility
@@ -137,6 +138,10 @@ fun ParticipationDetailsScreen(
                 }
             ) }
     ) {
+        BackHandler {
+            participationViewModel.clearState()
+            navController.popBackStack()
+        }
         val sheetState = rememberModalBottomSheetState()
         var showBottomSheet by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()

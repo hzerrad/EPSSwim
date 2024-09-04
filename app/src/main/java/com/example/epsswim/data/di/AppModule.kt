@@ -7,7 +7,6 @@ import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.preferencesDataStoreFile
-import com.apollographql.apollo.ApolloClient
 import com.example.epsswim.data.network.EpsClientInterface
 import com.example.epsswim.data.network.LoginApiInterface
 import com.example.epsswim.data.network.TokenInterceptor
