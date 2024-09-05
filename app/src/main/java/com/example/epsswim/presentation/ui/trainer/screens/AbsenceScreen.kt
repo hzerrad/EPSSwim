@@ -33,6 +33,7 @@ import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.common.componants.NoDataScreen
 import com.example.epsswim.presentation.ui.common.componants.NotConnectedScreen
 import com.example.epsswim.presentation.ui.trainer.componants.LevelCard
 import com.example.epsswim.presentation.ui.trainer.viewmodels.TrainerViewModel
@@ -74,6 +75,8 @@ fun AbsenceScreen(
             Loading()
         else if (isNotConnected)
             NotConnectedScreen()
+        else if(levelsList.isEmpty())
+            NoDataScreen()
         else{
             Surface(
                 modifier = Modifier

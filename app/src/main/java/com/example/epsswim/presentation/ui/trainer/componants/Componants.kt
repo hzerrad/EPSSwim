@@ -449,7 +449,7 @@ fun ParticipantCard(modifier: Modifier, participant: Participant, onClick: () ->
                     .clip(RoundedCornerShape(12.dp))
                     .size(65.dp)
                     .border(0.2.dp, Black, RoundedCornerShape(12.dp)),
-                model = participant.swimmer.pfpUrl,
+                model = if(participant.swimmer.pfpUrl.contains(participant.swimmer.swimmerid)) participant.swimmer.pfpUrl else null,
                 error = painterResource(id = R.drawable.img),
                 fallback =  painterResource(id = R.drawable.img),
                 contentDescription = stringResource(R.string.profile_img),
@@ -942,7 +942,7 @@ fun AbsenceSwimmerCard(
         AsyncImage(
             error = painterResource(id = R.drawable.img),
             fallback = painterResource(id = R.drawable.img),
-            model = swimmer.pfpUrl,
+            model = if (swimmer.pfpUrl.contains(swimmer.swimmerid)) swimmer.pfpUrl else null,
             modifier = Modifier
                 .background(MySecondary, RoundedCornerShape(12.dp))
                 .clip(RoundedCornerShape(12.dp))

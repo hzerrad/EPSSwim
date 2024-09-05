@@ -222,7 +222,7 @@ fun SwimmerProfile(
                             CircularProgressIndicator()
                         else
                             AsyncImage(
-                                model = swimmer!!.pfpUrl,
+                                model = if( swimmer!!.pfpUrl.contains(swimmerId)) swimmer!!.pfpUrl else null,
                                 error = painterResource(id = R.drawable.img),
                                 fallback =  painterResource(id = R.drawable.img),
                                 contentDescription = "profile pic",

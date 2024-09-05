@@ -83,10 +83,10 @@ fun TrainerProfile(
     var trainer by remember {
         mutableStateOf<Trainer?>(null)
     }
+
     LaunchedEffect(key1 = trainerState.value) {
         if (trainerState.value != null){
             trainer = trainerState.value?.data?.trainers?.first()
-            Log.d("TAG", "TrainerProfile: $trainer")
         }
     }
     if (trainer != null)
@@ -209,7 +209,7 @@ fun MainContent(
                         CircularProgressIndicator()
                     else
                         AsyncImage(
-                            model = trainer!!.pfpUrl,
+                            model = if (trainer!!.pfpUrl.contains(trainer.trainerid)) trainer.pfpUrl else null,
                             error = painterResource(id = R.drawable.img),
                             fallback =  painterResource(id = R.drawable.img),
                             contentDescription = "profile pic",

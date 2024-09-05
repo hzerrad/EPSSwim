@@ -91,6 +91,22 @@ fun NotConnectedScreen() {
     }
 }
 @Composable
+fun NoDataScreen() {
+    Box(modifier = Modifier
+        .background(color = MyBackground)
+        .fillMaxSize()
+    ){
+        Image(painter = painterResource(
+            id = R.drawable.no_data),
+            contentDescription = "no data",
+            modifier = Modifier
+                .align(Alignment.Center)
+                .fillMaxWidth(0.75f),
+            contentScale = ContentScale.Crop
+        )
+    }
+}
+@Composable
 fun MyOutlinedTextField(
     modifier: Modifier = Modifier,
     value: String,

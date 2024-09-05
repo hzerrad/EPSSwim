@@ -64,6 +64,7 @@ import com.example.epsswim.data.model.requestBody.absences.SwimmerId
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.common.componants.NoDataScreen
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
@@ -107,6 +108,9 @@ fun LevelScreen(
     val presentList = remember {
         mutableListOf<String>()
     }
+    var isDataPresent by remember {
+        mutableStateOf(false)
+    }
     trainerViewmodel.getSwimmersByLevelId(levelID,getDate(selectedDate.value))
     LaunchedEffect(key1 = levelID,key2 = getDate(selectedDate.value)) {
         absentList.clear()
@@ -145,25 +149,31 @@ fun LevelScreen(
     LaunchedEffect(key1 = swimmerListState.value, key2 = presentList) {
         if (swimmerListState.value?.data?.swimmers != null){
             swimmerList = swimmerListState.value?.data?.swimmers ?: emptyList()
-            absentList.addAll(
-                swimmerList.filter {
-                    it.swimmerAbsences_aggregate.aggregate.count != 0
-                }.map {
-                    SwimmerId(it.swimmerid)
-                }
-            )
-            presentList.addAll(
-                swimmerList.filter {
-                    it.swimmerAbsences_aggregate.aggregate.count == 0
-                }.map {
-                    it.swimmerid
-                }
-            )
-            note = swimmerListState.value?.data?.levels_by_pk?.notes?.firstOrNull()?.description ?: ""
-            trainerId = swimmerListState.value?.data?.levels_by_pk?.trainerid ?: ""
-            noteState.setHtml(note)
-            lastIndex = swimmerList.size - 1
-            currentSwimmer = swimmerList[index]
+            if (swimmerList.isNotEmpty()){
+                isDataPresent = true
+                absentList.addAll(
+                    swimmerList.filter {
+                        it.swimmerAbsences_aggregate.aggregate.count != 0
+                    }.map {
+                        SwimmerId(it.swimmerid)
+                    }
+                )
+                presentList.addAll(
+                    swimmerList.filter {
+                        it.swimmerAbsences_aggregate.aggregate.count == 0
+                    }.map {
+                        it.swimmerid
+                    }
+                )
+                note = swimmerListState.value?.data?.levels_by_pk?.notes?.firstOrNull()?.description ?: ""
+                trainerId = swimmerListState.value?.data?.levels_by_pk?.trainerid ?: ""
+                noteState.setHtml(note)
+                lastIndex = swimmerList.size - 1
+                currentSwimmer = swimmerList[index]
+            }
+            else{
+                isDataPresent = false
+            }
             isLoading.value = currentSwimmer == null
         }
     }
@@ -183,6 +193,7 @@ fun LevelScreen(
                     IconButton( onClick = {
                         absentList.clear()
                         presentList.clear()
+                        trainerViewmodel.clearState()
                         navController.navigateUp()
                     }){
                         Icon(
@@ -192,27 +203,28 @@ fun LevelScreen(
                     }
                 },
                 actions = {
-                    IconButton( onClick = {
-                        isDataSent.value = true
-                        isLoading.value = true
-                        trainerViewmodel.insertAbsencesAndNotes(
-                            isLoading = isLoading,
-                            isError=isError,
-                            objects1 = absentList.toList(),
-                            objects2 = presentList.toList(),
-                            absencedate = getDate(selectedDate.value),
-                            levelid = levelID,
-                            trainerid = trainerId,
-                            description = note
+                    if (isDataPresent)
+                        IconButton( onClick = {
+                            isDataSent.value = true
+                            isLoading.value = true
+                            trainerViewmodel.insertAbsencesAndNotes(
+                                isLoading = isLoading,
+                                isError=isError,
+                                objects1 = absentList.toList(),
+                                objects2 = presentList.toList(),
+                                absencedate = getDate(selectedDate.value),
+                                levelid = levelID,
+                                trainerid = trainerId,
+                                description = note
 
-                        )
+                            )
 
-                    }){
-                        Icon(
-                            painter = painterResource(id = R.drawable.done_ic),
-                            contentDescription = "done button"
-                        )
-                    }
+                        }){
+                            Icon(
+                                painter = painterResource(id = R.drawable.done_ic),
+                                contentDescription = "done button"
+                            )
+                        }
                 }
             )
         },
@@ -222,6 +234,7 @@ fun LevelScreen(
         BackHandler {
             absentList.clear()
             presentList.clear()
+            trainerViewmodel.clearState()
             navController.navigateUp()
         }
         LaunchedEffect(key1 = imeState.value) {
@@ -230,7 +243,7 @@ fun LevelScreen(
             }
         }
 
-        if (! isLoading.value)
+        if (! isLoading.value && isDataPresent)
             Surface(
                 modifier = Modifier
                     .padding(it)
@@ -401,8 +414,14 @@ fun LevelScreen(
                     }
                 }
             }
-        else
-            Loading()
+        else{
+            if (isLoading.value)
+                Loading()
+            if (!isDataPresent)
+                NoDataScreen()
+        }
     }
 }
+
+
 

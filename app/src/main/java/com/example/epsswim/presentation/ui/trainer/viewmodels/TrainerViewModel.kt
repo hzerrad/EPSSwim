@@ -184,5 +184,9 @@ class TrainerViewModel @Inject constructor(private val trainerRepository: Traine
         }
     }
 
+    fun clearState() {
+        _swimmerList.value = null
+    }
+
 
 }

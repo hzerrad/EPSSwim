@@ -46,6 +46,7 @@ import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.Loading
 import com.example.epsswim.presentation.ui.common.componants.MyAppBar
+import com.example.epsswim.presentation.ui.common.componants.NoDataScreen
 import com.example.epsswim.presentation.ui.common.componants.NotConnectedScreen
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
@@ -66,6 +67,9 @@ fun CompetitionsScreen(
     var isLoading by remember {
         mutableStateOf(true)
     }
+    var isDataPresent by remember {
+        mutableStateOf(false)
+    }
     val keyboardController = LocalSoftwareKeyboardController.current
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -84,6 +88,8 @@ fun CompetitionsScreen(
         else{
             isLoading = false
             competitionList = competitionListState.value?.data?.competitions ?: emptyList()
+            if (competitionList.isNotEmpty())
+                isDataPresent = true
         }
 
     }
@@ -104,10 +110,12 @@ fun CompetitionsScreen(
         if(levelListState.value != null){
             isLoading = false
             levelList = levelListState.value?.data?.levels ?: emptyList()
-            levelList.forEach { lvl ->
-                swimmerList.addAll(lvl.swimmers)
+            if (levelList.isNotEmpty()){
+                levelList.forEach { lvl ->
+                    swimmerList.addAll(lvl.swimmers)
+                }
+                levelID = levelList.first().levelid
             }
-            levelID = levelList.first().levelid
         }
     }
     LaunchedEffect(isNotConnected) {
@@ -139,6 +147,8 @@ fun CompetitionsScreen(
                 Loading()
             else if (isNotConnected)
                 NotConnectedScreen()
+            else if (!isDataPresent)
+                NoDataScreen()
             else{
                 Surface(
                     modifier = Modifier
