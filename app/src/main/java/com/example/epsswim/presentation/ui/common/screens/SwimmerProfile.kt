@@ -58,6 +58,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.data.model.app.swimmer.profile.Competitionswimmer
@@ -115,6 +118,15 @@ fun SwimmerProfile(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImage = uri}
     )
+    val imageCropLauncher =
+        rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
+            if (result.isSuccessful) {
+                selectedImage = result.uriContent
+
+            } else {
+                println("ImageCropping error: ${result.error}")
+            }
+        }
     val uploadState = userViewModel.uploadResult.observeAsState()
     var uploadStateValue by remember {
         mutableStateOf<Result<String>?>(null)
@@ -231,9 +243,11 @@ fun SwimmerProfile(
                                     .clip(CircleShape)
                                     .size(120.dp)
                                     .clickable(enabled = isParent) {
-                                        singlePhotoPickerLauncher.launch(
-                                            PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+                                        val cropOptions = CropImageContractOptions(
+                                            null,
+                                            CropImageOptions(imageSourceIncludeCamera = false)
                                         )
+                                        imageCropLauncher.launch(cropOptions)
                                     }
                             )
                         Spacer(modifier = Modifier.height(5.dp))

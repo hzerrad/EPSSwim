@@ -118,10 +118,6 @@ fun MainContent(
     var selectedImage by remember {
         mutableStateOf<Uri?>(null)
     }
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> selectedImage = uri}
-    )
     val imageCropLauncher =
         rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
             if (result.isSuccessful) {
@@ -191,8 +187,8 @@ fun MainContent(
                     },
                     actions = {
                         IconButton(onClick = {
-                            authViewModel.logout()
                             userViewModel.clearState()
+                            authViewModel.logout()
                             navController.navigate(Screen.Login) {
                                 popUpTo(Screen.Splash) {
                                     inclusive = true
@@ -231,9 +227,6 @@ fun MainContent(
                                 .clip(CircleShape)
                                 .size(120.dp)
                                 .clickable {
-//                                    singlePhotoPickerLauncher.launch(
-//                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
-//                                    )
                                     val cropOptions = CropImageContractOptions(
                                         null,
                                         CropImageOptions(imageSourceIncludeCamera = false)
