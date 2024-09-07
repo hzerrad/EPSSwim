@@ -65,6 +65,7 @@ import com.example.epsswim.R
 import com.example.epsswim.data.model.app.swimmer.Swimmer
 import com.example.epsswim.data.model.app.swimmer.profile.Competitionswimmer
 import com.example.epsswim.data.model.app.swimmer.profile.SwimmersByPk
+import com.example.epsswim.data.utils.Utils
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.Loading
@@ -75,6 +76,7 @@ import com.example.epsswim.presentation.ui.parent.viewmodels.ParentViewModel
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.getFullName
+import com.example.epsswim.presentation.utils.makeCall
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -114,10 +116,6 @@ fun SwimmerProfile(
     var selectedImage by remember {
         mutableStateOf<Uri?>(null)
     }
-    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.PickVisualMedia(),
-        onResult = { uri -> selectedImage = uri}
-    )
     val imageCropLauncher =
         rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
             if (result.isSuccessful) {
@@ -234,7 +232,7 @@ fun SwimmerProfile(
                             CircularProgressIndicator()
                         else
                             AsyncImage(
-                                model = if( swimmer!!.pfpUrl.contains(swimmerId)) swimmer!!.pfpUrl else null,
+                                model = swimmer!!.pfpUrl,
                                 error = painterResource(id = R.drawable.img),
                                 fallback =  painterResource(id = R.drawable.img),
                                 contentDescription = "profile pic",
@@ -375,7 +373,6 @@ fun SwimmerProfile(
                             fontWeight = FontWeight.Bold
                         )
                         ) {
-
                             append(stringResource(R.string.trainer_phone))
                         }
                         withStyle(style = SpanStyle(
@@ -387,7 +384,11 @@ fun SwimmerProfile(
                     },
                     color = Color.Black,
                     fontSize = 16.sp,
-                    modifier = Modifier.padding(bottom = 14.dp)
+                    modifier = Modifier
+                        .clickable {
+                            makeCall(swimmer!!.trainer.phonenumber,context)
+                        }
+                        .padding(bottom = 14.dp)
 
                 )
                 Text(

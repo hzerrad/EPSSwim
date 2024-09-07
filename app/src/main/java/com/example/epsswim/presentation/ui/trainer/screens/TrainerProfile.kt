@@ -218,7 +218,7 @@ fun MainContent(
                         CircularProgressIndicator()
                     else
                         AsyncImage(
-                            model = if (trainer!!.pfpUrl.contains(trainer.trainerid)) trainer.pfpUrl else null,
+                            model =  trainer!!.pfpUrl ,
                             error = painterResource(id = R.drawable.img),
                             fallback =  painterResource(id = R.drawable.img),
                             contentDescription = "profile pic",

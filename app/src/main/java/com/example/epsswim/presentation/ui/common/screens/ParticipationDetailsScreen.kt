@@ -187,7 +187,7 @@ fun ParticipationDetailsScreen(
                                         .clip(RoundedCornerShape(12.dp))
                                         .size(65.dp)
                                         .border(0.2.dp, Color.Black, RoundedCornerShape(12.dp)),
-                                    model = if(participation!!.data.swimmers_by_pk.pfpUrl.contains(swimmerID)) participation!!.data.swimmers_by_pk.pfpUrl else null,
+                                    model =  participation!!.data.swimmers_by_pk.pfpUrl,
                                     error = painterResource(id = R.drawable.img),
                                     fallback =  painterResource(id = R.drawable.img),
                                     contentDescription = stringResource(R.string.profile_img),

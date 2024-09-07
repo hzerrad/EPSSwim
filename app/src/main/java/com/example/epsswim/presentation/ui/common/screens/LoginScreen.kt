@@ -38,6 +38,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.Font
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -228,12 +230,14 @@ fun LoginScreen(
                         )) {
                             append("By ")
                         }
-                        withStyle(style = SpanStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 14.sp,
-                            color = MyRed
-                        )) {
-                            append("MTC Company. ")
+                        withLink(LinkAnnotation.Url(url = "https://mtc.dz")){
+                            withStyle(style = SpanStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = MyRed
+                            )) {
+                                append("MTC Company. ")
+                            }
                         }
                         withStyle(style = SpanStyle(
                             fontWeight = FontWeight.Bold,
@@ -244,6 +248,7 @@ fun LoginScreen(
                         }
                     },
                     modifier = Modifier
+                        .padding(bottom = 30.dp)
                         .align(Alignment.BottomCenter)
                 )
             }
