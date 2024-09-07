@@ -1,15 +1,12 @@
 package com.example.epsswim.presentation.ui.trainer.screens
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,12 +36,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -68,7 +65,6 @@ import com.example.epsswim.presentation.ui.common.componants.NoDataScreen
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
-import com.example.epsswim.presentation.ui.theme.MySecondary
 import com.example.epsswim.presentation.ui.trainer.componants.AbsenceSwimmerCard
 import com.example.epsswim.presentation.ui.trainer.componants.MarkDownController
 import com.example.epsswim.presentation.ui.trainer.componants.MyWeekCalendar
@@ -131,7 +127,6 @@ fun LevelScreen(
     var lastIndex by remember {
         mutableIntStateOf(0)
     }
-
     var trainerId by remember {
         mutableStateOf("")
     }
@@ -309,6 +304,20 @@ fun LevelScreen(
                             AbsenceSwimmerCard(
                                 modifier = Modifier
                                     .padding(horizontal = 36.dp)
+                                    .pointerInput(index) {
+                                        detectHorizontalDragGestures { _, dragAmount ->
+                                            if (dragAmount > 0 && index > 0) {
+                                                // Swipe right, show previous card
+                                                index--
+                                                currentSwimmer= swimmerList[index]
+                                            } else if (dragAmount < 0 && index < lastIndex - 1) {
+                                                // Swipe left, show next card
+                                                index++
+                                                currentSwimmer= swimmerList[index]
+
+                                            }
+                                        }
+                                    }
                                     .align(Alignment.Center),
                                 absentList = absentList,
                                 presentList = presentList,

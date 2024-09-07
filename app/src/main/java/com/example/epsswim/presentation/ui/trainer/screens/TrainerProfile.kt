@@ -180,6 +180,7 @@ fun MainContent(
                     actions = {
                         IconButton(onClick = {
                             authViewModel.logout()
+                            userViewModel.clearState()
                             navController.navigate(Screen.Login) {
                                 popUpTo(Screen.Splash) {
                                     inclusive = true
