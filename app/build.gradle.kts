@@ -114,5 +114,8 @@ dependencies {
     implementation("com.google.firebase:firebase-storage")
     //Markdown
     implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc06")
+    //Image Crop Library
+    implementation("com.vanniktech:android-image-cropper:4.5.0")
+
 
 }

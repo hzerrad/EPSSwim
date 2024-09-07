@@ -310,7 +310,7 @@ fun LevelScreen(
                                                 // Swipe right, show previous card
                                                 index--
                                                 currentSwimmer= swimmerList[index]
-                                            } else if (dragAmount < 0 && index < lastIndex - 1) {
+                                            } else if (dragAmount < 0 && index < lastIndex) {
                                                 // Swipe left, show next card
                                                 index++
                                                 currentSwimmer= swimmerList[index]
