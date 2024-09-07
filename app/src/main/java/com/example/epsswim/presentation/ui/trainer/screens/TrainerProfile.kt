@@ -56,6 +56,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.trainer.Trainer
 import com.example.epsswim.presentation.navigation.Screen
@@ -119,6 +122,15 @@ fun MainContent(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImage = uri}
     )
+    val imageCropLauncher =
+        rememberLauncherForActivityResult(contract = CropImageContract()) { result ->
+            if (result.isSuccessful) {
+                selectedImage = result.uriContent
+
+            } else {
+                println("ImageCropping error: ${result.error}")
+            }
+        }
     val uploadState by userViewModel.uploadResult.observeAsState()
     var isLoading by remember {
         mutableStateOf(false)
@@ -219,9 +231,14 @@ fun MainContent(
                                 .clip(CircleShape)
                                 .size(120.dp)
                                 .clickable {
-                                    singlePhotoPickerLauncher.launch(
-                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+//                                    singlePhotoPickerLauncher.launch(
+//                                        PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly)
+//                                    )
+                                    val cropOptions = CropImageContractOptions(
+                                        null,
+                                        CropImageOptions(imageSourceIncludeCamera = false)
                                     )
+                                    imageCropLauncher.launch(cropOptions)
                                 }
                         )
                     Spacer(modifier = Modifier.height(5.dp))
