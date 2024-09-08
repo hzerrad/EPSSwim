@@ -85,4 +85,8 @@ interface EpsClientInterface {
         @Body query: com.example.epsswim.data.model.requestBody.participation.Query
     ): Call<ParticipationResponse>
 
+    @POST("graphql/")
+    fun deleteCompetition(
+        @Body query: com.example.epsswim.data.model.requestBody.competition.Query
+    ): Call<CompetitionResponse>
 }

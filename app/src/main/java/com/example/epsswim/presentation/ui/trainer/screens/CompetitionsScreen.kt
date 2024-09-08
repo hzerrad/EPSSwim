@@ -176,7 +176,9 @@ fun CompetitionsScreen(
                                     competition = competition,
                                     isTrainer = true,
                                     onEdit = {},
-                                    onDelete = {},
+                                    onDelete = {
+                                        competitionViewModel.deleteCompetition(competition.competitionid)
+                                    },
                                 ) {
                                     currentCompetition = competition
                                     showBottomSheet= true

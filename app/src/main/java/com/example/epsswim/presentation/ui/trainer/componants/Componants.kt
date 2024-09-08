@@ -345,7 +345,7 @@ fun ActionsMenu(
     onDeleteClick: () -> Unit,
     onEditClick: () -> Unit = { }
 ) {
-    Box(modifier = modifier){
+    Box(modifier = modifier.background(MyBackground)){
         DropdownMenu(
             modifier = Modifier,
             expanded = expanded.value,
@@ -357,7 +357,7 @@ fun ActionsMenu(
                     onClick = {
                         onEditClick.invoke()
                         expanded.value = false
-                    }
+                    },
                 )
                 HorizontalDivider()
             }

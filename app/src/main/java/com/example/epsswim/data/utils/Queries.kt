@@ -259,4 +259,19 @@ object Queries {
       } 
     }
     """
+    const val DELETE_COMPETITION = """
+    mutation DeleteCompetition(${'$'}competitionid: uuid!) {
+      delete_competitionswimmers(where: {competitionid: {_eq: ${'$'}competitionid}}) {
+        affected_rows
+      }
+      delete_swimmerevents(where: {competitionid: {_eq: ${'$'}competitionid}}) {
+        affected_rows
+      }
+      delete_competitions_by_pk(competitionid: ${'$'}competitionid) {
+        event
+        competitionid
+        competitiondate
+      }
+    }
+    """
 }

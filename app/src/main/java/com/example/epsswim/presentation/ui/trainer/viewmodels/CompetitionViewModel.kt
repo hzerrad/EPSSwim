@@ -100,4 +100,28 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
 
         }
     }
+    fun deleteCompetition(competitionid: String){
+        viewModelScope.launch {
+            competitionRepository.deleteCompetition(Query(
+                query = Queries.DELETE_COMPETITION,
+                variables = CompetitionVariables(competitionid=competitionid)
+
+            )).enqueue(object :
+                Callback<CompetitionResponse> {
+                override fun onResponse(call: Call<CompetitionResponse>, response: Response<CompetitionResponse>) {
+                    if (response.isSuccessful) {
+                        getCompetitions()
+                        Log.d("TAG", "onResponse: Data Deleted ")
+                    } else {
+                        Log.d("LevelsApi", "onResponse: failed delete data ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<CompetitionResponse>, t: Throwable) {
+                    Log.d("LevelsApi", "onFailure: failed delete data, check your internet connection ${t.message}")
+                }
+            })
+
+        }
+    }
 }

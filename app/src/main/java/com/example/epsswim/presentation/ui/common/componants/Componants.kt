@@ -250,8 +250,14 @@ fun CompetitionCard(
         ActionsMenu(
             modifier = Modifier.align(Alignment.End),
             expanded = expanded ,
-            onDeleteClick = onDelete,
-            onEditClick = onEdit
+            onDeleteClick ={
+                expanded.value = ! expanded.value
+                onDelete()
+            } ,
+            onEditClick ={
+                expanded.value = ! expanded.value
+                onEdit()
+            }
         )
 
         Row (
