@@ -124,4 +124,28 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
 
         }
     }
+    fun updateCompetition(competitionData: CompetitionData){
+        viewModelScope.launch {
+            competitionRepository.updateCompetition(Query(
+                query = Queries.UPDATE_COMPETITION,
+                variables = CompetitionVariables(competitionData=competitionData)
+
+            )).enqueue(object :
+                Callback<CompetitionResponse> {
+                override fun onResponse(call: Call<CompetitionResponse>, response: Response<CompetitionResponse>) {
+                    if (response.isSuccessful) {
+                        getCompetitions()
+                        Log.d("TAG", "onResponse: Data updated ")
+                    } else {
+                        Log.d("LevelsApi", "onResponse: failed update data ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<CompetitionResponse>, t: Throwable) {
+                    Log.d("LevelsApi", "onFailure: failed update data, check your internet connection ${t.message}")
+                }
+            })
+
+        }
+    }
 }

@@ -42,6 +42,10 @@ import com.example.epsswim.R
 import com.example.epsswim.data.model.app.competition.Competition
 import com.example.epsswim.data.model.app.swimmer.Level
 import com.example.epsswim.data.model.app.swimmer.Swimmer
+import com.example.epsswim.data.model.requestBody.competition.CompetitionData
+import com.example.epsswim.data.model.requestBody.competition.CompetitionParticipant
+import com.example.epsswim.data.model.requestBody.competition.Data
+import com.example.epsswim.data.model.requestBody.competition.Participants
 import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.common.componants.CompetitionCard
 import com.example.epsswim.presentation.ui.common.componants.Loading
@@ -69,6 +73,12 @@ fun CompetitionsScreen(
     }
     var isDataPresent by remember {
         mutableStateOf(false)
+    }
+    var isEditMode by remember {
+        mutableStateOf(false)
+    }
+    var competitionIdEditMode by remember {
+        mutableStateOf<String?>(null)
     }
     val keyboardController = LocalSoftwareKeyboardController.current
     val sheetState = rememberModalBottomSheetState()
@@ -106,6 +116,18 @@ fun CompetitionsScreen(
     val swimmerList = remember {
         mutableListOf<Swimmer>()
     }
+    val competitionData = remember {
+        mutableStateOf(
+            CompetitionData(
+                competitiondate = "2024-01-01",
+                event = "",
+                location = "",
+                participants = Participants(emptyList()),
+                isbrevet = false,
+                levelid = levelID
+            )
+        )
+    }
     LaunchedEffect(key1 = levelListState.value) {
         if(levelListState.value != null){
             isLoading = false
@@ -130,7 +152,17 @@ fun CompetitionsScreen(
             topBar = { MyAppBar(title = stringResource(R.string.the_competitions)) },
             floatingActionButton = {
                 ExtendedFloatingActionButton(
-                    onClick = { showFullScreenDialog.value= true },
+                    onClick = {
+                        competitionData.value = CompetitionData(
+                            competitiondate = "2024-01-01",
+                            event = "",
+                            location = "",
+                            participants = Participants(emptyList()),
+                            isbrevet = false,
+                            levelid = levelID
+                        )
+                        showFullScreenDialog.value= true
+                              },
                     text = {
                         Text(
                             text = stringResource(R.string.add_competition),
@@ -175,7 +207,22 @@ fun CompetitionsScreen(
                                     modifier = Modifier.padding(bottom = 20.dp),
                                     competition = competition,
                                     isTrainer = true,
-                                    onEdit = {},
+                                    onEdit = {
+                                        isEditMode = true
+                                        competitionIdEditMode = competition.competitionid
+                                        competitionData.value =CompetitionData(
+                                            competitiondate = competition.competitiondate,
+                                            event = competition.event,
+                                            isbrevet = competition.isbrevet,
+                                            location = competition.location,
+                                            participants =  Participants(competition.participants.map {
+                                                Data(it.swimmer.swimmerid)
+                                            }),
+                                            levelid = levelID
+                                        )
+                                        showFullScreenDialog.value =true
+
+                                    },
                                     onDelete = {
                                         competitionViewModel.deleteCompetition(competition.competitionid)
                                     },
@@ -224,14 +271,25 @@ fun CompetitionsScreen(
                                 properties = DialogProperties(usePlatformDefaultWidth = false)
                             ){
                                 FullScreenDialogContent(
+                                    competitionData = competitionData ,
                                     participants= swimmerList.toList(),
-                                    levelID = levelID,
                                     onDismiss ={
                                         showFullScreenDialog.value = false
                                     },
                                     onDone = {
-                                        competitionViewModel.insertCompetition(it)
-                                        showFullScreenDialog.value = false
+                                        if (isEditMode){
+                                            val updatedSwimmers = it.participants!!.data.map { data->
+                                                CompetitionParticipant(competitionIdEditMode!!,data.swimmerid)
+                                            }
+                                            competitionViewModel.updateCompetition(it.copy(competitionid = competitionIdEditMode, objects = updatedSwimmers, participants = null))
+                                            isEditMode = false
+                                            competitionIdEditMode = null
+                                            showFullScreenDialog.value = false
+                                        }
+                                        else{
+                                            competitionViewModel.insertCompetition(it)
+                                            showFullScreenDialog.value = false
+                                        }
                                     },
                                 )
                             }

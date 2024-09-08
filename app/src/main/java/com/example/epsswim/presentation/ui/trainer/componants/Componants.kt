@@ -130,25 +130,14 @@ import java.util.Locale
 
 @Composable
 fun FullScreenDialogContent(
+    competitionData: MutableState<CompetitionData>,
     participants: List<Swimmer>,
-    levelID : String,
     onDone: (CompetitionData) -> Unit = {},
     onDismiss: () -> Unit = {}
 ) {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         Surface (color = MyBackground) {
-            val competitionData = remember {
-                mutableStateOf(
-                    CompetitionData(
-                        competitiondate = "",
-                        event = "",
-                        location = "",
-                        participants = Participants(emptyList()),
-                        isbrevet = false,
-                        levelid = levelID
-                    )
-                )
-            }
+
             Column (
                 modifier = Modifier
                     .padding(horizontal = 24.dp, vertical = 16.dp)
@@ -172,9 +161,10 @@ private fun DialogBody(participants: List<Swimmer>, competitionData: MutableStat
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
     var isCardSelected by remember {mutableStateOf(false)}
-
     val participantList = remember {
-        mutableStateOf<List<Swimmer>>(emptyList())
+        mutableStateOf(participants.filter {
+            Data(it.swimmerid) in (competitionData.value.participants?.data ?: emptyList())
+        })
     }
     Column (
         modifier = Modifier
@@ -195,7 +185,7 @@ private fun DialogBody(participants: List<Swimmer>, competitionData: MutableStat
             color = MyPrimary,
             fontFamily = FontFamily(listOf(Font(R.font.cairo_regular))),
         )
-        var name by rememberSaveable { mutableStateOf("") }
+        var name by rememberSaveable { mutableStateOf(competitionData.value.event) }
         var nameTyped by rememberSaveable { mutableStateOf(false) }
         OutlinedTextField(
             value = name,
@@ -218,7 +208,7 @@ private fun DialogBody(participants: List<Swimmer>, competitionData: MutableStat
                 focusedLabelColor = MyPrimary
             )
         )
-        var place by rememberSaveable { mutableStateOf("") }
+        var place by rememberSaveable { mutableStateOf(competitionData.value.location) }
         var placeTyped by rememberSaveable { mutableStateOf(false) }
         OutlinedTextField(
             value = place,
@@ -244,10 +234,17 @@ private fun DialogBody(participants: List<Swimmer>, competitionData: MutableStat
         val initialDate = Calendar
             .getInstance()
             .apply {
-                set(2024, Calendar.JANUARY, 1,1, 0, 0)
+                set(
+                    competitionData.value.competitiondate.split('-')[0].toInt(),
+                    competitionData.value.competitiondate.split('-')[1].toInt()-1,
+                    competitionData.value.competitiondate.split('-')[2].toInt(),
+                    1,
+                    0,
+                    0
+                )
             }
             .timeInMillis
-        val competitionDate =  rememberSaveable { mutableStateOf("02/01/2024") }
+        val competitionDate =  rememberSaveable { mutableStateOf(competitionData.value.competitiondate) }
 
         CustomDatePicker(
             modifier = Modifier
@@ -262,7 +259,7 @@ private fun DialogBody(participants: List<Swimmer>, competitionData: MutableStat
             isIllegalInput = false,
             dateState = competitionDate
         )
-        var isBrevet by remember {mutableStateOf(false)}
+        var isBrevet by remember {mutableStateOf(competitionData.value.isbrevet)}
         OutlinedCard(
             modifier = Modifier
                 .selectable(

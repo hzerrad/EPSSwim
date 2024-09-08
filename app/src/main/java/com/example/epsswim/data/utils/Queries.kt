@@ -188,6 +188,7 @@ object Queries {
        competitiondate
        location
        isbrevet
+       levelid
        participants {
          swimmer {
            swimmerid
@@ -271,6 +272,24 @@ object Queries {
         event
         competitionid
         competitiondate
+      }
+    }
+    """
+    const val UPDATE_COMPETITION = """
+    mutation UpdateCompetition(${'$'}competitionid: uuid = "", ${'$'}competitiondate: date = "", ${'$'}event: String = "", ${'$'}isbrevet: Boolean = false, ${'$'}location: String = "",${'$'}levelid: uuid!, ${'$'}objects: [competitionswimmers_insert_input!] = {}) {
+      update_competitions_by_pk(pk_columns: {competitionid: ${'$'}competitionid}, _set: {competitiondate: ${'$'}competitiondate, event: ${'$'}event, isbrevet: ${'$'}isbrevet, location: ${'$'}location, levelid: ${'$'}levelid}) {
+        competitionid
+        event
+        competitiondate
+        isbrevet
+        location
+        levelid
+      }
+      delete_competitionswimmers(where: {competitionid: {_eq: ${'$'}competitionid}}) {
+        affected_rows
+      }
+      insert_competitionswimmers(objects: ${'$'}objects) {
+        affected_rows
       }
     }
     """
