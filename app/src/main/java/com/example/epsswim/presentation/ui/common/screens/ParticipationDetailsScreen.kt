@@ -5,9 +5,11 @@ import androidx.activity.compose.BackHandler
 import androidx.collection.LongList
 import androidx.collection.mutableLongListOf
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -80,13 +82,14 @@ import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyRed
 import com.example.epsswim.presentation.ui.trainer.componants.ExposedDropdownMenuParticipationType
 import com.example.epsswim.presentation.ui.common.viewmodels.ParticipationViewModel
+import com.example.epsswim.presentation.ui.trainer.componants.ActionsMenu
 import com.example.epsswim.presentation.utils.calculateAge
 import com.example.epsswim.presentation.utils.formatTime
 import com.example.epsswim.presentation.utils.getFullName
 import com.example.epsswim.presentation.utils.parseTimeToMillis
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun ParticipationDetailsScreen(
     navController: NavHostController,
@@ -268,11 +271,25 @@ fun ParticipationDetailsScreen(
                         )
                          participation!!.data.swimmerevents.forEach{
                             CompetitionParticipationCard(Modifier.padding(bottom = 15.dp)){
+                                val expanded = remember { mutableStateOf(false) }
                                 Column (
                                     modifier = Modifier
+                                        .combinedClickable(
+                                            onLongClick = {
+                                                if (isTrainer.value!!)
+                                                    expanded.value = !expanded.value
+                                            },
+                                            onClick = {}
+                                        )
                                         .padding(16.dp)
                                         .fillMaxWidth(),
                                 ) {
+                                    ActionsMenu(
+                                        modifier = Modifier.align(Alignment.End),
+                                        isEditable = false,
+                                        expanded = expanded ,
+                                        onDeleteClick = {  },
+                                    )
                                     Row (
                                         modifier = Modifier.align(Alignment.CenterHorizontally)
                                     ) {

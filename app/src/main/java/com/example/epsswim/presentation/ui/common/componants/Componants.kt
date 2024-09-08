@@ -3,10 +3,12 @@ package com.example.epsswim.presentation.ui.common.componants
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -64,6 +66,7 @@ import com.example.epsswim.presentation.navigation.BottomBarItem
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
+import com.example.epsswim.presentation.ui.trainer.componants.ActionsMenu
 import kotlinx.coroutines.launch
 
 @Composable
@@ -219,17 +222,38 @@ fun MyBottomBar(
     }
 
 }
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun CompetitionCard(modifier: Modifier,competition: Competition, onClick: () -> Unit) {
+fun CompetitionCard(
+    modifier: Modifier,
+    competition: Competition,
+    isTrainer:Boolean=false,
+    onEdit: () -> Unit={},
+    onDelete: () -> Unit={},
+    onClick: () -> Unit
+) {
+    val expanded = remember { mutableStateOf(false) }
     OutlinedCard(
-        onClick = { onClick() },
-        modifier = modifier,
+        modifier = modifier.combinedClickable(
+            onLongClick = {
+                if (isTrainer)
+                    expanded.value = ! expanded.value
+            },
+            onClick = onClick
+        ),
         shape = RoundedCornerShape(8.dp),
         colors = CardDefaults.outlinedCardColors(
             containerColor = Color.White
         ),
         border = BorderStroke(0.6.dp, Color.LightGray)
     ){
+        ActionsMenu(
+            modifier = Modifier.align(Alignment.End),
+            expanded = expanded ,
+            onDeleteClick = onDelete,
+            onEditClick = onEdit
+        )
+
         Row (
             modifier= Modifier
                 .padding(16.dp)

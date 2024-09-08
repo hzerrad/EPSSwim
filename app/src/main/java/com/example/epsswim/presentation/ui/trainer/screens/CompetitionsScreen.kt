@@ -173,7 +173,10 @@ fun CompetitionsScreen(
                             items(items = competitionList.filter {it.event.contains(searchedText.value,ignoreCase = true)}){ competition ->
                                 CompetitionCard(
                                     modifier = Modifier.padding(bottom = 20.dp),
-                                    competition = competition
+                                    competition = competition,
+                                    isTrainer = true,
+                                    onEdit = {},
+                                    onDelete = {},
                                 ) {
                                     currentCompetition = competition
                                     showBottomSheet= true
