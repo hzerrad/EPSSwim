@@ -53,4 +53,6 @@
     <string name="stop_watch">ساعة التوقيف</string>
     <string name="lap">دورة</string>
     <string name="the_profile">البروفايل</string>
+    <string name="edit">تعديل</string>
+    <string name="delete">حذف</string>
 </resources>

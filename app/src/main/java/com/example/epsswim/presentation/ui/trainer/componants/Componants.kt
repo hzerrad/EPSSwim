@@ -37,11 +37,14 @@ import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DatePickerState
+import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -330,6 +333,39 @@ private fun DialogBody(participants: List<Swimmer>, competitionData: MutableStat
         LaunchedEffect(key1 = participantList.value) {
             competitionData.value= competitionData.value
                 .copy(participants=Participants(participantList.value.map { Data(swimmerid = it.swimmerid) }))
+        }
+    }
+}
+
+@Composable
+fun ActionsMenu(
+    modifier: Modifier,
+    isEditable: Boolean = true,
+    expanded: MutableState<Boolean>,
+    onDeleteClick: () -> Unit,
+    onEditClick: () -> Unit = { }
+) {
+    Box(modifier = modifier){
+        DropdownMenu(
+            modifier = Modifier,
+            expanded = expanded.value,
+            onDismissRequest = { expanded.value = false }
+        ) {
+            if (isEditable){
+                DropdownMenuItem(
+                    text = {  Text(stringResource(R.string.edit))  },
+                    onClick = {
+                        onEditClick.invoke()
+                        expanded.value = false
+                    }
+                )
+                HorizontalDivider()
+            }
+
+            DropdownMenuItem(
+                text = { Text(stringResource(R.string.delete)) },
+                onClick = { onDeleteClick.invoke() }
+            )
         }
     }
 }
