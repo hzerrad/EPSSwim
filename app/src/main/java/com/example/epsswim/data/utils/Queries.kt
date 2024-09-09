@@ -240,6 +240,7 @@ object Queries {
         location
       }
       swimmerevents(where: {competitionid: {_eq: ${'$'}competitionid}, swimmerid: {_eq: ${'$'}swimmerid}}) {
+        swimmereventid
         laptimes
         eventtype {
           eventtypeid
@@ -276,7 +277,7 @@ object Queries {
     }
     """
     const val UPDATE_COMPETITION = """
-    mutation UpdateCompetition(${'$'}competitionid: uuid = "", ${'$'}competitiondate: date = "", ${'$'}event: String = "", ${'$'}isbrevet: Boolean = false, ${'$'}location: String = "",${'$'}levelid: uuid!, ${'$'}objects: [competitionswimmers_insert_input!] = {}) {
+    mutation UpdateCompetition(${'$'}competitionid: uuid = "", ${'$'}competitiondate: date = "", ${'$'}event: String = "", ${'$'}isbrevet: Boolean = false, ${'$'}location: String = "",${'$'}levelid: uuid = "", ${'$'}objects: [competitionswimmers_insert_input!] = {}) {
       update_competitions_by_pk(pk_columns: {competitionid: ${'$'}competitionid}, _set: {competitiondate: ${'$'}competitiondate, event: ${'$'}event, isbrevet: ${'$'}isbrevet, location: ${'$'}location, levelid: ${'$'}levelid}) {
         competitionid
         event
@@ -290,6 +291,13 @@ object Queries {
       }
       insert_competitionswimmers(objects: ${'$'}objects) {
         affected_rows
+      }
+    }
+    """
+    const val DELETE_PARTICIPATION=  """
+    mutation DeleteSwimmerRecord(${'$'}swimmereventid: uuid = "") {
+      delete_swimmerevents_by_pk(swimmereventid: ${'$'}swimmereventid) {
+        swimmerid
       }
     }
     """

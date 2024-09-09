@@ -288,7 +288,9 @@ fun ParticipationDetailsScreen(
                                         modifier = Modifier.align(Alignment.End),
                                         isEditable = false,
                                         expanded = expanded ,
-                                        onDeleteClick = {  },
+                                        onDeleteClick = {
+                                            participationViewModel.deleteParticipation(it.swimmereventid)
+                                        },
                                     )
                                     Row (
                                         modifier = Modifier.align(Alignment.CenterHorizontally)

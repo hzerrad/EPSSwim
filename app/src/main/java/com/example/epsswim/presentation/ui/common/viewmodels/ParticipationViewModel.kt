@@ -80,7 +80,7 @@ class ParticipationViewModel @Inject constructor(private val participationReposi
                 Callback<ParticipationResponse> {
                 override fun onResponse(call: Call<ParticipationResponse>, response: Response<ParticipationResponse>) {
                     if (response.isSuccessful) {
-                        getParticipation(participationVariables.swimmerid,participationVariables.competitionid)
+                        getParticipation(participationVariables.swimmerid!!,participationVariables.competitionid!!)
                         Log.d("Participation", "onResponse: data : ${response.body()}")
 
                     } else {
@@ -90,6 +90,29 @@ class ParticipationViewModel @Inject constructor(private val participationReposi
 
                 override fun onFailure(call: Call<ParticipationResponse>, t: Throwable) {
                     Log.d("Participation", "onFailure: failed fetch data, check your internet connection ${t.message}")
+                }
+            })
+
+        }
+    }
+    fun deleteParticipation(participationID: String){
+        viewModelScope.launch {
+            participationRepository.deleteParticipation(Query(
+                query = Queries.DELETE_PARTICIPATION,
+                variables = ParticipationVariables(swimmereventid = participationID)
+            )).enqueue(object :
+                Callback<ParticipationResponse> {
+                override fun onResponse(call: Call<ParticipationResponse>, response: Response<ParticipationResponse>) {
+                    if (response.isSuccessful) {
+                        _participation.value = null
+
+                    } else {
+                        Log.d("Participation", "onResponse: failed delete data ${response.code()}")
+                    }
+                }
+
+                override fun onFailure(call: Call<ParticipationResponse>, t: Throwable) {
+                    Log.d("Participation", "onFailure: failed delete data, check your internet connection ${t.message}")
                 }
             })
 

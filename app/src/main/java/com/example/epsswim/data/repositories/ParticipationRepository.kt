@@ -8,4 +8,5 @@ class ParticipationRepository @Inject constructor(private val epsClientInterface
     fun getSwimmingTypes(query: Query) = epsClientInterface.getSwimmingTypes(query)
     fun insertParticipation(query: Query) = epsClientInterface.insertParticipation(query)
     fun getParticipation(query: Query) = epsClientInterface.getParticipation(query)
+    fun deleteParticipation(query: Query) = epsClientInterface.deleteParticipation(query)
 }
