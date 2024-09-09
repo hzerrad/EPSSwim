@@ -121,14 +121,13 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
                     Log.d("LevelsApi", "onFailure: failed delete data, check your internet connection ${t.message}")
                 }
             })
-
         }
     }
     fun updateCompetition(competitionData: CompetitionData){
         viewModelScope.launch {
-            competitionRepository.updateCompetition(Query(
+            competitionRepository.updateCompetition(com.example.epsswim.data.model.requestBody.competition.updateCompetition.Query(
                 query = Queries.UPDATE_COMPETITION,
-                variables = CompetitionVariables(competitionData=competitionData)
+                variables = competitionData
 
             )).enqueue(object :
                 Callback<CompetitionResponse> {
@@ -140,12 +139,10 @@ class CompetitionViewModel @Inject constructor(private val competitionRepository
                         Log.d("LevelsApi", "onResponse: failed update data ${response.code()}")
                     }
                 }
-
                 override fun onFailure(call: Call<CompetitionResponse>, t: Throwable) {
                     Log.d("LevelsApi", "onFailure: failed update data, check your internet connection ${t.message}")
                 }
             })
-
         }
     }
 }

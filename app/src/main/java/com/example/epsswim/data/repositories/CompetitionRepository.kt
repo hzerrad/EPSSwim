@@ -9,6 +9,6 @@ class CompetitionRepository  @Inject constructor(private val epsClientInterface:
  fun insertCompetition(query: Query) = epsClientInterface.insertCompetition(query)
  fun getCompetitions(query: Query) = epsClientInterface.getCompetitions(query)
  fun deleteCompetition(query: Query) = epsClientInterface.deleteCompetition(query)
- fun updateCompetition(query: Query) = epsClientInterface.updateCompetition(query)
+ fun updateCompetition(query: com.example.epsswim.data.model.requestBody.competition.updateCompetition.Query) = epsClientInterface.updateCompetition(query)
 
 }
