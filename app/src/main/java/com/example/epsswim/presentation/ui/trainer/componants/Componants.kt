@@ -448,7 +448,7 @@ private fun DialogHeader(competitionData: CompetitionData,onDismiss: () -> Unit,
             fontFamily = FontFamily(listOf(Font(R.font.cairo_semi_bold))),
         )
         Box(modifier = Modifier.fillMaxWidth()){
-            TextButton(
+            OutlinedButton(
                 modifier =  Modifier.align(Alignment.CenterEnd),
                 onClick = {
                     onDone(competitionData)

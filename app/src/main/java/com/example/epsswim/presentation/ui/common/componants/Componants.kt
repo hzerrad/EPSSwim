@@ -63,6 +63,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.epsswim.R
 import com.example.epsswim.data.model.app.competition.Competition
 import com.example.epsswim.presentation.navigation.BottomBarItem
+import com.example.epsswim.presentation.navigation.Screen
 import com.example.epsswim.presentation.ui.theme.MyBackground
 import com.example.epsswim.presentation.ui.theme.MyPrimary
 import com.example.epsswim.presentation.ui.theme.MyPrimaryDark
@@ -200,7 +201,7 @@ fun MyBottomBar(
                         verticalArrangement = Arrangement.Center,
                         modifier = Modifier.clickable {
                             navController.navigate(item.screen) {
-                                popUpTo(navController.graph.findStartDestination().id)
+                                popUpTo(Screen.AbsenceScreen)
                                 launchSingleTop = true
                             }
                         }
