@@ -385,7 +385,7 @@ fun SwimmerProfile(
                     color = Color.Black,
                     fontSize = 16.sp,
                     modifier = Modifier
-                        .clickable {
+                        .clickable (isParent) {
                             makeCall(swimmer!!.trainer.phonenumber,context)
                         }
                         .padding(bottom = 14.dp)
