@@ -115,7 +115,7 @@ object Queries {
 """
     const val GET_SWIMMERS_BY_LEVEL_ID = """
     query GetSwimmerByLevelId(${'$'}levelid: uuid!, ${'$'}absencedate: date = "") {
-      swimmers(where: {levelid: {_eq: ${'$'}levelid}}) {
+      swimmers(where: {levelid: {_eq: ${'$'}levelid},isdeleted: {_eq: false}}) {
       swimmerid
       firstname
       lastname
@@ -201,7 +201,7 @@ object Queries {
     query GetTrainerSwimmers {
       levels {
         levelid
-        swimmers {
+        swimmers (where: {isdeleted: {_eq: false}}) {
           swimmerid
           firstname
           lastname
